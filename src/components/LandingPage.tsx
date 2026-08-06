@@ -282,15 +282,6 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
           {/* Action CTAs */}
           <div className="flex items-center gap-2.5">
             <button
-              onClick={onOpenAdmin}
-              className="px-3 py-2 rounded-full bg-[#2D0817] border border-[#C8A84B]/60 text-[#C8A84B] hover:text-white text-xs font-semibold transition-all hidden sm:flex items-center gap-1.5 cursor-pointer shadow-sm"
-              title="Log in"
-            >
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Log in</span>
-            </button>
-
-            <button
               onClick={() => onStartBuilding()}
               className="px-5 py-2.5 rounded-full bg-[#C8A84B] text-[#3B0B1F] font-body text-xs font-bold uppercase tracking-wider hover:bg-[#E2C873] hover:shadow-lg transition-all shadow-md flex items-center gap-2 cursor-pointer active:scale-95"
             >
@@ -321,6 +312,9 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
               Create Your Dream <br className="hidden sm:inline" />
               <span className="text-[#C8A84B] italic">Wedding Invitation Website</span>
             </h1>
+            <p className="font-serif-heading text-2xl sm:text-3xl text-[#C8A84B] font-medium tracking-wide">
+              "ማራኪ የሰርግ ጥሪ ድረ-ገጽ ይፍጠሩ"
+            </p>
             <p className="font-body text-sm sm:text-lg text-[#FDF0F3]/80 max-w-2xl mx-auto leading-relaxed font-light">
               Design a beautiful, personalized digital wedding invitation website with custom colors, photos, music, RSVP management, countdown timer, venue maps, and more. No design experience required.
             </p>
@@ -468,6 +462,79 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Amharic Website Template Structure Breakdown */}
+          <div className="bg-[#2D0817] p-6 sm:p-10 rounded-3xl border-2 border-[#C8A84B]/60 shadow-2xl space-y-8 text-left max-w-5xl mx-auto my-12">
+            <div className="border-b border-[#C8A84B]/30 pb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl sm:text-3xl">💍</span>
+                <div>
+                  <h3 className="font-serif-heading text-xl sm:text-2xl font-bold text-[#C8A84B]">
+                    የሰርግ ጥሪ ድረ-ገጽ መዋቅር (Website Template)
+                  </h3>
+                  <span className="text-xs text-[#FDF0F3]/70 font-body">
+                    የሚቀርቡልዎ ዋና ዋና ክፍሎች እና ይዘቶች
+                  </span>
+                </div>
+              </div>
+              <span className="px-3.5 py-1 rounded-full bg-[#C8A84B] text-[#3B0B1F] text-xs font-bold uppercase tracking-wider shadow-sm">
+                ሙሉ የሰርግ ድረ-ገጽ
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+              {/* 1. Home / Welcome Page */}
+              <div className="bg-[#3B0B1F] p-5 rounded-2xl border border-[#C8A84B]/30 space-y-3">
+                <div className="flex items-center gap-2 text-[#C8A84B] font-bold text-sm">
+                  <span className="w-6 h-6 rounded-full bg-[#C8A84B]/20 flex items-center justify-center text-xs">1</span>
+                  <h4>ዋናው ገጽ (Home / Welcome Page)</h4>
+                </div>
+                <ul className="text-xs text-[#FDF0F3]/80 space-y-2 leading-relaxed">
+                  <li>• <strong>ማራኪ የሰርግ ድረ-ገጽ ዲዛይን ይምረጡ:</strong> (ከሰርግዎ ቀለም እና ስታይል ጋር የሚስማማ Template (ንድፍ) ይምረጡ።)</li>
+                  <li>• <strong>ዋና ምስል (Hero Image):</strong> የእጮኛሞች ፎቶ (Pre-wedding photo)።</li>
+                  <li>• <strong>ሙዚቃ:</strong> የሚፈልጉትን የMP3 (background) ሙዚቃ እንደ ምርጫዎ ማካተት ይችላሉ።</li>
+                  <li>• <strong>ዋና መረጃ:</strong> የሙሽራው እና የሙሽሪት ስም፣ የሰርጉ ቀን እና ቦታ።</li>
+                  <li>• <strong>የቀናት መቁጠሪያ (Countdown Timer):</strong> ለሰርጉ የቀሩትን ቀናት የሚያሳይ ሰዓት ።</li>
+                </ul>
+              </div>
+
+              {/* 2. Our Story */}
+              <div className="bg-[#3B0B1F] p-5 rounded-2xl border border-[#C8A84B]/30 space-y-3">
+                <div className="flex items-center gap-2 text-[#C8A84B] font-bold text-sm">
+                  <span className="w-6 h-6 rounded-full bg-[#C8A84B]/20 flex items-center justify-center text-xs">2</span>
+                  <h4>የእኛ የፍቅር ታሪክ (Our Story)</h4>
+                </div>
+                <ul className="text-xs text-[#FDF0F3]/80 space-y-2 leading-relaxed">
+                  <li>• <strong>እንዴት ተገናኘን?</strong> ጥንዶቹ ለመጀመሪያ ጊዜ እንዴት እንደተገናኙ የሚተርክ አጭር እና ልብ የሚነካ ጽሑፍ።</li>
+                  <li>• <strong>የጥያቄው ቀን (The Proposal):</strong> የጋብቻ ጥያቄ የተጠየቀበት ቀን አጭር ታሪክ እና ፎቶዎች።</li>
+                </ul>
+              </div>
+
+              {/* 3. Schedule & Venue */}
+              <div className="bg-[#3B0B1F] p-5 rounded-2xl border border-[#C8A84B]/30 space-y-3">
+                <div className="flex items-center gap-2 text-[#C8A84B] font-bold text-sm">
+                  <span className="w-6 h-6 rounded-full bg-[#C8A84B]/20 flex items-center justify-center text-xs">3</span>
+                  <h4>የሰርጉ ፕሮግራም እና ቦታ (Schedule &amp; Venue)</h4>
+                </div>
+                <div className="text-xs text-[#FDF0F3]/80 space-y-3 leading-relaxed">
+                  <div className="p-2.5 rounded-xl bg-[#2D0817] border border-[#C8A84B]/20 space-y-1">
+                    <p className="font-bold text-[#C8A84B]">የቃል ኪዳን ስነ-ስርዓት:</p>
+                    <p>⏰ ሰዓት: [ሰዓት ያስገቡ]</p>
+                    <p>📍 ቦታ: [የቦታው ስም እና አድራሻ]</p>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-[#2D0817] border border-[#C8A84B]/20 space-y-1">
+                    <p className="font-bold text-[#C8A84B]">የሰርግ ግብዣ (Reception):</p>
+                    <p>⏰ ሰዓት: [ሰዓት ያስገቡ]</p>
+                    <p>📍 ቦታ: [የሆቴሉ ወይም የአዳራሹ ስም]</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[#C8A84B]/15 border border-[#C8A84B] text-center text-xs sm:text-sm font-bold text-[#C8A84B] shadow-sm">
+              4. ክፍያዎን ሲፈጽሙ፣ ለእንግዶችዎ የሚልኩትን (Link) እንልክልዎታለን።
+            </div>
           </div>
 
           <div className="text-center pt-6">

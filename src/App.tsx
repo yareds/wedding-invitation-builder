@@ -121,17 +121,6 @@ export default function App() {
             </button>
           </div>
 
-          {/* Admin Studio Portal Trigger */}
-          <button
-            onClick={() => setIsRegistryOpen(true)}
-            id="top-admin-btn"
-            className="px-3.5 py-1.5 rounded-full bg-[#2D0817] border border-[#C8A84B]/60 text-[#C8A84B] hover:text-white font-body text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
-            title="Log in"
-          >
-            <ShieldCheck className="w-3.5 h-3.5 text-[#C8A84B]" />
-            <span>Log in</span>
-          </button>
-
           <button
             onClick={() => setIsOrderModalOpen(true)}
             id="top-order-btn"
