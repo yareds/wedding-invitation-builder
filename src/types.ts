@@ -1,0 +1,84 @@
+export interface RSVPData {
+  guestName: string;
+  phone?: string;
+  attending: boolean | null;
+  guestCount: number;
+  message?: string;
+  submittedAt?: string;
+}
+
+export interface TimelineEvent {
+  id?: string;
+  time: string;
+  title: string;
+  location: string;
+  description: string;
+}
+
+export interface GalleryPhoto {
+  id: string;
+  url: string;
+  title: string;
+  location: string;
+  aspectRatio?: string;
+}
+
+export type ThemeId = 'bordeaux' | 'emerald' | 'midnight' | 'rosegarden' | 'goldluxury' | 'classicivory';
+
+export interface ThemeColors {
+  primary: string;
+  mid: string;
+  light: string;
+  gold: string;
+  goldLt: string;
+  goldPale: string;
+  blush: string;
+  blushLt: string;
+  blushPale: string;
+  bg: string;
+  footerBg: string;
+  heroOv: string;
+}
+
+export interface WeddingConfig {
+  themeId: ThemeId;
+  groomEth: string;
+  groomEn: string;
+  brideEth: string;
+  brideEn: string;
+  dateGC: string;
+  dateEC: string;
+  dayName: string;
+  timeDisplay: string;
+  countdownDate: string;
+  dressCode: string;
+  churchEth: string;
+  churchEn: string;
+  receptionEth: string;
+  receptionEn: string;
+  scripture: string;
+  scriptureRef: string;
+  storyText?: string;
+  phone1: string;
+  phone2: string;
+  whatsappNumber: string;
+  telegramUsername: string;
+  emailContact: string;
+  rsvpDeadlineEn: string;
+  rsvpDeadlineEth: string;
+  rsvpMethod: 'sheets' | 'netlify' | 'direct';
+  sheetsUrl: string;
+  heroImg: string | null;
+  bgMusicUrl: string | null;
+  galleryImgs: string[];
+  schedule: TimelineEvent[];
+  bankDetails: BankDetail[];
+}
+
+export interface BankDetail {
+  bankName: string;
+  accountName: string;
+  accountNumber: string;
+  iconName?: string;
+}
+

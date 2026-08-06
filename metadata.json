@@ -1,0 +1,6 @@
+{
+  "name": "Addis Wedding Invitation Studio",
+  "description": "Addis Wedding Invitation Studio - Premium digital wedding invitation builder with live customization, themes, RSVP, and marketing landing page",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
