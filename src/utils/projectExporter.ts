@@ -267,8 +267,6 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
         </div>
       </div>
 
-      <p class="font-body text-xs sm:text-sm uppercase tracking-[0.3em] mb-3" style="color: ${colors.blush}">Together With Their Families</p>
-
       <h1 class="font-serif-heading text-2xl sm:text-4xl font-normal leading-tight mb-3" style="color: ${colors.blushPale}">
         ${groomEth} <span class="font-serif-heading italic text-xl sm:text-3xl" style="color: ${colors.gold}">እና</span> ${brideEth}
       </h1>
@@ -309,7 +307,6 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
           </div>
         </div>
 
-        <p class="font-quote italic text-sm sm:text-base tracking-wider mb-3" style="color: ${colors.blush}">Together with their families</p>
 
         <div class="mb-4 max-w-3xl">
           <h1 class="font-serif-heading text-3xl sm:text-5xl md:text-6xl font-normal leading-tight tracking-tight mb-2" style="color: ${colors.primary}">
@@ -411,9 +408,6 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
               <p class="font-quote italic text-xs" style="color: ${colors.blush}">Organ prelude begins 30 minutes prior. Doors close promptly for the processional.</p>
             </div>
           </div>
-          <a href="https://maps.google.com/?q=${encodeURIComponent(config.churchEn || config.churchEth || 'Church')}" target="_blank" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border font-body text-xs font-semibold cursor-pointer shrink-0 self-start md:self-center" style="border-color: ${colors.gold}; color: ${colors.primary}">
-            📍 Map &amp; Directions
-          </a>
         </div>
 
         <!-- Card 2: Evening Reception -->
@@ -433,9 +427,6 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
               <p class="font-quote italic text-xs" style="color: ${colors.blush}">Cocktails, traditional toast, multi-course banquet dinner, and live orchestra dancing.</p>
             </div>
           </div>
-          <a href="https://maps.google.com/?q=${encodeURIComponent(config.receptionEn || config.receptionEth || 'Reception')}" target="_blank" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border font-body text-xs font-semibold cursor-pointer shrink-0 self-start md:self-center" style="border-color: ${colors.primary}; background-color: ${colors.primary}; color: ${colors.blushPale}">
-            📍 Map &amp; Directions
-          </a>
         </div>
 
         <!-- Card 3: Attire Guidance -->

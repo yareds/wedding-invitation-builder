@@ -1,0 +1,24 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Check if authenticated user is the authorized admin email
+    function isAdmin() {
+      return request.auth != null &&
+             (request.auth.token.email == 'yared.abegaz@gmail.com' ||
+              request.auth.token.email.matches('(?i)yared\\.abegaz@gmail\\.com'));
+    }
+
+    match /projects/{projectId} {
+      // Allow reading and creating/updating projects for all users/couples
+      allow read: if true;
+      allow create, update: if true;
+      // Enforce admin permission for project deletion
+      allow delete: if isAdmin();
+
+      match /rsvps/{rsvpId} {
+        // Allow guest RSVP submissions and reading
+        allow read, write: if true;
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "entities": {
+    "Project": {
+      "collectionName": "projects",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "coupleNames": { "type": "string", "required": true },
+        "themeId": { "type": "string", "required": true },
+        "themeName": { "type": "string", "required": true },
+        "createdAt": { "type": "string", "required": true },
+        "updatedAt": { "type": "string", "required": true },
+        "config": { "type": "map", "required": true },
+        "deploymentStatus": { "type": "string", "required": false },
+        "customUrl": { "type": "string", "required": false }
+      }
+    },
+    "RSVP": {
+      "collectionName": "projects/{projectId}/rsvps",
+      "fields": {
+        "guestName": { "type": "string", "required": true },
+        "phone": { "type": "string", "required": true },
+        "attending": { "type": "boolean", "required": true },
+        "guestCount": { "type": "number", "required": true },
+        "message": { "type": "string", "required": false },
+        "submittedAt": { "type": "string", "required": true }
+      }
+    }
+  },
+  "securityRules": {
+    "projects": {
+      "read": "true",
+      "create": "true",
+      "update": "true",
+      "delete": "request.auth != null && request.auth.token.email == 'yared.abegaz@gmail.com'"
+    },
+    "projects/{projectId}/rsvps": {
+      "read": "true",
+      "write": "true"
+    }
+  }
+}

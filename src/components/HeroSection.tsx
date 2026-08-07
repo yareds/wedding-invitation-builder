@@ -50,15 +50,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
             className="w-28 h-28 sm:w-36 sm:h-36 rounded-full border-2 p-2 shadow-2xl transition-transform duration-500 hover:scale-105 flex items-center justify-center"
             style={{
               borderColor: colors.gold,
-              backgroundColor: colors.bg
+              backgroundColor: colors.primary
             }}
           >
             {/* Inner Decorative Bezel */}
             <div
               className="w-full h-full rounded-full border border-dashed flex items-center justify-center shadow-inner"
               style={{
-                borderColor: colors.blush,
-                backgroundColor: colors.primary
+                borderColor: colors.gold + '90',
+                backgroundColor: '#3D0A1F'
               }}
             >
               <div className="text-center">
@@ -67,12 +67,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
                   style={{ color: colors.gold }}
                 >
                   {groomInit}{' '}
-                  <span className="font-serif-heading text-xl sm:text-2xl font-normal" style={{ color: colors.blush }}>
+                  <span className="font-serif-heading text-xl sm:text-2xl font-normal" style={{ color: colors.blushLt || '#E5A4B5' }}>
                     &amp;
                   </span>{' '}
                   {brideInit}
                 </span>
-                <span className="font-quote italic text-[10px] sm:text-xs tracking-widest uppercase block mt-0.5 text-white/80">
+                <span className="font-quote italic text-[10px] sm:text-xs tracking-widest uppercase block mt-0.5 text-white/90">
                   EST. 2026
                 </span>
               </div>
@@ -85,10 +85,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
           />
         </div>
 
-        {/* Invitation Honor Text */}
-        <p className="font-quote italic text-sm sm:text-base tracking-wider mb-3" style={{ color: colors.blush }}>
-          Together with their families
-        </p>
 
         {/* Couple Names (Amharic & English) */}
         <div className="mb-4 max-w-3xl">
@@ -106,7 +102,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
 
           {/* English Sub-heading */}
           {(config.groomEn || config.brideEn) && (
-            <p className="font-quote italic text-base sm:text-xl text-white/90 tracking-wide mt-2 opacity-90">
+            <p
+              className="font-quote italic text-base sm:text-xl tracking-wide mt-2 opacity-90"
+              style={{ color: config.heroImg ? 'rgba(255,255,255,0.9)' : colors.primary }}
+            >
               {config.groomEn} &amp; {config.brideEn}
             </p>
           )}

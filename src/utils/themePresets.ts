@@ -15,18 +15,18 @@ export const THEME_PRESETS: Record<ThemeId, ThemePreset> = {
     themeStyle: 'Royal Imperial',
     description: 'Deep imperial wine, crown crests, and velvet rose gold romance.',
     colors: {
-      primary: '#4A0E17',
+      primary: '#59102e',
       mid: '#721121',
       light: '#A31621',
-      gold: '#D4AF37',
+      gold: '#C8A84B',
       goldLt: '#F3C969',
       goldPale: '#FFF7D6',
-      blush: '#E5989B',
-      blushLt: '#FFCDB2',
-      blushPale: '#FDF0F3',
-      bg: '#FFF0F3',
-      footerBg: '#210206',
-      heroOv: 'rgba(74,14,23,0.72)'
+      blush: '#B85B75',
+      blushLt: '#E5A4B5',
+      blushPale: '#FAF0F3',
+      bg: '#FAF4F6',
+      footerBg: '#FAF0F3',
+      heroOv: 'rgba(89,16,46,0.55)'
     }
   },
   emerald: {
@@ -38,15 +38,15 @@ export const THEME_PRESETS: Record<ThemeId, ThemePreset> = {
       primary: '#1B4332',
       mid: '#2D6A4F',
       light: '#40916C',
-      gold: '#D4AF37',
+      gold: '#C8A84B',
       goldLt: '#E9C46A',
       goldPale: '#F4F1DE',
-      blush: '#52B788',
+      blush: '#40916C',
       blushLt: '#74C69D',
       blushPale: '#D8F3DC',
-      bg: '#EDF7F1',
-      footerBg: '#081C15',
-      heroOv: 'rgba(27,67,50,0.75)'
+      bg: '#F4FAF6',
+      footerBg: '#EDF7F1',
+      heroOv: 'rgba(27,67,50,0.55)'
     }
   },
   midnight: {
@@ -58,15 +58,15 @@ export const THEME_PRESETS: Record<ThemeId, ThemePreset> = {
       primary: '#1C1040',
       mid: '#2E1D6B',
       light: '#4A35A0',
-      gold: '#E8C96A',
+      gold: '#C8A84B',
       goldLt: '#F5E4A8',
       goldPale: '#FDF8E8',
-      blush: '#A78BFA',
+      blush: '#8B5CF6',
       blushLt: '#DDD6FE',
       blushPale: '#F5F3FF',
-      bg: '#F8F7FF',
-      footerBg: '#0D0820',
-      heroOv: 'rgba(28,16,64,0.72)'
+      bg: '#FAFAFF',
+      footerBg: '#F5F3FF',
+      heroOv: 'rgba(28,16,64,0.55)'
     }
   },
   rosegarden: {
@@ -78,15 +78,15 @@ export const THEME_PRESETS: Record<ThemeId, ThemePreset> = {
       primary: '#7C2D12',
       mid: '#9A3412',
       light: '#C2410C',
-      gold: '#FCD34D',
+      gold: '#C8A84B',
       goldLt: '#FDE68A',
       goldPale: '#FFFBEB',
-      blush: '#FCA5A5',
+      blush: '#E11D48',
       blushLt: '#FECACA',
       blushPale: '#FFF5F5',
-      bg: '#FFFAF5',
-      footerBg: '#3D1206',
-      heroOv: 'rgba(124,45,18,0.70)'
+      bg: '#FFFBF7',
+      footerBg: '#FFF5F5',
+      heroOv: 'rgba(124,45,18,0.55)'
     }
   },
   goldluxury: {
@@ -98,15 +98,15 @@ export const THEME_PRESETS: Record<ThemeId, ThemePreset> = {
       primary: '#1A1A1A',
       mid: '#2D2D2D',
       light: '#4A4A4A',
-      gold: '#D4AF37',
+      gold: '#C8A84B',
       goldLt: '#F3E5AB',
       goldPale: '#FAF6E8',
-      blush: '#C5A059',
+      blush: '#B88E2B',
       blushLt: '#E6C994',
       blushPale: '#FAF8F5',
-      bg: '#FAF9F6',
-      footerBg: '#111111',
-      heroOv: 'rgba(26,26,26,0.75)'
+      bg: '#FAFAFA',
+      footerBg: '#FAF8F5',
+      heroOv: 'rgba(26,26,26,0.55)'
     }
   },
   classicivory: {
@@ -121,38 +121,38 @@ export const THEME_PRESETS: Record<ThemeId, ThemePreset> = {
       gold: '#B8860B',
       goldLt: '#DAA520',
       goldPale: '#FFF8DC',
-      blush: '#D2B48C',
+      blush: '#A88352',
       blushLt: '#E6D7C3',
       blushPale: '#FAF5EF',
-      bg: '#FAF5EF',
-      footerBg: '#1A1918',
-      heroOv: 'rgba(44,42,41,0.70)'
+      bg: '#FAF8F5',
+      footerBg: '#FAF5EF',
+      heroOv: 'rgba(44,42,41,0.55)'
     }
   }
 };
 
 export const DEFAULT_WEDDING_CONFIG: WeddingConfig = {
   themeId: 'bordeaux',
-  groomEth: 'የሙሽራው ስም',
-  groomEn: 'Sebastian Thornton',
-  brideEth: 'የሙሽሪት ስም',
-  brideEn: 'Amara Grace',
-  dateGC: 'Saturday, May 09, 2026',
-  dateEC: 'ግንቦት 01, 2018 ዓ.ም',
+  groomEth: '',
+  groomEn: '',
+  brideEth: '',
+  brideEn: '',
+  dateGC: '',
+  dateEC: '',
   dayName: 'Saturday · ቅዳሜ',
   timeDisplay: 'ከቀኑ 8:00 (02:00 PM PST)',
   countdownDate: '2026-05-09T14:00:00',
   dressCode: 'Black-Tie Formal & Evening Gowns',
-  churchEth: 'ካቴድራል ኦፍ ዘ ብለስድ ሳክራመንት',
-  churchEn: 'Cathedral of the Blessed Sacrament, Sacramento',
-  receptionEth: 'ሴንት ሄሌና ቪንያርድ ኤስቴት',
-  receptionEn: 'St. Helena Vineyard Estate, Napa Valley',
+  churchEth: '',
+  churchEn: '',
+  receptionEth: '',
+  receptionEn: '',
   scripture: 'ሁሉን ያዘጋጀ ግን እግዚአብሔር ነው።',
   scriptureRef: 'ዕብራውያን 3፡4',
-  storyText: 'Whatever our souls are made of, his and hers are the same. From Sacramento to the golden vineyards of Napa, our story has been a quiet symphony of trust, laughter, and infinite love.',
-  phone1: '+251 911 234 567',
-  phone2: '+251 922 888 999',
-  whatsappNumber: '+251911234567',
+  storyText: 'Whatever our souls are made of, his and hers are the same. Our story has been a quiet symphony of trust, laughter, and infinite love.',
+  phone1: '',
+  phone2: '',
+  whatsappNumber: '',
   telegramUsername: 'wedding_invitation_order',
   emailContact: 'orders@weddingethiopia.com',
   rsvpDeadlineEn: 'April 01, 2026',
@@ -173,32 +173,14 @@ export const DEFAULT_WEDDING_CONFIG: WeddingConfig = {
     {
       time: '02:00 PM',
       title: 'Holy Matrimony Ceremony',
-      location: 'Cathedral of the Blessed Sacrament',
+      location: 'Cathedral / Church',
       description: 'Nuptial mass, exchange of vows, and sacred musical performance.'
     },
     {
-      time: '03:30 PM',
-      title: 'Cathedral Steps Toast & Send-off',
-      location: 'Cathedral Courtyard',
-      description: 'Petal shower send-off and ceremonial brass fanfare as newlyweds depart.'
-    },
-    {
       time: '05:00 PM',
-      title: 'Vineyard Cocktail Hour & Strings',
-      location: 'St. Helena Winery Lawn',
-      description: 'Artisanal charcuterie, vintage Napa wines, and live string quartet.'
-    },
-    {
-      time: '06:30 PM',
-      title: 'Grand Dinner & Wedding Speeches',
-      location: 'Estate Glasshouse Pavilion',
-      description: 'Three-course wine-paired dinner curated by Michelin-trained chefs.'
-    },
-    {
-      time: '08:30 PM',
-      title: 'First Dance & Celebration',
-      location: 'Courtyard Terrace',
-      description: 'Live 10-piece orchestra, custom cocktails, and late-night dessert bar.'
+      title: 'Reception & Grand Celebration',
+      location: 'Reception Hall / Resort',
+      description: 'Grand dinner, wine toast, wedding speeches, and dancing.'
     }
   ],
   bankDetails: [
@@ -213,4 +195,20 @@ export const DEFAULT_WEDDING_CONFIG: WeddingConfig = {
       accountNumber: '1000123456789'
     }
   ]
+};
+
+export const SAMPLE_WEDDING_CONFIG: WeddingConfig = {
+  ...DEFAULT_WEDDING_CONFIG,
+  groomEth: 'ሰባስቲያን',
+  groomEn: 'Sebastian Thornton',
+  brideEth: 'አማራ',
+  brideEn: 'Amara Grace',
+  dateGC: 'Saturday, May 09, 2026',
+  dateEC: 'ግንቦት 01, 2018 ዓ.ም',
+  churchEth: 'ካቴድራል ኦፍ ዘ ብለስድ ሳክራመንት',
+  churchEn: 'Cathedral of the Blessed Sacrament, Sacramento',
+  receptionEth: 'ሴንት ሄሌና ቪንያርድ ኤስቴት',
+  receptionEn: 'St. Helena Vineyard Estate, Napa Valley',
+  phone1: '+251 911 234 567',
+  phone2: '+251 922 888 999'
 };

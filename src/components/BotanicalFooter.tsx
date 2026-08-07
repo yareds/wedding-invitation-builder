@@ -19,9 +19,9 @@ export const BotanicalFooter: React.FC<BotanicalFooterProps> = ({ config }) => {
       id="botanical-footer"
       className="relative pt-12 pb-16 px-4 text-center overflow-hidden border-t-2 transition-colors duration-500"
       style={{
-        backgroundColor: colors.footerBg,
-        borderColor: colors.gold + '60',
-        color: colors.blushPale
+        backgroundColor: '#59102e',
+        borderColor: colors.gold,
+        color: '#FAF0F3'
       }}
     >
       {/* Top SVG Vine-and-Flower Band */}
@@ -33,7 +33,7 @@ export const BotanicalFooter: React.FC<BotanicalFooterProps> = ({ config }) => {
           className="inline-flex items-center justify-center w-14 h-14 rounded-full border shadow-lg mb-2"
           style={{
             borderColor: colors.gold,
-            backgroundColor: colors.primary
+            backgroundColor: '#3D0A1F'
           }}
         >
           <span className="font-serif-heading text-lg tracking-widest" style={{ color: colors.gold }}>
@@ -41,15 +41,15 @@ export const BotanicalFooter: React.FC<BotanicalFooterProps> = ({ config }) => {
           </span>
         </div>
 
-        <h3 className="font-serif-heading text-2xl sm:text-3xl font-normal" style={{ color: colors.blushPale }}>
+        <h3 className="font-serif-heading text-2xl sm:text-3xl font-normal text-[#FAF0F3]">
           {config.groomEth || config.groomEn || 'የሙሽራው ስም'} እና {config.brideEth || config.brideEn || 'የሙሽሪት ስም'}
         </h3>
 
-        <p className="font-quote italic text-sm max-w-md mx-auto" style={{ color: colors.blush }}>
+        <p className="font-quote italic text-sm max-w-md mx-auto text-[#E5A4B5]">
           "We cannot wait to share the magic of our wedding day with you."
         </p>
 
-        <p className="font-body text-xs tracking-widest uppercase pt-4 opacity-70">
+        <p className="font-body text-xs tracking-widest uppercase pt-4 text-[#FAF0F3]/80">
           {config.dateGC || 'May 09, 2026'} • {config.dateEC || 'ግንቦት 01, 2018 ዓ.ም'}
         </p>
       </div>

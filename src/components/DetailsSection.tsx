@@ -1,7 +1,7 @@
 import React from 'react';
 import { WeddingConfig } from '../types';
 import { THEME_PRESETS } from '../utils/themePresets';
-import { Church, Wine, Shirt, Hotel, Navigation } from 'lucide-react';
+import { Church, Wine, Shirt, Hotel } from 'lucide-react';
 
 interface DetailsSectionProps {
   config: WeddingConfig;
@@ -64,21 +64,6 @@ export const DetailsSection: React.FC<DetailsSectionProps> = ({ config }) => {
               </p>
             </div>
           </div>
-
-          <a
-            href={`https://maps.google.com/?q=${encodeURIComponent(config.churchEn || config.churchEth)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            id="ceremony-map-btn"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border font-body text-xs font-semibold hover:opacity-90 transition-all shrink-0 cursor-pointer self-start md:self-center shadow-sm"
-            style={{
-              borderColor: colors.gold,
-              color: colors.primary
-            }}
-          >
-            <Navigation className="w-4 h-4" style={{ color: colors.gold }} />
-            <span>Map &amp; Directions</span>
-          </a>
         </div>
 
         {/* Card 2: Vineyard Reception */}
@@ -119,22 +104,6 @@ export const DetailsSection: React.FC<DetailsSectionProps> = ({ config }) => {
               </p>
             </div>
           </div>
-
-          <a
-            href={`https://maps.google.com/?q=${encodeURIComponent(config.receptionEn || config.receptionEth)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            id="reception-map-btn"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border font-body text-xs font-semibold transition-all shrink-0 cursor-pointer self-start md:self-center shadow-sm"
-            style={{
-              borderColor: colors.primary,
-              backgroundColor: colors.primary,
-              color: colors.blushPale
-            }}
-          >
-            <Navigation className="w-4 h-4" style={{ color: colors.gold }} />
-            <span>Map &amp; Directions</span>
-          </a>
         </div>
 
         {/* Card 3: Dress Code */}

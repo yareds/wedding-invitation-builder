@@ -58,29 +58,35 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({ config }) => {
             </div>
 
             {/* Event Content Box */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md border transition-all" style={{ borderColor: colors.blush + '30' }}>
-              <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <div
+              className="rounded-2xl p-6 shadow-md border transition-all hover:shadow-lg"
+              style={{
+                backgroundColor: '#FFFDF9',
+                borderColor: colors.gold + '50'
+              }}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                 <span
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-body text-xs font-semibold border"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full font-body text-xs font-bold border"
                   style={{
-                    backgroundColor: colors.blushPale,
+                    backgroundColor: colors.blushPale || '#FAF0F3',
                     color: colors.primary,
-                    borderColor: colors.gold + '40'
+                    borderColor: colors.gold + '60'
                   }}
                 >
-                  <Clock className="w-3.5 h-3.5" style={{ color: colors.gold }} />
+                  <Clock className="w-3.5 h-3.5 text-[#C8A84B]" />
                   {evt.time}
                 </span>
-                <span className="font-body text-xs font-medium flex items-center gap-1" style={{ color: colors.blush }}>
-                  <MapPin className="w-3 h-3" />
+                <span className="font-body text-xs font-semibold flex items-center gap-1 text-[#8C5A6A]">
+                  <MapPin className="w-3.5 h-3.5 text-[#C8A84B]" />
                   {evt.location}
                 </span>
               </div>
 
-              <h3 className="font-serif-heading text-xl font-normal mb-1" style={{ color: colors.primary }}>
+              <h3 className="font-serif-heading text-xl font-normal mb-1.5" style={{ color: colors.primary }}>
                 {evt.title}
               </h3>
-              <p className="font-body text-sm leading-relaxed opacity-80" style={{ color: colors.primary }}>
+              <p className="font-body text-sm leading-relaxed text-[#593E46]">
                 {evt.description}
               </p>
             </div>

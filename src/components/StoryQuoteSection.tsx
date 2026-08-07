@@ -19,8 +19,8 @@ export const StoryQuoteSection: React.FC<StoryQuoteSectionProps> = ({ config }) 
       id="story-quote-section"
       className="relative py-20 px-4 sm:px-6 overflow-hidden my-12 transition-colors duration-500"
       style={{
-        backgroundColor: colors.primary,
-        color: colors.blushPale
+        backgroundColor: colors.blushPale,
+        color: colors.primary
       }}
     >
       {/* Corner Botanical Frame Decorations */}
@@ -54,16 +54,16 @@ export const StoryQuoteSection: React.FC<StoryQuoteSectionProps> = ({ config }) 
 
         {/* Brief Romantic Love Story */}
         <div
-          className="rounded-3xl p-6 sm:p-10 border shadow-2xl backdrop-blur-sm text-left sm:text-center space-y-4"
+          className="rounded-3xl p-6 sm:p-10 border shadow-lg backdrop-blur-sm text-left sm:text-center space-y-4"
           style={{
-            backgroundColor: colors.mid + 'A0',
-            borderColor: colors.gold + '40'
+            backgroundColor: '#FFFFFF',
+            borderColor: colors.gold + '60'
           }}
         >
-          <h3 className="font-serif-heading text-2xl text-center font-normal" style={{ color: colors.gold }}>
+          <h3 className="font-serif-heading text-2xl text-center font-normal" style={{ color: colors.primary }}>
             Our Love Story
           </h3>
-          <p className="font-body text-sm sm:text-base leading-relaxed opacity-95">
+          <p className="font-body text-sm sm:text-base leading-relaxed opacity-90" style={{ color: colors.primary }}>
             {config.storyText ||
               'We first crossed paths five years ago. What began as an unexpected conversation over coffee quickly blossomed into a profound companionship built on shared dreams, art, and quiet Sunday strolls.'}
           </p>

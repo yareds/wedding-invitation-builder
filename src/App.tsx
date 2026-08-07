@@ -27,6 +27,7 @@ export default function App() {
   const [isRegistryOpen, setIsRegistryOpen] = useState<boolean>(false);
   const [deviceMode, setDeviceMode] = useState<'desktop' | 'mobile'>('desktop');
   const [activeViewMode, setActiveViewMode] = useState<'split' | 'guest'>('split');
+  const [currentProjectId, setCurrentProjectId] = useState<string>('WED-2026-[#3B0B1F]');
 
   const handleOpenInvitation = () => {
     setShowSplash(false);
@@ -73,8 +74,8 @@ export default function App() {
   // Render Wedding Invitation Builder Page
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col font-body selection:bg-[#D4849A] selection:text-white">
-      {/* Top Application Bar */}
-      <header className="bg-[#3B0B1F] text-[#FDF0F3] px-4 py-2.5 flex flex-wrap items-center justify-between border-b border-[#C8A84B]/40 shadow-md z-30 gap-2">
+      {/* Top Application Bar (Sticky Banner) */}
+      <header className="sticky top-0 z-40 bg-[#3B0B1F] text-[#FDF0F3] px-4 py-2.5 flex flex-wrap items-center justify-between border-b border-[#C8A84B]/40 shadow-md gap-2">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setCurrentPage('landing')}
@@ -213,13 +214,14 @@ export default function App() {
       </div>
 
       {/* RSVP Modal Dialog */}
-      <RSVPModal config={config} isOpen={isRSVPOpen} onClose={() => setIsRSVPOpen(false)} />
+      <RSVPModal config={config} projectId={currentProjectId} isOpen={isRSVPOpen} onClose={() => setIsRSVPOpen(false)} />
 
       {/* Order & Payment Summary Gateway Modal (Customer Facing) */}
       <OrderModal
         config={config}
         isOpen={isOrderModalOpen}
         onClose={() => setIsOrderModalOpen(false)}
+        onUpdateConfig={setConfig}
       />
 
       {/* Admin Studio Portal & Customer Projects Registry Modal (Admin Facing) */}

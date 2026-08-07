@@ -1,4 +1,17 @@
-import { WeddingConfig } from '../types';
+import { WeddingConfig, RSVPData } from '../types';
+import { db } from '../lib/firebase';
+import {
+  collection,
+  doc,
+  getDocs,
+  getDoc,
+  setDoc,
+  deleteDoc,
+  addDoc,
+  onSnapshot,
+  query,
+  orderBy
+} from 'firebase/firestore';
 
 export interface SavedProject {
   id: string; // e.g. WED-2026-98421
@@ -37,9 +50,9 @@ function openIndexedDB(): Promise<IDBDatabase> {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
 
     request.onupgradeneeded = (event) => {
-      const db = (event.target as IDBOpenDBRequest).result;
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+      const dbInstance = (event.target as IDBOpenDBRequest).result;
+      if (!dbInstance.objectStoreNames.contains(STORE_NAME)) {
+        dbInstance.createObjectStore(STORE_NAME, { keyPath: 'id' });
       }
     };
 
@@ -51,21 +64,20 @@ function openIndexedDB(): Promise<IDBDatabase> {
 // Asynchronously load all projects from IndexedDB and sync into memory cache
 async function initFromIndexedDB(): Promise<SavedProject[]> {
   try {
-    const db = await openIndexedDB();
+    const idb = await openIndexedDB();
     return new Promise((resolve) => {
-      const transaction = db.transaction(STORE_NAME, 'readonly');
+      const transaction = idb.transaction(STORE_NAME, 'readonly');
       const store = transaction.objectStore(STORE_NAME);
       const request = store.getAll();
 
       request.onsuccess = () => {
         const idbProjects = (request.result as SavedProject[]) || [];
         if (idbProjects.length > 0) {
-          // Merge with in-memory or localStorage projects
           const current = getAllSavedProjects();
           const mergedMap = new Map<string, SavedProject>();
-          
-          current.forEach(p => mergedMap.set(p.id, p));
-          idbProjects.forEach(p => mergedMap.set(p.id, p));
+
+          current.forEach((p) => mergedMap.set(p.id, p));
+          idbProjects.forEach((p) => mergedMap.set(p.id, p));
 
           const mergedList = Array.from(mergedMap.values()).sort(
             (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
@@ -92,8 +104,8 @@ initFromIndexedDB().catch(() => {});
 // Save single project record to IndexedDB
 async function saveToIndexedDB(project: SavedProject): Promise<void> {
   try {
-    const db = await openIndexedDB();
-    const transaction = db.transaction(STORE_NAME, 'readwrite');
+    const idb = await openIndexedDB();
+    const transaction = idb.transaction(STORE_NAME, 'readwrite');
     const store = transaction.objectStore(STORE_NAME);
     store.put(project);
   } catch (err) {
@@ -104,8 +116,8 @@ async function saveToIndexedDB(project: SavedProject): Promise<void> {
 // Delete project from IndexedDB
 async function deleteFromIndexedDB(id: string): Promise<void> {
   try {
-    const db = await openIndexedDB();
-    const transaction = db.transaction(STORE_NAME, 'readwrite');
+    const idb = await openIndexedDB();
+    const transaction = idb.transaction(STORE_NAME, 'readwrite');
     const store = transaction.objectStore(STORE_NAME);
     store.delete(id);
   } catch (err) {
@@ -115,7 +127,7 @@ async function deleteFromIndexedDB(id: string): Promise<void> {
 
 // Strip huge base64 strings if necessary to save localStorage quota
 function stripHeavyBase64FromConfig(config: WeddingConfig): WeddingConfig {
-  const isLargeBase64 = (val?: string) => val && val.startsWith('data:') && val.length > 2000;
+  const isLargeBase64 = (val?: string | null) => !!(val && val.startsWith('data:') && val.length > 2000);
 
   return {
     ...config,
@@ -132,26 +144,21 @@ function safeSaveToLocalStorage(projects: SavedProject[]): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
   } catch (err) {
-    console.warn('localStorage quota reached. Attempting lightweight save...');
     try {
-      // Attempt 1: Strip large base64 media strings
-      const lightweightProjects = projects.map(p => ({
+      const lightweightProjects = projects.map((p) => ({
         ...p,
-        config: stripHeavyBase64FromConfig(p.config)
+        config: stripHeavyBase64FromConfig(p.config),
       }));
       localStorage.setItem(STORAGE_KEY, JSON.stringify(lightweightProjects));
     } catch (err2) {
-      console.warn('localStorage quota reached again. Truncating project list for localStorage...');
       try {
-        // Attempt 2: Keep top 5 most recent lightweight projects
-        const trimmed = projects.slice(0, 5).map(p => ({
+        const trimmed = projects.slice(0, 5).map((p) => ({
           ...p,
-          config: stripHeavyBase64FromConfig(p.config)
+          config: stripHeavyBase64FromConfig(p.config),
         }));
         localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
       } catch (err3) {
-        // Attempt 3: Clear storage key to prevent persistent crash, full data remains safe in IndexedDB
-        console.error('localStorage completely full. Using IndexedDB primary store.');
+        console.error('localStorage full. Using Firestore & IndexedDB primary store.');
       }
     }
   }
@@ -172,13 +179,48 @@ export function getAllSavedProjects(): SavedProject[] {
     inMemoryProjects = Array.isArray(parsed) ? parsed : [];
     return inMemoryProjects;
   } catch (err) {
-    console.error('Failed to load projects from storage:', err);
+    console.error('Failed to load projects from local storage:', err);
     inMemoryProjects = [];
     return [];
   }
 }
 
-export function saveProjectToDatabase(config: WeddingConfig, existingId?: string): SavedProject {
+// Fetch all projects from Firestore collection "projects"
+export async function getAllProjectsFromFirestore(): Promise<SavedProject[]> {
+  try {
+    const projectsCol = collection(db, 'projects');
+    const snapshot = await getDocs(projectsCol);
+    const remoteProjects: SavedProject[] = [];
+
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data() as SavedProject;
+      if (data && data.id) {
+        remoteProjects.push(data);
+      }
+    });
+
+    remoteProjects.sort(
+      (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    );
+
+    if (remoteProjects.length > 0) {
+      inMemoryProjects = remoteProjects;
+      safeSaveToLocalStorage(remoteProjects);
+      remoteProjects.forEach((p) => saveToIndexedDB(p).catch(() => {}));
+    }
+
+    return remoteProjects.length > 0 ? remoteProjects : getAllSavedProjects();
+  } catch (err) {
+    console.warn('Firestore fetch failed, falling back to local database:', err);
+    return getAllSavedProjects();
+  }
+}
+
+// Save project to Firestore & Local Cache
+export async function saveProjectToDatabase(
+  config: WeddingConfig,
+  existingId?: string
+): Promise<SavedProject> {
   const projects = [...getAllSavedProjects()];
   const id = existingId || generateProjectId();
   const groom = config.groomEth || config.groomEn || 'የሙሽራው ስም';
@@ -186,7 +228,7 @@ export function saveProjectToDatabase(config: WeddingConfig, existingId?: string
   const coupleNames = `${groom} እና ${bride}`;
   const now = new Date().toISOString();
 
-  const existingIndex = projects.findIndex(p => p.id === id);
+  const existingIndex = projects.findIndex((p) => p.id === id);
 
   const projectRecord: SavedProject = {
     id,
@@ -197,7 +239,7 @@ export function saveProjectToDatabase(config: WeddingConfig, existingId?: string
     updatedAt: now,
     config,
     deploymentStatus: 'generated',
-    customUrl: `https://wedding-invitations.et/view/${id}`
+    customUrl: `https://wedding-invitations.et/view/${id}`,
   };
 
   if (existingIndex >= 0) {
@@ -209,23 +251,117 @@ export function saveProjectToDatabase(config: WeddingConfig, existingId?: string
   // Update in-memory cache
   inMemoryProjects = projects;
 
-  // Persist to IndexedDB (asynchronous full high-res data storage)
+  // Persist to IndexedDB & localStorage
   saveToIndexedDB(projectRecord).catch(() => {});
-
-  // Persist to localStorage safely
   safeSaveToLocalStorage(projects);
+
+  // Write to Firestore projects collection
+  try {
+    const projectRef = doc(db, 'projects', id);
+    await setDoc(projectRef, projectRecord, { merge: true });
+    console.log(`[Firestore] Project ${id} saved successfully.`);
+  } catch (err) {
+    console.error('Failed to save project to Firestore:', err);
+  }
 
   return projectRecord;
 }
 
-export function deleteProjectFromDatabase(id: string): void {
-  const projects = getAllSavedProjects().filter(p => p.id !== id);
+// Delete project from Firestore & Local Cache
+export async function deleteProjectFromDatabase(id: string): Promise<void> {
+  const projects = getAllSavedProjects().filter((p) => p.id !== id);
   inMemoryProjects = projects;
 
-  // Remove from IndexedDB
+  // Remove from IndexedDB & LocalStorage
   deleteFromIndexedDB(id).catch(() => {});
-
-  // Sync localStorage
   safeSaveToLocalStorage(projects);
+
+  // Delete from Firestore
+  try {
+    const projectRef = doc(db, 'projects', id);
+    await deleteDoc(projectRef);
+    console.log(`[Firestore] Project ${id} deleted.`);
+  } catch (err) {
+    console.error('Failed to delete project from Firestore:', err);
+  }
 }
 
+// ----------------------------------------------------------------------
+// RSVP FIRESTORE SUBCOLLECTION MANAGEMENT: projects/{projectId}/rsvps
+// ----------------------------------------------------------------------
+
+export async function submitRSVPToFirestore(
+  projectId: string,
+  rsvpData: RSVPData
+): Promise<string> {
+  const cleanProjectId = projectId || 'default-wedding';
+  const submission: RSVPData = {
+    ...rsvpData,
+    submittedAt: rsvpData.submittedAt || new Date().toISOString(),
+  };
+
+  // Write to Firestore subcollection: projects/{projectId}/rsvps
+  try {
+    const rsvpsRef = collection(db, 'projects', cleanProjectId, 'rsvps');
+    const docRef = await addDoc(rsvpsRef, submission);
+    console.log(`[Firestore] RSVP written for project ${cleanProjectId} with ID: ${docRef.id}`);
+    return docRef.id;
+  } catch (err) {
+    console.error(`Error writing RSVP to Firestore for ${cleanProjectId}:`, err);
+    throw err;
+  }
+}
+
+export async function getRSVPsFromFirestore(projectId: string): Promise<RSVPData[]> {
+  if (!projectId) return [];
+  try {
+    const rsvpsRef = collection(db, 'projects', projectId, 'rsvps');
+    const snapshot = await getDocs(rsvpsRef);
+    const rsvps: RSVPData[] = [];
+
+    snapshot.forEach((docSnap) => {
+      rsvps.push(docSnap.data() as RSVPData);
+    });
+
+    return rsvps.sort(
+      (a, b) => new Date(b.submittedAt || 0).getTime() - new Date(a.submittedAt || 0).getTime()
+    );
+  } catch (err) {
+    console.error(`Error fetching RSVPs for ${projectId}:`, err);
+    return [];
+  }
+}
+
+export function subscribeToRSVPs(
+  projectId: string,
+  callback: (rsvps: RSVPData[]) => void
+): () => void {
+  if (!projectId) {
+    callback([]);
+    return () => {};
+  }
+
+  try {
+    const rsvpsRef = collection(db, 'projects', projectId, 'rsvps');
+    const unsubscribe = onSnapshot(
+      rsvpsRef,
+      (snapshot) => {
+        const rsvps: RSVPData[] = [];
+        snapshot.forEach((docSnap) => {
+          rsvps.push(docSnap.data() as RSVPData);
+        });
+        rsvps.sort(
+          (a, b) => new Date(b.submittedAt || 0).getTime() - new Date(a.submittedAt || 0).getTime()
+        );
+        callback(rsvps);
+      },
+      (error) => {
+        console.error(`RSVP subscription error for ${projectId}:`, error);
+      }
+    );
+    return unsubscribe;
+  } catch (err) {
+    console.error(`Failed to subscribe to RSVPs for ${projectId}:`, err);
+    return () => {};
+  }
+}

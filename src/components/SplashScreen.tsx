@@ -29,7 +29,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ config, onOpenInvita
       className={`fixed inset-0 z-50 flex flex-col items-center justify-center transition-all duration-700 ease-in-out ${
         isOpening ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
       }`}
-      style={{ backgroundColor: colors.heroBg, color: colors.blushPale }}
+      style={{ backgroundColor: colors.bg, color: colors.primary }}
     >
       {/* Hand-drawn Botanical SVG Corner Illustrations */}
       <BotanicalFrame position="top-left" themeId={config.themeId} className="absolute top-0 left-0" colorMode="gold" />
@@ -62,10 +62,6 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ config, onOpenInvita
           </div>
         </div>
 
-        {/* Subtitle / Invitation Header */}
-        <p className="font-body text-xs sm:text-sm uppercase tracking-[0.3em] mb-3" style={{ color: colors.blush }}>
-          Together With Their Families
-        </p>
 
         {/* Couple Names */}
         <h1 className="font-serif-heading text-2xl sm:text-4xl font-normal leading-tight mb-3" style={{ color: colors.blushPale }}>

@@ -13,7 +13,6 @@ import {
   ShieldCheck,
   ChevronDown,
   CheckCircle2,
-  Star,
   ArrowRight,
   Send,
   MessageSquare,
@@ -27,8 +26,9 @@ import {
   Play,
   Heart
 } from 'lucide-react';
-import { THEME_PRESETS, ThemePreset } from '../utils/themePresets';
+import { THEME_PRESETS, ThemePreset, DEFAULT_WEDDING_CONFIG } from '../utils/themePresets';
 import { ThemeId, WeddingConfig } from '../types';
+import { HeroSection } from './HeroSection';
 
 interface LandingPageProps {
   onStartBuilding: (presetThemeId?: ThemeId) => void;
@@ -198,30 +198,6 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
     }
   ];
 
-  const testimonialsList = [
-    {
-      couple: 'Yonas & Sara',
-      location: 'Addis Ababa, Ethiopia',
-      img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
-      rating: 5,
-      review: 'Addis Wedding Invitation Studio made sending our invitations so effortless! Our guests loved the background music and direct Google Maps links to our reception in Bole.'
-    },
-    {
-      couple: 'Abel & Tigist',
-      location: 'Bishoftu & Washington D.C.',
-      img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
-      rating: 5,
-      review: 'The Royal Burgundy theme was absolutely breathtaking! Having both Amharic and English text allowed our diaspora relatives to RSVP easily.'
-    },
-    {
-      couple: 'Dawit & Bethlehem',
-      location: 'Addis Ababa, Ethiopia',
-      img: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=300&q=80',
-      rating: 5,
-      review: 'Designing our invitation took less than 15 minutes! The live preview feature let us customize our photo gallery and countdown timer perfectly.'
-    }
-  ];
-
   const faqList = [
     {
       q: 'How long does it take to create my wedding website?',
@@ -250,32 +226,31 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
   ];
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] text-[#3B0B1F] font-body selection:bg-[#C8A84B] selection:text-[#3B0B1F]">
+    <div className="min-h-screen bg-[#FAF4F6] text-[#3B0B1F] font-body selection:bg-[#C8A84B] selection:text-[#3B0B1F]">
       {/* 1. STICKY NAVIGATION BAR */}
-      <header className="sticky top-0 z-50 bg-[#3B0B1F]/95 backdrop-blur-md border-b border-[#C8A84B]/40 shadow-xl transition-all">
+      <header className="sticky top-0 z-50 bg-[#59102e]/95 backdrop-blur-md border-b border-[#C8A84B]/40 shadow-xl transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
           {/* Brand Logo */}
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <div className="p-1.5 rounded-full bg-[#2D0817] border border-[#C8A84B] shadow-inner">
+            <div className="p-1.5 rounded-full bg-[#3D0A1F] border border-[#C8A84B]/60 shadow-inner">
               <WeddingRingLogo className="w-7 h-7" />
             </div>
             <div>
-              <span className="font-serif-heading text-lg sm:text-xl font-bold tracking-wider text-[#FDF0F3] block leading-tight">
+              <span className="font-serif-heading text-lg sm:text-xl font-bold tracking-wider text-[#FAF0F3] block leading-tight">
                 Addis Wedding
               </span>
-              <span className="text-[10px] sm:text-xs font-body font-medium tracking-widest text-[#C8A84B] uppercase block">
+              <span className="text-[10px] sm:text-xs font-body font-semibold tracking-widest text-[#C8A84B] uppercase block">
                 Invitation Studio
               </span>
             </div>
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-6 text-xs font-semibold tracking-wide text-[#FDF0F3]/80 uppercase">
+          <nav className="hidden md:flex items-center gap-6 text-xs font-semibold tracking-wide text-[#FAF0F3]/90 uppercase">
             <a href="#features" className="hover:text-[#C8A84B] transition-colors">Features</a>
             <a href="#how-it-works" className="hover:text-[#C8A84B] transition-colors">How It Works</a>
             <a href="#templates" className="hover:text-[#C8A84B] transition-colors">Showcase</a>
             <a href="#pricing" className="hover:text-[#C8A84B] transition-colors">Pricing</a>
-            <a href="#testimonials" className="hover:text-[#C8A84B] transition-colors">Testimonials</a>
             <a href="#faq" className="hover:text-[#C8A84B] transition-colors">FAQ</a>
           </nav>
 
@@ -283,40 +258,40 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
           <div className="flex items-center gap-2.5">
             <button
               onClick={() => onStartBuilding()}
-              className="px-5 py-2.5 rounded-full bg-[#C8A84B] text-[#3B0B1F] font-body text-xs font-bold uppercase tracking-wider hover:bg-[#E2C873] hover:shadow-lg transition-all shadow-md flex items-center gap-2 cursor-pointer active:scale-95"
+              className="px-5 py-2.5 rounded-full bg-[#C8A84B] text-[#59102e] font-body text-xs font-bold uppercase tracking-wider hover:bg-[#D8B85B] hover:shadow-lg transition-all shadow-md flex items-center gap-2 cursor-pointer active:scale-95"
             >
               <span>Start Building</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-3.5 h-3.5 text-[#59102e]" />
             </button>
           </div>
         </div>
       </header>
 
       {/* 2. HERO SECTION */}
-      <section className="relative overflow-hidden bg-[#3B0B1F] text-[#FDF0F3] pt-16 pb-24 lg:pt-24 lg:pb-32">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#FFF0F3] via-[#FAF0F4] to-[#F5E6EB] text-[#3B0B1F] pt-16 pb-24 lg:pt-24 lg:pb-32 border-b border-[#C8A84B]/20">
         {/* Luxury Background Decor Patterns */}
-        <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#C8A84B_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
-        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-[#C8A84B]/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-10 -right-20 w-96 h-96 bg-[#8C4A60]/30 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#C8A84B_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
+        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-[#C8A84B]/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-10 -right-20 w-96 h-96 bg-[#B85B75]/15 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-8">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#2D0817] border border-[#C8A84B]/60 text-[#C8A84B] text-xs font-semibold uppercase tracking-widest shadow-md animate-fadeIn">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Luxury Digital Wedding Invitations in Ethiopia</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#C8A84B]/60 text-[#4A0E17] text-xs font-semibold uppercase tracking-widest shadow-sm animate-fadeIn">
+            <Sparkles className="w-3.5 h-3.5 text-[#C8A84B]" />
+            <span>Stylish Digital Wedding Invitations Builder</span>
           </div>
 
           {/* Main Headline */}
           <div className="max-w-4xl mx-auto space-y-4">
-            <h1 className="font-serif-heading text-3xl sm:text-5xl lg:text-6xl font-normal leading-tight tracking-tight text-[#FDF0F3]">
+            <h1 className="font-serif-heading text-3xl sm:text-5xl lg:text-6xl font-normal leading-tight tracking-tight text-[#3B0B1F]">
               Create Your Dream <br className="hidden sm:inline" />
-              <span className="text-[#C8A84B] italic">Wedding Invitation Website</span>
+              <span className="text-[#A87B1B] italic">Wedding Invitation Website</span>
             </h1>
-            <p className="font-serif-heading text-2xl sm:text-3xl text-[#C8A84B] font-medium tracking-wide">
-              "ማራኪ የሰርግ ጥሪ ድረ-ገጽ ይፍጠሩ"
+            <p className="font-serif-heading text-3xl sm:text-4xl text-[#4A0E17] font-medium tracking-wide">
+              ማራኪ የሰርግ ጥሪ ድረ-ገጽ ይፍጠሩ
             </p>
-            <p className="font-body text-sm sm:text-lg text-[#FDF0F3]/80 max-w-2xl mx-auto leading-relaxed font-light">
-              Design a beautiful, personalized digital wedding invitation website with custom colors, photos, music, RSVP management, countdown timer, venue maps, and more. No design experience required.
+            <p className="font-body text-sm sm:text-lg text-[#3B0B1F]/80 max-w-2xl mx-auto leading-relaxed font-light">
+              Design a beautiful, personalized digital wedding invitation website with custom colors, photos, music, RSVP management, countdown timer, schedule, and more. No design experience required.
             </p>
           </div>
 
@@ -332,31 +307,31 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
 
             <button
               onClick={() => setSelectedDemoTheme(THEME_PRESETS.bordeaux)}
-              className="w-full sm:w-auto px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 border border-[#C8A84B]/50 text-[#FDF0F3] font-body text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all backdrop-blur-sm flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full sm:w-auto px-8 py-4 rounded-full bg-white hover:bg-[#FAF0F3] border border-[#C8A84B] text-[#3B0B1F] font-body text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Eye className="w-4 h-4 text-[#C8A84B]" />
+              <Eye className="w-4 h-4 text-[#A87B1B]" />
               <span>View Demo Invitation</span>
             </button>
           </div>
 
           {/* Showcase Device Teaser Cards */}
           <div className="pt-12 max-w-5xl mx-auto relative">
-            <div className="bg-[#2D0817] p-3 sm:p-5 rounded-3xl border border-[#C8A84B]/40 shadow-2xl overflow-hidden">
-              <div className="bg-[#FAF7F2] rounded-2xl overflow-hidden shadow-inner text-[#3B0B1F] p-4 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 border border-[#C8A84B]/20">
+            <div className="bg-white p-3 sm:p-5 rounded-3xl border border-[#C8A84B]/40 shadow-xl overflow-hidden">
+              <div className="bg-[#FAF0F3] rounded-2xl overflow-hidden shadow-inner text-[#3B0B1F] p-4 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 border border-[#C8A84B]/30">
                 <div className="text-left space-y-3 max-w-md">
-                  <span className="text-[11px] font-bold text-[#C8A84B] uppercase tracking-widest block">
+                  <span className="text-[11px] font-bold text-[#A87B1B] uppercase tracking-widest block">
                     Featured Design Preset
                   </span>
                   <h3 className="font-serif-heading text-2xl sm:text-3xl text-[#3B0B1F]">
                     Royal Imperial &bull; Bordeaux Gold
                   </h3>
-                  <p className="text-xs text-gray-600 leading-relaxed font-body">
+                  <p className="text-xs text-gray-700 leading-relaxed font-body">
                     Complete with traditional Ethiopian gold borders, countdown timers, dual Amharic/English typography, and interactive RSVP options.
                   </p>
                   <div className="flex items-center gap-3 pt-2">
                     <button
                       onClick={() => onStartBuilding('bordeaux')}
-                      className="px-5 py-2.5 rounded-full bg-[#3B0B1F] text-[#C8A84B] text-xs font-bold hover:bg-[#2D0817] transition-all cursor-pointer shadow-md flex items-center gap-2"
+                      className="px-5 py-2.5 rounded-full bg-[#4A0E17] text-[#FAF0F3] text-xs font-bold hover:bg-[#3B0B1F] transition-all cursor-pointer shadow-md flex items-center gap-2"
                     >
                       <span>Customize This Design</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -372,7 +347,7 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#3B0B1F] via-transparent to-transparent opacity-80" />
                   <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white text-xs font-serif-heading">
-                    <span>Yared &amp; Tigist's Wedding</span>
+                    <span>የሙശാലው ስም እና የሙሽሪት ስም</span>
                     <span className="px-3 py-1 rounded-full bg-[#C8A84B] text-[#3B0B1F] font-bold text-[10px] uppercase">
                       Click to Preview
                     </span>
@@ -424,57 +399,66 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
       </section>
 
       {/* 4. HOW IT WORKS SECTION */}
-      <section id="how-it-works" className="py-20 sm:py-28 bg-[#3B0B1F] text-[#FDF0F3] relative overflow-hidden">
+      <section id="how-it-works" className="py-20 sm:py-28 bg-[#FAF0F3] text-[#3B0B1F] border-y border-[#C8A84B]/30 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-16">
           <div className="text-center space-y-4 max-w-3xl mx-auto">
-            <span className="text-xs font-bold text-[#C8A84B] uppercase tracking-widest block">
+            <span className="text-xs font-bold text-[#A87B1B] uppercase tracking-widest block">
               Simple 4-Step Process
             </span>
-            <h2 className="font-serif-heading text-3xl sm:text-4xl font-normal text-[#FDF0F3]">
+            <h2 className="font-serif-heading text-3xl sm:text-4xl font-normal text-[#3B0B1F]">
               How to Build Your Invitation in Minutes
             </h2>
-            <p className="text-xs sm:text-sm text-[#FDF0F3]/80 font-body leading-relaxed max-w-xl mx-auto">
+            <p className="text-xs sm:text-sm text-[#3B0B1F]/80 font-body leading-relaxed max-w-xl mx-auto">
               Follow four easy steps to create, preview, and share your wedding website with all your guests.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 relative">
-            {stepsList.map((step, idx) => (
-              <div
-                key={idx}
-                className="bg-[#2D0817] p-7 rounded-2xl border border-[#C8A84B]/40 space-y-4 relative flex flex-col justify-between hover:border-[#C8A84B] transition-all shadow-lg"
-              >
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="font-serif-heading text-3xl font-bold text-[#C8A84B]">
-                      {step.num}
-                    </span>
-                    <div className="w-8 h-8 rounded-full bg-[#3B0B1F] border border-[#C8A84B]/40 flex items-center justify-center">
-                      <Check className="w-4 h-4 text-[#C8A84B]" />
+            {stepsList.map((step, idx) => {
+              const cardStyles = [
+                'bg-gradient-to-br from-white via-[#FFF5F8] to-[#FFEBF1] border-2 border-[#E892A8]/60 shadow-sm hover:shadow-md hover:border-[#E892A8]',
+                'bg-gradient-to-br from-white via-[#FFFDF2] to-[#FEF9C3] border-2 border-[#EAB308]/60 shadow-sm hover:shadow-md hover:border-[#EAB308]',
+                'bg-gradient-to-br from-white via-[#F0FDF4] to-[#DCFCE7] border-2 border-[#4ADE80]/60 shadow-sm hover:shadow-md hover:border-[#4ADE80]',
+                'bg-gradient-to-br from-white via-[#FAF5FF] to-[#EDE9FE] border-2 border-[#A78BFA]/60 shadow-sm hover:shadow-md hover:border-[#A78BFA]',
+              ];
+              const numColors = ['text-[#9E1B42]', 'text-[#8C6B1B]', 'text-[#15803D]', 'text-[#6B21A8]'];
+              return (
+                <div
+                  key={idx}
+                  className={`p-7 rounded-2xl space-y-4 relative flex flex-col justify-between transition-all ${cardStyles[idx % cardStyles.length]}`}
+                >
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className={`font-serif-heading text-3xl font-extrabold ${numColors[idx % numColors.length]}`}>
+                        {step.num}
+                      </span>
+                      <div className="w-8 h-8 rounded-full bg-white border border-[#C8A84B]/40 flex items-center justify-center shadow-xs">
+                        <Check className={`w-4 h-4 ${numColors[idx % numColors.length]}`} />
+                      </div>
                     </div>
+                    <h3 className="font-serif-heading text-lg font-bold text-[#2A0815]">
+                      {step.title}
+                    </h3>
+                    <p className="text-xs text-[#3D1A27] font-body font-medium leading-relaxed">
+                      {step.desc}
+                    </p>
                   </div>
-                  <h3 className="font-serif-heading text-lg font-semibold text-white">
-                    {step.title}
-                  </h3>
-                  <p className="text-xs text-[#FDF0F3]/70 font-body leading-relaxed">
-                    {step.desc}
-                  </p>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Amharic Website Template Structure Breakdown */}
-          <div className="bg-[#2D0817] p-6 sm:p-10 rounded-3xl border-2 border-[#C8A84B]/60 shadow-2xl space-y-8 text-left max-w-5xl mx-auto my-12">
+          <div className="bg-white p-6 sm:p-10 rounded-3xl border-2 border-[#C8A84B]/60 shadow-xl space-y-8 text-left max-w-6xl mx-auto my-12">
             <div className="border-b border-[#C8A84B]/30 pb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <span className="text-2xl sm:text-3xl">💍</span>
                 <div>
-                  <h3 className="font-serif-heading text-xl sm:text-2xl font-bold text-[#C8A84B]">
+                  <h3 className="font-serif-heading text-xl sm:text-2xl font-bold text-[#4A0E17]">
                     የሰርግ ጥሪ ድረ-ገጽ መዋቅር (Website Template)
                   </h3>
-                  <span className="text-xs text-[#FDF0F3]/70 font-body">
-                    የሚቀርቡልዎ ዋና ዋና ክፍሎች እና ይዘቶች
+                  <span className="text-xs text-gray-700 font-body font-medium">
+                    የሚቀርቡልዎ ዋና ዋና ክፍሎች፣ ይዘቶች እና ደረጃዎች
                   </span>
                 </div>
               </div>
@@ -483,57 +467,119 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-              {/* 1. Home / Welcome Page */}
-              <div className="bg-[#3B0B1F] p-5 rounded-2xl border border-[#C8A84B]/30 space-y-3">
-                <div className="flex items-center gap-2 text-[#C8A84B] font-bold text-sm">
-                  <span className="w-6 h-6 rounded-full bg-[#C8A84B]/20 flex items-center justify-center text-xs">1</span>
-                  <h4>ዋናው ገጽ (Home / Welcome Page)</h4>
-                </div>
-                <ul className="text-xs text-[#FDF0F3]/80 space-y-2 leading-relaxed">
-                  <li>• <strong>ማራኪ የሰርግ ድረ-ገጽ ዲዛይን ይምረጡ:</strong> (ከሰርግዎ ቀለም እና ስታይል ጋር የሚስማማ Template (ንድፍ) ይምረጡ።)</li>
-                  <li>• <strong>ዋና ምስል (Hero Image):</strong> የእጮኛሞች ፎቶ (Pre-wedding photo)።</li>
-                  <li>• <strong>ሙዚቃ:</strong> የሚፈልጉትን የMP3 (background) ሙዚቃ እንደ ምርጫዎ ማካተት ይችላሉ።</li>
-                  <li>• <strong>ዋና መረጃ:</strong> የሙሽራው እና የሙሽሪት ስም፣ የሰርጉ ቀን እና ቦታ።</li>
-                  <li>• <strong>የቀናት መቁጠሪያ (Countdown Timer):</strong> ለሰርጉ የቀሩትን ቀናት የሚያሳይ ሰዓት ።</li>
-                </ul>
-              </div>
-
-              {/* 2. Our Story */}
-              <div className="bg-[#3B0B1F] p-5 rounded-2xl border border-[#C8A84B]/30 space-y-3">
-                <div className="flex items-center gap-2 text-[#C8A84B] font-bold text-sm">
-                  <span className="w-6 h-6 rounded-full bg-[#C8A84B]/20 flex items-center justify-center text-xs">2</span>
-                  <h4>የእኛ የፍቅር ታሪክ (Our Story)</h4>
-                </div>
-                <ul className="text-xs text-[#FDF0F3]/80 space-y-2 leading-relaxed">
-                  <li>• <strong>እንዴት ተገናኘን?</strong> ጥንዶቹ ለመጀመሪያ ጊዜ እንዴት እንደተገናኙ የሚተርክ አጭር እና ልብ የሚነካ ጽሑፍ።</li>
-                  <li>• <strong>የጥያቄው ቀን (The Proposal):</strong> የጋብቻ ጥያቄ የተጠየቀበት ቀን አጭር ታሪክ እና ፎቶዎች።</li>
-                </ul>
-              </div>
-
-              {/* 3. Schedule & Venue */}
-              <div className="bg-[#3B0B1F] p-5 rounded-2xl border border-[#C8A84B]/30 space-y-3">
-                <div className="flex items-center gap-2 text-[#C8A84B] font-bold text-sm">
-                  <span className="w-6 h-6 rounded-full bg-[#C8A84B]/20 flex items-center justify-center text-xs">3</span>
-                  <h4>የሰርጉ ፕሮግራም እና ቦታ (Schedule &amp; Venue)</h4>
-                </div>
-                <div className="text-xs text-[#FDF0F3]/80 space-y-3 leading-relaxed">
-                  <div className="p-2.5 rounded-xl bg-[#2D0817] border border-[#C8A84B]/20 space-y-1">
-                    <p className="font-bold text-[#C8A84B]">የቃል ኪዳን ስነ-ስርዓት:</p>
-                    <p>⏰ ሰዓት: [ሰዓት ያስገቡ]</p>
-                    <p>📍 ቦታ: [የቦታው ስም እና አድራሻ]</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Step 1. Home / Welcome Page */}
+              <div className="bg-gradient-to-br from-[#FFF0F4] via-[#FCE4EC] to-[#F8BBD0]/40 p-5 rounded-2xl border-2 border-[#E892A8] shadow-md space-y-3.5 hover:shadow-lg transition-all flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-[#3B0B1F] font-bold">
+                    <span className="w-7 h-7 rounded-full bg-[#3B0B1F] text-[#C8A84B] font-extrabold flex items-center justify-center text-xs shadow-sm shrink-0">1</span>
+                    <h4 className="font-serif-heading text-base font-bold text-[#3B0B1F]">
+                      ዋናው ገጽ <span className="text-xs font-normal text-[#59102E] block">(Home Page)</span>
+                    </h4>
                   </div>
-                  <div className="p-2.5 rounded-xl bg-[#2D0817] border border-[#C8A84B]/20 space-y-1">
-                    <p className="font-bold text-[#C8A84B]">የሰርግ ግብዣ (Reception):</p>
-                    <p>⏰ ሰዓት: [ሰዓት ያስገቡ]</p>
-                    <p>📍 ቦታ: [የሆቴሉ ወይም የአዳራሹ ስም]</p>
+                  <ul className="text-xs text-[#2A0513] font-medium space-y-2.5 leading-relaxed">
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-[#9E1B42] font-bold">•</span>
+                      <span><strong>ማራኪ የሰርግ ዲዛይን:</strong> ከሰርግዎ ቀለም እና ስታይል ጋር የሚስማማ Template ይምረጡ።</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-[#9E1B42] font-bold">•</span>
+                      <span><strong>ዋና ምስል (Hero Image):</strong> የእጮኛሞች ፎቶ (Pre-wedding photo)።</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-[#9E1B42] font-bold">•</span>
+                      <span><strong>የጀርባ ሙዚቃ:</strong> የሚፈልጉትን የMP3 ሙዚቃ እንደ ምርጫዎ ማካተት።</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-[#9E1B42] font-bold">•</span>
+                      <span><strong>ዋና መረጃ:</strong> የሙሽራው እና ሙሽሪት ስም፣ የሰርጉ ቀን እና ቦታ።</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-[#9E1B42] font-bold">•</span>
+                      <span><strong>የቀናት መቁጠሪያ:</strong> Countdown Timer።</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Step 2. Our Story */}
+              <div className="bg-gradient-to-br from-[#FFFDF0] via-[#FEF3C7] to-[#FDE68A]/40 p-5 rounded-2xl border-2 border-[#D4AF37] shadow-md space-y-3.5 hover:shadow-lg transition-all flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-[#4A3200] font-bold">
+                    <span className="w-7 h-7 rounded-full bg-[#8C6B1B] text-white font-extrabold flex items-center justify-center text-xs shadow-sm shrink-0">2</span>
+                    <h4 className="font-serif-heading text-base font-bold text-[#4A3200]">
+                      የፍቅር ታሪክ <span className="text-xs font-normal text-[#6E4F02] block">(Our Story &amp; Gallery)</span>
+                    </h4>
+                  </div>
+                  <ul className="text-xs text-[#332200] font-medium space-y-2.5 leading-relaxed">
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-[#8C6B1B] font-bold">•</span>
+                      <span><strong>እንዴት ተገናኘን?</strong> ጥንዶቹ ለመጀመሪያ ጊዜ እንዴት እንደተገናኙ የሚተርክ ልብ የሚነካ ጽሑፍ።</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-[#8C6B1B] font-bold">•</span>
+                      <span><strong>የጥያቄው ቀን (Proposal):</strong> የጋብቻ ጥያቄ የተጠየቀበት አጭር ታሪክ እና ፎቶዎች።</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-[#8C6B1B] font-bold">•</span>
+                      <span><strong>የፎቶ ጋለሪ (Gallery):</strong> የሙሽሮች ድንቅ ፎቶዎች ስብስብ።</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Step 3. Schedule & Venue */}
+              <div className="bg-gradient-to-br from-[#F0FDF4] via-[#DCFCE7] to-[#86EFAC]/40 p-5 rounded-2xl border-2 border-[#4ADE80] shadow-md space-y-3.5 hover:shadow-lg transition-all flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-[#064E3B] font-bold">
+                    <span className="w-7 h-7 rounded-full bg-[#166534] text-white font-extrabold flex items-center justify-center text-xs shadow-sm shrink-0">3</span>
+                    <h4 className="font-serif-heading text-base font-bold text-[#064E3B]">
+                      ፕሮግራም እና ቦታ <span className="text-xs font-normal text-[#0F5237] block">(Schedule &amp; Venue)</span>
+                    </h4>
+                  </div>
+                  <div className="text-xs text-[#022C22] font-medium space-y-2.5 leading-relaxed">
+                    <div className="p-2.5 rounded-xl bg-white/90 border border-[#4ADE80]/60 space-y-1 shadow-2xs">
+                      <p className="font-bold text-[#14532D]">የቃል ኪዳን ስነ-ስርዓት (Ceremony):</p>
+                      <p className="text-[11px] text-[#064E3B]">⏰ ሰዓት: [ሰዓት ያስገቡ]</p>
+                      <p className="text-[11px] text-[#064E3B]">📍 ቦታ: [የቤተክርስቲያን/ቦታ አድራሻ]</p>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-white/90 border border-[#4ADE80]/60 space-y-1 shadow-2xs">
+                      <p className="font-bold text-[#14532D]">የሰርግ ግብዣ (Reception):</p>
+                      <p className="text-[11px] text-[#064E3B]">⏰ ሰዓት: [ሰዓት ያስገቡ]</p>
+                      <p className="text-[11px] text-[#064E3B]">📍 ቦታ: [የሆቴል/አዳራሽ አድራሻ]</p>
+                    </div>
+                    <p className="text-[11px] font-bold text-[#15803D] flex items-center gap-1">
+                      🗺️ Google Maps ቀጥታ አቅጣጫ ማሳያ
+                    </p>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="p-4 rounded-2xl bg-[#C8A84B]/15 border border-[#C8A84B] text-center text-xs sm:text-sm font-bold text-[#C8A84B] shadow-sm">
-              4. ክፍያዎን ሲፈጽሙ፣ ለእንግዶችዎ የሚልኩትን (Link) እንልክልዎታለን።
+              {/* Step 4. Share & Link Delivery */}
+              <div className="bg-gradient-to-br from-[#FAF5FF] via-[#EDE9FE] to-[#DDD6FE]/40 p-5 rounded-2xl border-2 border-[#A78BFA] shadow-md space-y-3.5 hover:shadow-lg transition-all flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-[#3B0764] font-bold">
+                    <span className="w-7 h-7 rounded-full bg-[#5B21B6] text-white font-extrabold flex items-center justify-center text-xs shadow-sm shrink-0">4</span>
+                    <h4 className="font-serif-heading text-base font-bold text-[#3B0764]">
+                      ማጋራት እና RSVP <span className="text-xs font-normal text-[#5B21B6] block">(Share &amp; Link Delivery)</span>
+                    </h4>
+                  </div>
+                  <ul className="text-xs text-[#2E1065] font-medium space-y-2.5 leading-relaxed">
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-[#6B21A8] font-bold">•</span>
+                      <span><strong>ቀጥታ ድረ-ገጽ ሊንክ:</strong> ለእንግዶችዎ በTelegram/WhatsApp በቀላሉ የሚልኩት ማራኪ ሊንክ።</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-[#6B21A8] font-bold">•</span>
+                      <span><strong>የክፍያ ማረጋገጫ:</strong> ክፍያዎን ሲፈጽሙ ወዲያውኑ ድረ-ገጽዎ ገቢር ይደረጋል።</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-[#6B21A8] font-bold">•</span>
+                      <span><strong>የእንግዶች RSVP:</strong> እንግዶችዎ መምጣታቸውን የሚያረጋግጡበት ቅጽ።</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -601,16 +647,16 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
                 <button
                   type="button"
                   onClick={() => setSelectedDemoTheme(THEME_PRESETS[tpl.id])}
-                  className="flex-1 py-2.5 px-3 rounded-xl border border-[#C8A84B]/50 hover:bg-[#FDF0F3] text-[#3B0B1F] text-xs font-semibold transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                  className="flex-1 py-2.5 px-3 rounded-xl border border-[#C8A84B]/50 hover:bg-[#FAF0F3] text-[#3B0B1F] text-xs font-semibold transition-all cursor-pointer flex items-center justify-center gap-1.5"
                 >
-                  <Eye className="w-3.5 h-3.5 text-[#C8A84B]" />
+                  <Eye className="w-3.5 h-3.5 text-[#A87B1B]" />
                   <span>Preview</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => onStartBuilding(tpl.id)}
-                  className="flex-1 py-2.5 px-3 rounded-xl bg-[#3B0B1F] text-[#C8A84B] hover:bg-[#2D0817] text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-md"
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-[#4A0E17] text-[#FAF0F3] hover:bg-[#3B0B1F] text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-md"
                 >
                   <span>Select &amp; Build</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -622,10 +668,10 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
       </section>
 
       {/* 6. PRICING SECTION */}
-      <section id="pricing" className="py-20 sm:py-28 bg-[#FDF0F3] border-y border-[#C8A84B]/30 relative overflow-hidden">
+      <section id="pricing" className="py-20 sm:py-28 bg-[#FAF0F3] border-y border-[#C8A84B]/30 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
           <div className="text-center space-y-4 max-w-3xl mx-auto">
-            <span className="text-xs font-bold text-[#C8A84B] uppercase tracking-widest block">
+            <span className="text-xs font-bold text-[#A87B1B] uppercase tracking-widest block">
               Transparent &amp; Affordable Pricing
             </span>
             <h2 className="font-serif-heading text-3xl sm:text-4xl text-[#3B0B1F] font-normal">
@@ -637,7 +683,7 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
           </div>
 
           <div className="max-w-xl mx-auto">
-            <div className="bg-white rounded-3xl border-2 border-[#C8A84B] shadow-2xl overflow-hidden p-8 sm:p-10 text-center space-y-8 relative">
+            <div className="bg-white rounded-3xl border-2 border-[#C8A84B] shadow-xl overflow-hidden p-8 sm:p-10 text-center space-y-8 relative">
               <div className="absolute top-0 right-0 bg-[#C8A84B] text-[#3B0B1F] text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-bl-xl shadow-sm">
                 Most Popular Package
               </div>
@@ -650,7 +696,7 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
                   <span className="font-serif-heading text-4xl sm:text-5xl font-bold text-[#3B0B1F]">
                     30,000
                   </span>
-                  <span className="font-body text-base font-bold text-[#C8A84B]">
+                  <span className="font-body text-base font-bold text-[#A87B1B]">
                     ETB (Birr)
                   </span>
                 </div>
@@ -681,7 +727,7 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
               <div>
                 <button
                   onClick={() => onStartBuilding()}
-                  className="w-full py-4 px-6 rounded-2xl bg-[#3B0B1F] text-[#C8A84B] font-body text-xs sm:text-sm font-bold uppercase tracking-wider hover:bg-[#2D0817] hover:scale-[1.01] transition-all shadow-xl flex items-center justify-center gap-3 cursor-pointer"
+                  className="w-full py-4 px-6 rounded-2xl bg-[#4A0E17] text-[#FAF0F3] font-body text-xs sm:text-sm font-bold uppercase tracking-wider hover:bg-[#3B0B1F] hover:scale-[1.01] transition-all shadow-xl flex items-center justify-center gap-3 cursor-pointer"
                 >
                   <span>Build My Invitation</span>
                   <ArrowRight className="w-4 h-4" />
@@ -692,61 +738,10 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
         </div>
       </section>
 
-      {/* 7. TESTIMONIALS SECTION */}
-      <section id="testimonials" className="py-20 sm:py-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* 7. FAQ SECTION */}
+      <section id="faq" className="py-20 sm:py-28 bg-[#FAF4F6] max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-[#C8A84B]/20">
         <div className="text-center space-y-4 max-w-3xl mx-auto mb-16">
-          <span className="text-xs font-bold text-[#C8A84B] uppercase tracking-widest block">
-            Happy Couples
-          </span>
-          <h2 className="font-serif-heading text-3xl sm:text-4xl text-[#3B0B1F] font-normal">
-            Loved by Couples in Ethiopia &amp; Worldwide
-          </h2>
-          <p className="text-xs sm:text-sm text-[#3B0B1F]/70 font-body leading-relaxed">
-            Read how Addis Wedding Invitation Studio helped newlyweds create unforgettable digital invitations.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {testimonialsList.map((t, idx) => (
-            <div
-              key={idx}
-              className="bg-white p-7 rounded-2xl border border-[#C8A84B]/30 shadow-md space-y-4 flex flex-col justify-between"
-            >
-              <div className="space-y-3">
-                <div className="flex items-center gap-1 text-[#C8A84B]">
-                  {[...Array(t.rating)].map((_, rIdx) => (
-                    <Star key={rIdx} className="w-4 h-4 fill-current" />
-                  ))}
-                </div>
-                <p className="text-xs text-gray-700 font-body italic leading-relaxed">
-                  "{t.review}"
-                </p>
-              </div>
-
-              <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
-                <img
-                  src={t.img}
-                  alt={t.couple}
-                  className="w-10 h-10 rounded-full object-cover border border-[#C8A84B]"
-                />
-                <div>
-                  <h4 className="font-serif-heading text-sm font-bold text-[#3B0B1F]">
-                    {t.couple}
-                  </h4>
-                  <span className="text-[11px] text-gray-500 font-body block">
-                    {t.location}
-                  </span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 8. FAQ SECTION */}
-      <section id="faq" className="py-20 sm:py-28 bg-[#FAF7F2] max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-[#C8A84B]/20">
-        <div className="text-center space-y-4 max-w-3xl mx-auto mb-16">
-          <span className="text-xs font-bold text-[#C8A84B] uppercase tracking-widest block">
+          <span className="text-xs font-bold text-[#A87B1B] uppercase tracking-widest block">
             Got Questions?
           </span>
           <h2 className="font-serif-heading text-3xl sm:text-4xl text-[#3B0B1F] font-normal">
@@ -765,10 +760,10 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
                 <button
                   type="button"
                   onClick={() => toggleFaq(idx)}
-                  className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 font-serif-heading text-base font-semibold text-[#3B0B1F] hover:text-[#C8A84B] transition-colors cursor-pointer"
+                  className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 font-serif-heading text-base font-semibold text-[#3B0B1F] hover:text-[#A87B1B] transition-colors cursor-pointer"
                 >
                   <span>{faq.q}</span>
-                  <ChevronDown className={`w-5 h-5 text-[#C8A84B] transition-transform duration-300 shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`w-5 h-5 text-[#A87B1B] transition-transform duration-300 shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 {isOpen && (
@@ -783,17 +778,17 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
       </section>
 
       {/* 9. FINAL CALL TO ACTION BANNER */}
-      <section className="py-20 sm:py-28 bg-[#3B0B1F] text-[#FDF0F3] relative overflow-hidden text-center">
+      <section className="py-20 sm:py-28 bg-gradient-to-br from-[#FFF0F3] via-[#FAF0F4] to-[#F5E6EB] text-[#3B0B1F] border-t border-[#C8A84B]/30 relative overflow-hidden text-center">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-8">
-          <div className="p-3 rounded-full bg-[#2D0817] border border-[#C8A84B]/50 w-16 h-16 mx-auto flex items-center justify-center shadow-xl">
+          <div className="p-3 rounded-full bg-white border border-[#C8A84B]/50 w-16 h-16 mx-auto flex items-center justify-center shadow-md">
             <WeddingRingLogo className="w-10 h-10" />
           </div>
 
           <div className="space-y-4">
-            <h2 className="font-serif-heading text-3xl sm:text-5xl font-normal text-[#FDF0F3]">
+            <h2 className="font-serif-heading text-3xl sm:text-5xl font-normal text-[#3B0B1F]">
               Ready to Create Your Dream Wedding Invitation?
             </h2>
-            <p className="font-body text-xs sm:text-base text-[#FDF0F3]/80 max-w-xl mx-auto leading-relaxed">
+            <p className="font-body text-xs sm:text-base text-[#3B0B1F]/80 max-w-xl mx-auto leading-relaxed">
               Join dozens of happy couples who created stunning digital wedding invitation websites with Addis Wedding Invitation Studio.
             </p>
           </div>
@@ -811,18 +806,18 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
       </section>
 
       {/* 10. FOOTER */}
-      <footer className="bg-[#210206] text-[#FDF0F3]/80 py-16 border-t border-[#C8A84B]/30 text-xs font-body">
+      <footer className="bg-[#59102e] text-[#FAF0F3] py-16 border-t border-[#C8A84B]/40 text-xs font-body">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Brand column */}
             <div className="space-y-4 md:col-span-1">
               <div className="flex items-center gap-2">
                 <WeddingRingLogo className="w-6 h-6" />
-                <span className="font-serif-heading text-lg font-bold text-[#FDF0F3]">
+                <span className="font-serif-heading text-lg font-bold text-[#FAF0F3]">
                   Addis Wedding Studio
                 </span>
               </div>
-              <p className="text-[11px] text-[#FDF0F3]/70 leading-relaxed">
+              <p className="text-[11px] text-[#FAF0F3]/80 leading-relaxed">
                 Ethiopia's premier luxury digital wedding invitation platform. Beautiful responsive websites designed with elegance and romance.
               </p>
             </div>
@@ -833,11 +828,11 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
                 Quick Navigation
               </h4>
               <ul className="space-y-2 text-[11px]">
-                <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
-                <li><a href="#how-it-works" className="hover:text-white transition-colors">How It Works</a></li>
-                <li><a href="#templates" className="hover:text-white transition-colors">Showcase Templates</a></li>
-                <li><a href="#pricing" className="hover:text-white transition-colors">Pricing Plan</a></li>
-                <li><a href="#faq" className="hover:text-white transition-colors">FAQ</a></li>
+                <li><a href="#features" className="hover:text-[#C8A84B] transition-colors">Features</a></li>
+                <li><a href="#how-it-works" className="hover:text-[#C8A84B] transition-colors">How It Works</a></li>
+                <li><a href="#templates" className="hover:text-[#C8A84B] transition-colors">Showcase Templates</a></li>
+                <li><a href="#pricing" className="hover:text-[#C8A84B] transition-colors">Pricing Plan</a></li>
+                <li><a href="#faq" className="hover:text-[#C8A84B] transition-colors">FAQ</a></li>
               </ul>
             </div>
 
@@ -846,7 +841,7 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
               <h4 className="font-serif-heading text-sm font-bold text-[#C8A84B] uppercase tracking-wider">
                 Contact &amp; Support
               </h4>
-              <ul className="space-y-2 text-[11px]">
+              <ul className="space-y-2 text-[11px] text-[#FAF0F3]/85">
                 <li className="flex items-center gap-2">
                   <Phone className="w-3.5 h-3.5 text-[#C8A84B]" />
                   <span>Phone / Telegram: +251 91 123 4567</span>
@@ -868,20 +863,20 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
                 Connect With Us
               </h4>
               <div className="flex items-center gap-3">
-                <a href="https://t.me" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full bg-[#3B0B1F] border border-[#C8A84B]/40 flex items-center justify-center hover:bg-[#C8A84B] hover:text-[#3B0B1F] transition-all">
-                  <Send className="w-4 h-4" />
+                <a href="https://t.me" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full bg-[#3D0A1F] border border-[#C8A84B]/40 flex items-center justify-center hover:bg-[#C8A84B] hover:text-[#59102e] transition-all">
+                  <Send className="w-4 h-4 text-[#C8A84B] hover:text-[#59102e]" />
                 </a>
-                <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full bg-[#3B0B1F] border border-[#C8A84B]/40 flex items-center justify-center hover:bg-[#C8A84B] hover:text-[#3B0B1F] transition-all">
-                  <Instagram className="w-4 h-4" />
+                <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full bg-[#3D0A1F] border border-[#C8A84B]/40 flex items-center justify-center hover:bg-[#C8A84B] hover:text-[#59102e] transition-all">
+                  <Instagram className="w-4 h-4 text-[#C8A84B] hover:text-[#59102e]" />
                 </a>
-                <a href="https://facebook.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full bg-[#3B0B1F] border border-[#C8A84B]/40 flex items-center justify-center hover:bg-[#C8A84B] hover:text-[#3B0B1F] transition-all">
-                  <Facebook className="w-4 h-4" />
+                <a href="https://facebook.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full bg-[#3D0A1F] border border-[#C8A84B]/40 flex items-center justify-center hover:bg-[#C8A84B] hover:text-[#59102e] transition-all">
+                  <Facebook className="w-4 h-4 text-[#C8A84B] hover:text-[#59102e]" />
                 </a>
               </div>
               <div className="pt-2">
                 <button
                   onClick={onOpenAdmin}
-                  className="text-[11px] text-[#C8A84B] underline hover:text-white cursor-pointer"
+                  className="text-[11px] text-[#C8A84B] font-semibold underline hover:text-[#FAF0F3] cursor-pointer"
                 >
                   Log in
                 </button>
@@ -889,77 +884,73 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
             </div>
           </div>
 
-          <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-[#FDF0F3]/60">
+          <div className="pt-8 border-t border-[#C8A84B]/30 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-[#FAF0F3]/60">
             <p>© {new Date().getFullYear()} Addis Wedding Invitation Studio. All Rights Reserved.</p>
             <div className="flex gap-4">
-              <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+              <a href="#" className="hover:text-[#FAF0F3] transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-[#FAF0F3] transition-colors">Terms of Service</a>
             </div>
           </div>
         </div>
       </footer>
 
       {/* 11. DEMO PREVIEW MODAL */}
-      {selectedDemoTheme && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-fadeIn">
-          <div className="bg-[#FAF7F2] w-full max-w-4xl max-h-[90vh] rounded-3xl overflow-hidden shadow-2xl border-2 border-[#C8A84B] flex flex-col">
-            {/* Modal Header */}
-            <div className="bg-[#3B0B1F] text-[#FDF0F3] px-6 py-4 flex items-center justify-between border-b border-[#C8A84B]/40">
-              <div className="flex items-center gap-3">
-                <WeddingRingLogo className="w-6 h-6" />
-                <div>
-                  <h3 className="font-serif-heading text-base font-bold text-[#FDF0F3]">
-                    {selectedDemoTheme.name} Preset Preview
-                  </h3>
-                  <span className="text-[11px] text-[#C8A84B] font-mono">
-                    {selectedDemoTheme.themeStyle}
-                  </span>
+      {selectedDemoTheme && (() => {
+        const demoConfig: WeddingConfig = {
+          ...DEFAULT_WEDDING_CONFIG,
+          themeId: selectedDemoTheme.id,
+          groomEth: 'የሙሽራው ስም',
+          brideEth: 'የሙሽሪት ስም',
+          groomEn: '',
+          brideEn: '',
+        };
+
+        return (
+          <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-fadeIn">
+            <div className="bg-[#FAF4F6] w-full max-w-4xl max-h-[90vh] rounded-3xl overflow-hidden shadow-2xl border-2 border-[#C8A84B] flex flex-col">
+              {/* Modal Header */}
+              <div className="bg-[#FAF0F3] text-[#3B0B1F] px-6 py-4 flex items-center justify-between border-b border-[#C8A84B]/40 shrink-0">
+                <div className="flex items-center gap-3">
+                  <WeddingRingLogo className="w-6 h-6" />
+                  <div>
+                    <h3 className="font-serif-heading text-base font-bold text-[#3B0B1F]">
+                      {selectedDemoTheme.name} Preset Preview
+                    </h3>
+                    <span className="text-[11px] text-[#A87B1B] font-mono">
+                      {selectedDemoTheme.themeStyle}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => {
+                      const themeId = selectedDemoTheme.id;
+                      setSelectedDemoTheme(null);
+                      onStartBuilding(themeId);
+                    }}
+                    className="px-4 py-2 rounded-full bg-[#C8A84B] text-[#3B0B1F] text-xs font-bold uppercase tracking-wider hover:bg-[#E2C873] cursor-pointer shadow-md transition-all"
+                  >
+                    Start Building With This Theme
+                  </button>
+
+                  <button
+                    onClick={() => setSelectedDemoTheme(null)}
+                    className="p-1.5 rounded-full hover:bg-[#C8A84B]/20 text-gray-600 hover:text-[#3B0B1F] cursor-pointer"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => {
-                    const themeId = selectedDemoTheme.id;
-                    setSelectedDemoTheme(null);
-                    onStartBuilding(themeId);
-                  }}
-                  className="px-4 py-2 rounded-full bg-[#C8A84B] text-[#3B0B1F] text-xs font-bold uppercase tracking-wider hover:bg-[#E2C873] cursor-pointer shadow-md"
-                >
-                  Start Building With This Theme
-                </button>
-
-                <button
-                  onClick={() => setSelectedDemoTheme(null)}
-                  className="p-1.5 rounded-full hover:bg-white/10 text-gray-300 hover:text-white cursor-pointer"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Modal Sample Content */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6" style={{ backgroundColor: selectedDemoTheme.colors.blushPale }}>
-              <div className="text-center p-8 rounded-2xl border border-[#C8A84B]/40 space-y-4" style={{ backgroundColor: selectedDemoTheme.colors.primary, color: selectedDemoTheme.colors.blushPale }}>
-                <span className="text-xs uppercase tracking-widest block font-bold" style={{ color: selectedDemoTheme.colors.gold }}>
-                  Save The Date
-                </span>
-                <h2 className="font-serif-heading text-3xl sm:text-4xl">
-                  Yared &amp; Tigist
-                </h2>
-                <p className="text-xs opacity-80">
-                  Saturday, May 16, 2026 &bull; Bole Medhane Alem Cathedral &amp; Sheraton Addis
-                </p>
-                <div className="pt-2">
-                  <span className="inline-block px-4 py-2 rounded-full text-xs font-bold shadow-md" style={{ backgroundColor: selectedDemoTheme.colors.gold, color: selectedDemoTheme.colors.primary }}>
-                    Previewing {selectedDemoTheme.name}
-                  </span>
-                </div>
+              {/* Modal Sample Content - Hero Section Preview */}
+              <div className="flex-1 overflow-y-auto">
+                <HeroSection config={demoConfig} />
               </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 }

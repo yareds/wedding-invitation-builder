@@ -2,16 +2,16 @@
 
 @layer base {
   :root {
-    --color-wine: #3B0B1F;
-    --color-blush: #D4849A;
+    --color-wine: #59102e;
+    --color-blush: #B85B75;
     --color-gold: #C8A84B;
-    --color-ivory: #FDF0F3;
+    --color-ivory: #FAF4F6;
   }
 
   body {
     font-family: 'Raleway', sans-serif;
-    background-color: #FDF0F3;
-    color: #3B0B1F;
+    background-color: #FAF4F6;
+    color: #59102e;
     overflow-x: hidden;
   }
 
