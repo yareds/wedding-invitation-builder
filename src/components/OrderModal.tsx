@@ -130,8 +130,25 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
     );
   }
 
-  // Filter out Awash Bank tile
-  const activeBankDetails = (config.bankDetails || []).filter(
+  // Filter out Awash Bank tile & fallback to default Telebirr and CBE details
+  const fallbackBankDetails = [
+    {
+      bankName: 'Telebirr SuperApp',
+      accountName: 'Yared Abegaz',
+      accountNumber: '0995967804'
+    },
+    {
+      bankName: 'Commercial Bank of Ethiopia (CBE)',
+      accountName: 'Yared Abegaz',
+      accountNumber: '1000450356817'
+    }
+  ];
+
+  const rawBankDetails = config.bankDetails && config.bankDetails.length > 0
+    ? config.bankDetails
+    : fallbackBankDetails;
+
+  const activeBankDetails = rawBankDetails.filter(
     (b) => !b.bankName.toLowerCase().includes('awash')
   );
 
@@ -169,10 +186,10 @@ Payment Receipt submitted for online publishing.
 
     const text = encodeURIComponent(`Hello! I am sending my payment receipt for my wedding invitation order:\n\n${orderSummaryText}`);
     if (type === 'Telegram') {
-      window.open(`https://t.me/share/url?url=https://wedding-invitations.et&text=${text}`, '_blank');
+      window.open(`https://t.me/yared_abegaz?text=${text}`, '_blank');
       setSentSuccess('Telegram');
     } else {
-      window.open(`https://wa.me/?text=${text}`, '_blank');
+      window.open(`https://wa.me/15714749554?text=${text}`, '_blank');
       setSentSuccess('WhatsApp');
     }
   };

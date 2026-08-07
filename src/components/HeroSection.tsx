@@ -30,7 +30,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
           <img
             src={config.heroImg}
             alt="Hero Background"
-            className="w-full h-full object-cover object-center scale-105 animate-fade-in"
+            className="w-full h-full object-cover object-top animate-fade-in"
           />
           <div
             className="absolute inset-0"
@@ -71,9 +71,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
                     &amp;
                   </span>{' '}
                   {brideInit}
-                </span>
-                <span className="font-quote italic text-[10px] sm:text-xs tracking-widest uppercase block mt-0.5 text-white/90">
-                  EST. 2026
                 </span>
               </div>
             </div>

@@ -290,7 +290,7 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
 
     <!-- 1. Hero Section -->
     <section class="relative pt-20 pb-16 px-4 sm:px-6 md:px-8 overflow-hidden text-center transition-colors duration-500" style="background-color: ${colors.bg}; color: ${colors.primary}">
-      ${config.heroImg ? `<div class="absolute inset-0 z-0 overflow-hidden"><img src="${config.heroImg}" class="w-full h-full object-cover object-center scale-105 opacity-30" /><div class="absolute inset-0" style="background-color: ${colors.heroOv}"></div></div>` : ''}
+      ${config.heroImg ? `<div class="absolute inset-0 z-0 overflow-hidden"><img src="${config.heroImg}" class="w-full h-full object-cover object-top opacity-30" /><div class="absolute inset-0" style="background-color: ${colors.heroOv}"></div></div>` : ''}
 
       <div class="max-w-4xl mx-auto relative z-10 flex flex-col items-center">
         <!-- Monogram Circle -->
@@ -301,7 +301,6 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
                 <span class="font-serif-heading text-3xl sm:text-4xl font-light tracking-widest block" style="color: ${colors.gold}">
                   ${groomInit} <span class="font-serif-heading text-xl sm:text-2xl font-normal" style="color: ${colors.blush}">&amp;</span> ${brideInit}
                 </span>
-                <span class="font-quote italic text-[10px] sm:text-xs tracking-widest uppercase block mt-0.5 text-white/80">EST. 2026</span>
               </div>
             </div>
           </div>

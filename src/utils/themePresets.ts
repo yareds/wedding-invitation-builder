@@ -150,11 +150,11 @@ export const DEFAULT_WEDDING_CONFIG: WeddingConfig = {
   scripture: 'ሁሉን ያዘጋጀ ግን እግዚአብሔር ነው።',
   scriptureRef: 'ዕብራውያን 3፡4',
   storyText: 'Whatever our souls are made of, his and hers are the same. Our story has been a quiet symphony of trust, laughter, and infinite love.',
-  phone1: '',
-  phone2: '',
-  whatsappNumber: '',
-  telegramUsername: 'wedding_invitation_order',
-  emailContact: 'orders@weddingethiopia.com',
+  phone1: '+15714749554',
+  phone2: '0995967804',
+  whatsappNumber: '+15714749554',
+  telegramUsername: 'yared_abegaz',
+  emailContact: 'yared.abegaz@gmail.com',
   rsvpDeadlineEn: 'April 01, 2026',
   rsvpDeadlineEth: 'መጋቢት 23, 2018 ዓ.ም',
   rsvpMethod: 'direct',
@@ -186,13 +186,13 @@ export const DEFAULT_WEDDING_CONFIG: WeddingConfig = {
   bankDetails: [
     {
       bankName: 'Telebirr SuperApp',
-      accountName: 'Wedding Website Services',
-      accountNumber: '0911234567'
+      accountName: 'Yared Abegaz',
+      accountNumber: '0995967804'
     },
     {
       bankName: 'Commercial Bank of Ethiopia (CBE)',
-      accountName: 'Wedding Services PLC',
-      accountNumber: '1000123456789'
+      accountName: 'Yared Abegaz',
+      accountNumber: '1000450356817'
     }
   ]
 };

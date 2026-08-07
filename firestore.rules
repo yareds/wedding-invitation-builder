@@ -1,23 +1,42 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Check if authenticated user is the authorized admin email
+
     function isAdmin() {
       return request.auth != null &&
-             (request.auth.token.email == 'yared.abegaz@gmail.com' ||
-              request.auth.token.email.matches('(?i)yared\\.abegaz@gmail\\.com'));
+             request.auth.token.email != null &&
+             request.auth.token.email.matches('(?i)yared\\.abegaz@gmail\\.com');
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
     }
 
     match /projects/{projectId} {
-      // Allow reading and creating/updating projects for all users/couples
+      // Public invitation pages must be viewable by anyone with the link
       allow read: if true;
-      allow create, update: if true;
-      // Enforce admin permission for project deletion
+
+      // Only the creator (identified by their auth UID) can create their own project
+      allow create: if isSignedIn()
+                    && request.resource.data.ownerUid == request.auth.uid;
+
+      // Only the owner or admin can update; ownership can't be reassigned
+      allow update: if isSignedIn()
+                    && (resource.data.ownerUid == request.auth.uid || isAdmin())
+                    && request.resource.data.ownerUid == resource.data.ownerUid;
+
       allow delete: if isAdmin();
 
       match /rsvps/{rsvpId} {
-        // Allow guest RSVP submissions and reading
-        allow read, write: if true;
+        // Guests can submit a response without logging in
+        allow create: if true;
+
+        // Only the project owner or admin can read/list the guest responses
+        allow read: if isSignedIn()
+                    && (get(/databases/$(database)/documents/projects/$(projectId)).data.ownerUid == request.auth.uid
+                        || isAdmin());
+
+        allow update, delete: if isAdmin();
       }
     }
   }

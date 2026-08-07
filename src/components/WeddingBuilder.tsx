@@ -463,7 +463,7 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
               <div className="flex items-center gap-3">
                 <div className="w-20 h-20 rounded-xl overflow-hidden border border-[#C8A84B] shadow-sm bg-gray-100 flex-shrink-0 relative">
                   {config.heroImg ? (
-                    <img src={config.heroImg} alt="Hero Preview" className="w-full h-full object-cover" />
+                    <img src={config.heroImg} alt="Hero Preview" className="w-full h-full object-cover object-top" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">Default</div>
                   )}

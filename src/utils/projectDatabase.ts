@@ -1,5 +1,6 @@
 import { WeddingConfig, RSVPData } from '../types';
-import { db } from '../lib/firebase';
+import { db, auth } from '../lib/firebase';
+import { signInAnonymously } from 'firebase/auth';
 import {
   collection,
   doc,
@@ -23,6 +24,7 @@ export interface SavedProject {
   config: WeddingConfig;
   deploymentStatus: 'draft' | 'generated' | 'deployed';
   customUrl?: string;
+  ownerUid?: string;
 }
 
 const STORAGE_KEY = 'ethiopian_wedding_projects_db';
@@ -192,12 +194,34 @@ export async function getAllProjectsFromFirestore(): Promise<SavedProject[]> {
     const snapshot = await getDocs(projectsCol);
     const remoteProjects: SavedProject[] = [];
 
-    snapshot.forEach((docSnap) => {
+    // Ensure we have a valid currentUser UID for backfilling if needed
+    let currentUid = auth.currentUser?.uid;
+    if (!currentUid) {
+      try {
+        const anonRes = await signInAnonymously(auth);
+        currentUid = anonRes.user.uid;
+      } catch {
+        // Anonymous auth provider disabled or unavailable; proceed quietly
+      }
+    }
+
+    for (const docSnap of snapshot.docs) {
       const data = docSnap.data() as SavedProject;
       if (data && data.id) {
+        // Backfill ownerUid for any pre-existing project document lacking ownerUid
+        if (!data.ownerUid && currentUid) {
+          data.ownerUid = currentUid;
+          try {
+            const projectRef = doc(db, 'projects', data.id);
+            await setDoc(projectRef, { ownerUid: currentUid }, { merge: true });
+            console.log(`[Firestore] Backfilled ownerUid for project ${data.id}`);
+          } catch (backfillErr) {
+            console.warn(`Failed to backfill ownerUid for project ${data.id}:`, backfillErr);
+          }
+        }
         remoteProjects.push(data);
       }
-    });
+    }
 
     remoteProjects.sort(
       (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
@@ -228,18 +252,34 @@ export async function saveProjectToDatabase(
   const coupleNames = `${groom} እና ${bride}`;
   const now = new Date().toISOString();
 
+  // Ensure user is signed in silently (anonymous auth if not logged in)
+  let currentUid = auth.currentUser?.uid;
+  if (!currentUid) {
+    try {
+      const anonRes = await signInAnonymously(auth);
+      currentUid = anonRes.user.uid;
+    } catch {
+      // Anonymous auth provider disabled or unavailable; proceed quietly
+    }
+  }
+
   const existingIndex = projects.findIndex((p) => p.id === id);
+  const existingProject = existingIndex >= 0 ? projects[existingIndex] : null;
+
+  // Set ownerUid to auth.currentUser.uid for new project or preserve existing if present
+  const ownerUid = existingProject?.ownerUid || currentUid || '';
 
   const projectRecord: SavedProject = {
     id,
     coupleNames,
     themeId: config.themeId,
     themeName: config.themeId.toUpperCase(),
-    createdAt: existingIndex >= 0 ? projects[existingIndex].createdAt : now,
+    createdAt: existingProject ? existingProject.createdAt : now,
     updatedAt: now,
     config,
     deploymentStatus: 'generated',
     customUrl: `https://wedding-invitations.et/view/${id}`,
+    ownerUid,
   };
 
   if (existingIndex >= 0) {
@@ -259,7 +299,7 @@ export async function saveProjectToDatabase(
   try {
     const projectRef = doc(db, 'projects', id);
     await setDoc(projectRef, projectRecord, { merge: true });
-    console.log(`[Firestore] Project ${id} saved successfully.`);
+    console.log(`[Firestore] Project ${id} saved successfully with ownerUid: ${ownerUid}`);
   } catch (err) {
     console.error('Failed to save project to Firestore:', err);
   }

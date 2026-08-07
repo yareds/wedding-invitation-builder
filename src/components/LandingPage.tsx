@@ -844,15 +844,19 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
               <ul className="space-y-2 text-[11px] text-[#FAF0F3]/85">
                 <li className="flex items-center gap-2">
                   <Phone className="w-3.5 h-3.5 text-[#C8A84B]" />
-                  <span>Phone / Telegram: +251 91 123 4567</span>
+                  <span>Phone / WhatsApp: +1 (571) 474-9554</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Send className="w-3.5 h-3.5 text-[#C8A84B]" />
+                  <span>Telegram: @yared_abegaz (+15714749554)</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Mail className="w-3.5 h-3.5 text-[#C8A84B]" />
-                  <span>support@addisweddingstudio.et</span>
+                  <span>yared.abegaz@gmail.com</span>
                 </li>
-                <li className="flex items-center gap-2">
+                <li className="flex items-center gap-2 pt-1 border-t border-white/10">
                   <MapPin className="w-3.5 h-3.5 text-[#C8A84B]" />
-                  <span>Bole, Addis Ababa, Ethiopia</span>
+                  <span>Telebirr: 0995967804 | CBE: 1000450356817</span>
                 </li>
               </ul>
             </div>
