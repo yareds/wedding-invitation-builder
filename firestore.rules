@@ -14,7 +14,9 @@ service cloud.firestore {
 
     match /projects/{projectId} {
       // Public invitation pages must be viewable by anyone with the link
-      allow read: if true;
+      allow get: if true;
+      // Restrict enumeration/listing of all projects to admin only
+      allow list: if isAdmin();
 
       // Only the creator (identified by their auth UID) can create their own project
       allow create: if isSignedIn()
