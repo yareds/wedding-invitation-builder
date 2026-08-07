@@ -1,4 +1,4 @@
-import { WeddingConfig, RSVPData } from '../types';
+import { WeddingConfig, RSVPData, SavedProject } from '../types';
 import { db, auth } from '../lib/firebase';
 import { signInAnonymously } from 'firebase/auth';
 import {
@@ -14,18 +14,7 @@ import {
   orderBy
 } from 'firebase/firestore';
 
-export interface SavedProject {
-  id: string; // e.g. WED-2026-98421
-  coupleNames: string;
-  themeId: string;
-  themeName: string;
-  createdAt: string;
-  updatedAt: string;
-  config: WeddingConfig;
-  deploymentStatus: 'draft' | 'generated' | 'deployed';
-  customUrl?: string;
-  ownerUid?: string;
-}
+export type { SavedProject };
 
 const STORAGE_KEY = 'ethiopian_wedding_projects_db';
 const DB_NAME = 'EthiopianWeddingStudioDB';
@@ -269,6 +258,17 @@ export async function saveProjectToDatabase(
   // Set ownerUid to auth.currentUser.uid for new project or preserve existing if present
   const ownerUid = existingProject?.ownerUid || currentUid || '';
 
+  const orderStatus = existingProject?.orderStatus || 'draft';
+  const rsvpEnabled = existingProject?.rsvpEnabled ?? config.rsvpEnabled ?? false;
+  const customerName = existingProject?.customerName || '';
+  const customerPhone = existingProject?.customerPhone || '';
+  const transactionRef = existingProject?.transactionRef || '';
+
+  const updatedConfig: WeddingConfig = {
+    ...config,
+    rsvpEnabled
+  };
+
   const projectRecord: SavedProject = {
     id,
     coupleNames,
@@ -276,10 +276,15 @@ export async function saveProjectToDatabase(
     themeName: config.themeId.toUpperCase(),
     createdAt: existingProject ? existingProject.createdAt : now,
     updatedAt: now,
-    config,
+    config: updatedConfig,
     deploymentStatus: 'generated',
     customUrl: `https://wedding-invitations.et/view/${id}`,
     ownerUid,
+    orderStatus,
+    rsvpEnabled,
+    customerName,
+    customerPhone,
+    transactionRef
   };
 
   if (existingIndex >= 0) {
@@ -305,6 +310,101 @@ export async function saveProjectToDatabase(
   }
 
   return projectRecord;
+}
+
+// Update project record when customer submits order & payment details
+export async function submitProjectOrder(
+  projectId: string,
+  details: {
+    customerName: string;
+    customerPhone: string;
+    transactionRef: string;
+  }
+): Promise<SavedProject | null> {
+  const projects = [...getAllSavedProjects()];
+  const index = projects.findIndex((p) => p.id === projectId);
+  let updatedProj: SavedProject | null = null;
+  const now = new Date().toISOString();
+
+  if (index >= 0) {
+    updatedProj = {
+      ...projects[index],
+      orderStatus: 'submitted',
+      customerName: details.customerName,
+      customerPhone: details.customerPhone,
+      transactionRef: details.transactionRef,
+      updatedAt: now,
+    };
+    projects[index] = updatedProj;
+    inMemoryProjects = projects;
+    saveToIndexedDB(updatedProj).catch(() => {});
+    safeSaveToLocalStorage(projects);
+  }
+
+  try {
+    const projectRef = doc(db, 'projects', projectId);
+    await setDoc(
+      projectRef,
+      {
+        orderStatus: 'submitted',
+        customerName: details.customerName,
+        customerPhone: details.customerPhone,
+        transactionRef: details.transactionRef,
+        updatedAt: now,
+      },
+      { merge: true }
+    );
+    console.log(`[Firestore] Project ${projectId} order updated to 'submitted'.`);
+  } catch (err) {
+    console.error('Failed to update project order status in Firestore:', err);
+  }
+
+  return updatedProj;
+}
+
+// Approve order & enable RSVP for project record
+export async function approveProjectOrder(projectId: string): Promise<SavedProject | null> {
+  const projects = [...getAllSavedProjects()];
+  const index = projects.findIndex((p) => p.id === projectId);
+  let updatedProj: SavedProject | null = null;
+  const now = new Date().toISOString();
+
+  if (index >= 0) {
+    const updatedConfig: WeddingConfig = {
+      ...projects[index].config,
+      rsvpEnabled: true,
+    };
+    updatedProj = {
+      ...projects[index],
+      orderStatus: 'approved',
+      rsvpEnabled: true,
+      config: updatedConfig,
+      updatedAt: now,
+    };
+    projects[index] = updatedProj;
+    inMemoryProjects = projects;
+    saveToIndexedDB(updatedProj).catch(() => {});
+    safeSaveToLocalStorage(projects);
+  }
+
+  try {
+    const projectRef = doc(db, 'projects', projectId);
+    await setDoc(
+      projectRef,
+      {
+        orderStatus: 'approved',
+        rsvpEnabled: true,
+        'config.rsvpEnabled': true,
+        updatedAt: now,
+      },
+      { merge: true }
+    );
+    console.log(`[Firestore] Project ${projectId} order approved & RSVP enabled.`);
+  } catch (err) {
+    console.error('Failed to approve project order in Firestore:', err);
+  }
+
+  return updatedProj;
 }
 
 // Delete project from Firestore & Local Cache

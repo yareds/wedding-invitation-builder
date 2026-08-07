@@ -1,6 +1,7 @@
 import JSZip from 'jszip';
 import { WeddingConfig } from '../types';
 import { THEME_PRESETS } from './themePresets';
+import firebaseAppletConfig from '../../firebase-applet-config.json';
 
 export async function generateAndDownloadProjectZip(config: WeddingConfig, projectId: string) {
   const zip = new JSZip();
@@ -110,6 +111,7 @@ export async function generateAndDownloadProjectZip(config: WeddingConfig, proje
 }
 
 function generateStandaloneHtml(config: WeddingConfig, projectId: string): string {
+  const isRsvpEnabled = Boolean(config.rsvpEnabled);
   const theme = THEME_PRESETS[config.themeId] || THEME_PRESETS.bordeaux;
   const colors = theme.colors;
 
@@ -375,7 +377,7 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
 
         <div class="flex justify-center">
           <button onclick="openRSVPModal()" class="inline-flex items-center justify-center gap-2 px-10 py-3.5 rounded-full font-body text-xs font-semibold uppercase tracking-wider shadow-lg hover:scale-105 transition-all cursor-pointer" style="background-color: ${colors.primary}; color: ${colors.blushPale}">
-            <span>✓ RSVP Online</span>
+            <span>${isRsvpEnabled ? '✓ RSVP Online' : '🔒 RSVP Coming Soon'}</span>
           </button>
         </div>
       </div>
@@ -552,7 +554,7 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
         <h3 class="font-serif-heading text-2xl sm:text-3xl font-normal" style="color: ${colors.gold}">Will You Join Our Celebration?</h3>
         <p class="font-body text-xs sm:text-sm opacity-80">Please let us know your attendance and meal preferences by ${config.rsvpDeadlineEn || 'April 1, 2026'}.</p>
         <button onclick="openRSVPModal()" class="inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-body text-xs font-semibold uppercase tracking-wider shadow-xl hover:scale-105 transition-all cursor-pointer" style="background-color: ${colors.gold}; color: ${colors.primary}">
-          <span>Respond to Invitation</span>
+          <span>${isRsvpEnabled ? 'Respond to Invitation' : '🔒 RSVP Coming Soon'}</span>
         </button>
       </div>
     </section>
@@ -582,6 +584,7 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
     <div class="relative w-full max-w-lg bg-white rounded-3xl border-2 shadow-2xl p-6 sm:p-8 my-auto text-[#3B0B1F]" style="border-color: ${colors.gold}">
       <button onclick="closeRSVPModal()" class="absolute top-4 right-4 p-2 rounded-full text-gray-500 hover:bg-gray-100 cursor-pointer">&times;</button>
       
+      ${isRsvpEnabled ? `
       <div id="rsvpFormView">
         <div class="text-center mb-6">
           <p class="text-xs uppercase tracking-widest font-semibold mb-1" style="color: ${colors.gold}">Kindly Respond By ${config.rsvpDeadlineEn || 'April 1, 2026'}</p>
@@ -628,11 +631,23 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
             <textarea id="rsvpMessage" rows="2" placeholder="Warm wishes or notes..." class="w-full px-4 py-2.5 rounded-xl border focus:outline-none text-sm bg-gray-50 border-gray-200"></textarea>
           </div>
 
-          <button type="submit" class="w-full py-3.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-xl cursor-pointer mt-2" style="background-color: ${colors.primary}; color: ${colors.blushPale}">
+          <button type="submit" id="rsvpSubmitBtn" class="w-full py-3.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-xl cursor-pointer mt-2" style="background-color: ${colors.primary}; color: ${colors.blushPale}">
             Confirm RSVP Response
           </button>
         </form>
       </div>
+      ` : `
+      <div id="rsvpFormView" class="text-center py-6 space-y-4">
+        <div class="w-16 h-16 mx-auto rounded-full bg-amber-50 border-2 border-amber-500 flex items-center justify-center text-amber-600 text-2xl font-bold">🔒</div>
+        <h3 class="font-serif-heading text-2xl font-semibold" style="color: ${colors.primary}">RSVP Coming Soon</h3>
+        <p class="text-xs text-gray-600 max-w-sm mx-auto leading-relaxed">
+          Online RSVP submissions for this wedding celebration will be enabled shortly once order verification is completed by the hosts.
+        </p>
+        <button onclick="closeRSVPModal()" class="px-6 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider cursor-pointer" style="background-color: ${colors.primary}; color: ${colors.blushPale}">
+          Close Window
+        </button>
+      </div>
+      `}
 
       <div id="rsvpSuccessView" class="hidden text-center py-6 space-y-4">
         <div class="w-16 h-16 mx-auto rounded-full bg-green-50 border-2 border-green-500 flex items-center justify-center text-green-600 text-2xl font-bold">✓</div>
@@ -644,6 +659,34 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
       </div>
     </div>
   </div>
+
+  <!-- Firebase Integration Script for Static Site -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    import { getFirestore, collection, addDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+    const fbConfig = ${JSON.stringify({
+      projectId: firebaseAppletConfig.projectId,
+      appId: firebaseAppletConfig.appId,
+      apiKey: firebaseAppletConfig.apiKey,
+      authDomain: firebaseAppletConfig.authDomain,
+      firestoreDatabaseId: firebaseAppletConfig.firestoreDatabaseId,
+      storageBucket: firebaseAppletConfig.storageBucket,
+      messagingSenderId: firebaseAppletConfig.messagingSenderId
+    })};
+
+    try {
+      const app = initializeApp(fbConfig);
+      const db = getFirestore(app, fbConfig.firestoreDatabaseId || '(default)');
+
+      window.submitRSVPToFirestore = async function(rsvpData) {
+        const rsvpsRef = collection(db, 'projects', '${projectId}', 'rsvps');
+        return await addDoc(rsvpsRef, rsvpData);
+      };
+    } catch (e) {
+      console.error('Firebase initialization error in exported static website:', e);
+    }
+  </script>
 
   <script>
     const galleryImgs = ${galleryImgsJson};
@@ -791,19 +834,46 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
       }
     }
 
-    function submitRSVP(e) {
+    async function submitRSVP(e) {
       e.preventDefault();
+      const submitBtn = document.getElementById('rsvpSubmitBtn');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Submitting RSVP...';
+      }
+
       const name = document.getElementById('rsvpName').value;
       const phone = document.getElementById('rsvpPhone').value;
-      const count = isAttending ? document.getElementById('rsvpGuestCount').value : 0;
+      const count = isAttending ? parseInt(document.getElementById('rsvpGuestCount').value || '1', 10) : 0;
       const message = document.getElementById('rsvpMessage').value;
 
-      const rsvpObj = { name, phone, isAttending, count, message, timestamp: new Date().toISOString() };
-      localStorage.setItem('wedding_guest_rsvp', JSON.stringify(rsvpObj));
+      const rsvpObj = {
+        guestName: name,
+        phone: phone,
+        attending: isAttending,
+        guestCount: count,
+        message: message,
+        submittedAt: new Date().toISOString()
+      };
 
-      document.getElementById('rsvpFormView').classList.add('hidden');
-      document.getElementById('rsvpSuccessView').classList.remove('hidden');
-      document.getElementById('rsvpSuccessText').innerText = 'Thank you, ' + name + '! Your RSVP response has been confirmed.';
+      try {
+        if (window.submitRSVPToFirestore) {
+          await window.submitRSVPToFirestore(rsvpObj);
+        } else {
+          localStorage.setItem('wedding_guest_rsvp_' + Date.now(), JSON.stringify(rsvpObj));
+        }
+
+        document.getElementById('rsvpFormView').classList.add('hidden');
+        document.getElementById('rsvpSuccessView').classList.remove('hidden');
+        document.getElementById('rsvpSuccessText').innerText = 'Thank you, ' + name + '! Your RSVP response has been confirmed.';
+      } catch (err) {
+        console.error('RSVP Submission Error:', err);
+        alert('There was an error submitting your RSVP response to Firestore. Please try again.');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerText = 'Confirm RSVP Response';
+        }
+      }
     }
   </script>
 </body>

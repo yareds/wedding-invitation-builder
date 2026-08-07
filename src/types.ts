@@ -68,11 +68,30 @@ export interface WeddingConfig {
   rsvpDeadlineEth: string;
   rsvpMethod: 'sheets' | 'netlify' | 'direct';
   sheetsUrl: string;
+  rsvpEnabled?: boolean;
   heroImg: string | null;
   bgMusicUrl: string | null;
   galleryImgs: string[];
   schedule: TimelineEvent[];
   bankDetails: BankDetail[];
+}
+
+export interface SavedProject {
+  id: string; // e.g. WED-2026-98421
+  coupleNames: string;
+  themeId: string;
+  themeName: string;
+  createdAt: string;
+  updatedAt: string;
+  config: WeddingConfig;
+  deploymentStatus: 'draft' | 'generated' | 'deployed';
+  customUrl?: string;
+  ownerUid?: string;
+  orderStatus?: 'draft' | 'submitted' | 'approved';
+  rsvpEnabled?: boolean;
+  customerName?: string;
+  customerPhone?: string;
+  transactionRef?: string;
 }
 
 export interface BankDetail {

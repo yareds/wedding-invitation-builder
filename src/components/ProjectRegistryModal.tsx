@@ -4,6 +4,7 @@ import {
   getAllSavedProjects,
   getAllProjectsFromFirestore,
   deleteProjectFromDatabase,
+  approveProjectOrder,
   subscribeToRSVPs,
   SavedProject
 } from '../utils/projectDatabase';
@@ -191,6 +192,15 @@ export const ProjectRegistryModal: React.FC<ProjectRegistryModalProps> = ({
     } catch (err: any) {
       console.error('Delete rejected by Firestore rules:', err);
       alert('Delete operation rejected: Firestore security rules permit deletion only for authenticated admin (yared.abegaz@gmail.com).');
+    }
+  };
+
+  const handleApproveOrder = async (projectId: string) => {
+    try {
+      await approveProjectOrder(projectId);
+      await loadProjectsFromDatabase();
+    } catch (err: any) {
+      console.error('Approve order error:', err);
     }
   };
 
@@ -527,115 +537,171 @@ export const ProjectRegistryModal: React.FC<ProjectRegistryModalProps> = ({
               </div>
             ) : (
               <div className="space-y-4 max-h-[48vh] overflow-y-auto pr-1">
-                {projects.map((proj) => (
-                  <div
-                    key={proj.id}
-                    className="bg-[#FDF0F3]/60 rounded-2xl p-5 border border-[#C8A84B]/40 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
-                  >
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="px-2.5 py-0.5 rounded-full bg-[#3B0B1F] text-[#C8A84B] font-mono text-[10px] font-bold uppercase tracking-wider">
-                          {proj.id}
-                        </span>
-                        <span className="px-2.5 py-0.5 rounded-full bg-[#D4849A]/20 text-[#3B0B1F] font-body text-[10px] font-semibold">
-                          Theme: {proj.themeId.toUpperCase()}
-                        </span>
-                      </div>
+                {projects.map((proj) => {
+                  const isSubmitted = proj.orderStatus === 'submitted';
+                  const isApproved = proj.orderStatus === 'approved';
+                  const isRsvpActive = Boolean(proj.rsvpEnabled || proj.config?.rsvpEnabled);
 
-                      <h3 className="font-serif-heading text-lg font-semibold text-[#3B0B1F]">
-                        {proj.coupleNames}
-                      </h3>
+                  return (
+                    <div
+                      key={proj.id}
+                      className="bg-[#FDF0F3]/60 rounded-2xl p-5 border border-[#C8A84B]/40 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
+                    >
+                      <div className="space-y-1.5">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="px-2.5 py-0.5 rounded-full bg-[#3B0B1F] text-[#C8A84B] font-mono text-[10px] font-bold uppercase tracking-wider">
+                            {proj.id}
+                          </span>
+                          <span className="px-2.5 py-0.5 rounded-full bg-[#D4849A]/20 text-[#3B0B1F] font-body text-[10px] font-semibold">
+                            Theme: {proj.themeId.toUpperCase()}
+                          </span>
 
-                      <div className="flex items-center gap-4 text-xs text-[#3B0B1F]/70 font-body">
-                        <span className="flex items-center gap-1">
-                          <Calendar className="w-3.5 h-3.5 text-[#C8A84B]" />
-                          Date: {proj.config.dateGC} ({proj.config.dateEC})
-                        </span>
-                        <span>
-                          Saved: {new Date(proj.updatedAt).toLocaleDateString()}
-                        </span>
-                      </div>
+                          {/* Order Status Badge */}
+                          {isSubmitted ? (
+                            <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-body text-[10px] font-bold uppercase tracking-wider border border-amber-300 flex items-center gap-1">
+                              <AlertCircle className="w-3 h-3 text-amber-600" />
+                              Order Submitted
+                            </span>
+                          ) : isApproved ? (
+                            <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-body text-[10px] font-bold uppercase tracking-wider border border-emerald-300 flex items-center gap-1">
+                              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                              Order Approved
+                            </span>
+                          ) : (
+                            <span className="px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-700 font-body text-[10px] font-semibold border border-gray-200">
+                              Draft Order
+                            </span>
+                          )}
 
-                      <div className="text-[11px] font-mono text-[#3B0B1F]/80 flex items-center gap-1 mt-0.5">
-                        <Globe className="w-3 h-3 text-[#C8A84B]" />
-                        <span>{proj.customUrl || `https://wedding-invitations.et/view/${proj.id}`}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-2 border-t md:border-t-0 pt-3 md:pt-0 border-[#D4849A]/30">
-                      {/* View Firestore RSVPs Button */}
-                      <button
-                        onClick={() => setSelectedRsvpProject(proj)}
-                        className="px-3.5 py-2 rounded-xl bg-[#C8A84B] text-[#3B0B1F] font-body text-xs font-bold hover:bg-[#E2C873] transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
-                        title="View live Firestore guest RSVPs"
-                      >
-                        <Users className="w-3.5 h-3.5" />
-                        <span>Guest RSVPs</span>
-                      </button>
-
-                      <button
-                        onClick={() => {
-                          onLoadProject(proj.config);
-                          onClose();
-                        }}
-                        className="px-3.5 py-2 rounded-xl bg-[#3B0B1F] text-[#FDF0F3] font-body text-xs font-semibold hover:bg-[#2D0817] transition-all cursor-pointer flex items-center gap-1.5"
-                        title="Load into Builder to edit"
-                      >
-                        <RefreshCw className="w-3.5 h-3.5 text-[#C8A84B]" />
-                        <span>Load &amp; Edit</span>
-                      </button>
-
-                      <button
-                        onClick={() => handleDownloadZip(proj)}
-                        disabled={downloadingId === proj.id}
-                        className="p-2.5 rounded-xl bg-white border border-[#C8A84B]/40 text-[#3B0B1F] hover:bg-[#FDF0F3] transition-all cursor-pointer"
-                        title="Download static HTML ZIP website package"
-                      >
-                        <Download className="w-4 h-4 text-[#C8A84B]" />
-                      </button>
-
-                      <button
-                        onClick={() => handleCopyUrl(proj.customUrl || `https://wedding-invitations.et/view/${proj.id}`, proj.id)}
-                        className="p-2.5 rounded-xl bg-white border border-[#C8A84B]/40 text-[#3B0B1F] hover:bg-[#FDF0F3] transition-all cursor-pointer"
-                        title="Copy Deployment URL"
-                      >
-                        {copiedId === proj.id ? (
-                          <Check className="w-4 h-4 text-green-600" />
-                        ) : (
-                          <Copy className="w-4 h-4 text-[#C8A84B]" />
-                        )}
-                      </button>
-
-                      {confirmingDeleteId === proj.id ? (
-                        <div className="flex items-center gap-1.5 bg-red-100 p-1 rounded-xl border border-red-300 animate-fadeIn">
-                          <button
-                            onClick={() => handleDelete(proj.id)}
-                            className="px-2.5 py-1.5 rounded-lg bg-red-600 text-white font-body text-xs font-bold hover:bg-red-700 transition-all cursor-pointer flex items-center gap-1 shadow-sm"
-                            title="Confirm Deletion"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                            <span>Confirm Delete</span>
-                          </button>
-                          <button
-                            onClick={() => setConfirmingDeleteId(null)}
-                            className="px-2.5 py-1.5 rounded-lg bg-white text-gray-700 hover:bg-gray-100 font-body text-xs font-semibold transition-all cursor-pointer border border-gray-200"
-                            title="Cancel"
-                          >
-                            Cancel
-                          </button>
+                          {/* RSVP Enabled Badge */}
+                          <span className={`px-2.5 py-0.5 rounded-full font-body text-[10px] font-bold uppercase tracking-wider border ${
+                            isRsvpActive
+                              ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                              : 'bg-gray-100 text-gray-600 border-gray-200'
+                          }`}>
+                            {isRsvpActive ? '✓ RSVP Enabled' : 'RSVP Disabled'}
+                          </span>
                         </div>
-                      ) : (
+
+                        <h3 className="font-serif-heading text-lg font-semibold text-[#3B0B1F]">
+                          {proj.coupleNames}
+                        </h3>
+
+                        {/* Customer details if submitted/approved */}
+                        {(proj.customerName || proj.transactionRef) && (
+                          <div className="text-xs text-[#3B0B1F] bg-white/80 p-2 rounded-xl border border-[#C8A84B]/30 space-y-0.5 font-body">
+                            <p>
+                              <strong>Customer:</strong> {proj.customerName || 'N/A'} {proj.customerPhone ? `(${proj.customerPhone})` : ''}
+                            </p>
+                            <p className="font-mono text-[11px] text-[#A68224]">
+                              <strong>Txn Ref:</strong> {proj.transactionRef || 'N/A'}
+                            </p>
+                          </div>
+                        )}
+
+                        <div className="flex items-center gap-4 text-xs text-[#3B0B1F]/70 font-body">
+                          <span className="flex items-center gap-1">
+                            <Calendar className="w-3.5 h-3.5 text-[#C8A84B]" />
+                            Date: {proj.config.dateGC} ({proj.config.dateEC})
+                          </span>
+                          <span>
+                            Saved: {new Date(proj.updatedAt).toLocaleDateString()}
+                          </span>
+                        </div>
+
+                        <div className="text-[11px] font-mono text-[#3B0B1F]/80 flex items-center gap-1 mt-0.5">
+                          <Globe className="w-3 h-3 text-[#C8A84B]" />
+                          <span>{proj.customUrl || `https://wedding-invitations.et/view/${proj.id}`}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-2 border-t md:border-t-0 pt-3 md:pt-0 border-[#D4849A]/30">
+                        {/* Approve Order & Enable RSVP Button (Visible when orderStatus === 'submitted') */}
+                        {isSubmitted && (
+                          <button
+                            onClick={() => handleApproveOrder(proj.id)}
+                            className="px-3.5 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 font-body text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-md active:scale-95"
+                            title="Approve Order & Enable RSVP for this project"
+                          >
+                            <CheckCircle2 className="w-4 h-4 text-emerald-200" />
+                            <span>Approve Order &amp; Enable RSVP</span>
+                          </button>
+                        )}
+
+                        {/* View Firestore RSVPs Button */}
                         <button
-                          onClick={() => setConfirmingDeleteId(proj.id)}
-                          className="p-2.5 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 transition-all cursor-pointer"
-                          title="Delete Project Record"
+                          onClick={() => setSelectedRsvpProject(proj)}
+                          className="px-3.5 py-2 rounded-xl bg-[#C8A84B] text-[#3B0B1F] font-body text-xs font-bold hover:bg-[#E2C873] transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
+                          title="View live Firestore guest RSVPs"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Users className="w-3.5 h-3.5" />
+                          <span>Guest RSVPs</span>
                         </button>
-                      )}
+
+                        <button
+                          onClick={() => {
+                            onLoadProject(proj.config);
+                            onClose();
+                          }}
+                          className="px-3.5 py-2 rounded-xl bg-[#3B0B1F] text-[#FDF0F3] font-body text-xs font-semibold hover:bg-[#2D0817] transition-all cursor-pointer flex items-center gap-1.5"
+                          title="Load into Builder to edit"
+                        >
+                          <RefreshCw className="w-3.5 h-3.5 text-[#C8A84B]" />
+                          <span>Load &amp; Edit</span>
+                        </button>
+
+                        <button
+                          onClick={() => handleDownloadZip(proj)}
+                          disabled={downloadingId === proj.id}
+                          className="p-2.5 rounded-xl bg-white border border-[#C8A84B]/40 text-[#3B0B1F] hover:bg-[#FDF0F3] transition-all cursor-pointer"
+                          title="Download static HTML ZIP website package"
+                        >
+                          <Download className="w-4 h-4 text-[#C8A84B]" />
+                        </button>
+
+                        <button
+                          onClick={() => handleCopyUrl(proj.customUrl || `https://wedding-invitations.et/view/${proj.id}`, proj.id)}
+                          className="p-2.5 rounded-xl bg-white border border-[#C8A84B]/40 text-[#3B0B1F] hover:bg-[#FDF0F3] transition-all cursor-pointer"
+                          title="Copy Deployment URL"
+                        >
+                          {copiedId === proj.id ? (
+                            <Check className="w-4 h-4 text-green-600" />
+                          ) : (
+                            <Copy className="w-4 h-4 text-[#C8A84B]" />
+                          )}
+                        </button>
+
+                        {confirmingDeleteId === proj.id ? (
+                          <div className="flex items-center gap-1.5 bg-red-100 p-1 rounded-xl border border-red-300 animate-fadeIn">
+                            <button
+                              onClick={() => handleDelete(proj.id)}
+                              className="px-2.5 py-1.5 rounded-lg bg-red-600 text-white font-body text-xs font-bold hover:bg-red-700 transition-all cursor-pointer flex items-center gap-1 shadow-sm"
+                              title="Confirm Deletion"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                              <span>Confirm Delete</span>
+                            </button>
+                            <button
+                              onClick={() => setConfirmingDeleteId(null)}
+                              className="px-2.5 py-1.5 rounded-lg bg-white text-gray-700 hover:bg-gray-100 font-body text-xs font-semibold transition-all cursor-pointer border border-gray-200"
+                              title="Cancel"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setConfirmingDeleteId(proj.id)}
+                            className="p-2.5 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 transition-all cursor-pointer"
+                            title="Delete Project Record"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </>

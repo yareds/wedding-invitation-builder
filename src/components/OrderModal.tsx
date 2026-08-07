@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { WeddingConfig } from '../types';
 import { THEME_PRESETS } from '../utils/themePresets';
-import { saveProjectToDatabase, SavedProject } from '../utils/projectDatabase';
+import { saveProjectToDatabase, submitProjectOrder, SavedProject } from '../utils/projectDatabase';
 import { X, Send, Copy, Check, MessageSquare, ShieldCheck, Banknote, AlertCircle, Lock, User, Phone, FileText, AlertTriangle, ArrowLeft } from 'lucide-react';
 
 interface OrderModalProps {
@@ -178,10 +178,22 @@ Payment Receipt submitted for online publishing.
     setTimeout(() => setCopiedAccount(null), 3000);
   };
 
-  const handleAttemptSend = (type: 'Telegram' | 'WhatsApp') => {
+  const handleAttemptSend = async (type: 'Telegram' | 'WhatsApp') => {
     if (!isAllInfoComplete) {
       setShowValidationErrors(true);
       return;
+    }
+
+    if (projectId) {
+      try {
+        await submitProjectOrder(projectId, {
+          customerName,
+          customerPhone,
+          transactionRef,
+        });
+      } catch (err) {
+        console.error('Error setting order status to submitted:', err);
+      }
     }
 
     const text = encodeURIComponent(`Hello! I am sending my payment receipt for my wedding invitation order:\n\n${orderSummaryText}`);
