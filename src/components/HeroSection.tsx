@@ -45,9 +45,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
 
       <div className={`max-w-4xl mx-auto relative z-10 flex flex-col items-center ${config.heroImg ? 'text-white' : ''}`}>
         {/* Monogram Circle in Hero */}
-        <div className="relative mb-8 group cursor-pointer">
+        <div className="relative w-28 h-28 sm:w-36 sm:h-36 mb-8 group cursor-pointer">
           <div
-            className="w-28 h-28 sm:w-36 sm:h-36 rounded-full border-2 p-2 shadow-2xl transition-transform duration-500 hover:scale-105 flex items-center justify-center"
+            className="w-full h-full rounded-full border-2 p-2 shadow-2xl transition-transform duration-500 hover:scale-105 flex items-center justify-center"
             style={{
               borderColor: colors.gold,
               backgroundColor: colors.primary
@@ -58,7 +58,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
               className="w-full h-full rounded-full border border-dashed flex items-center justify-center shadow-inner"
               style={{
                 borderColor: colors.gold + '90',
-                backgroundColor: '#3D0A1F'
+                backgroundColor: colors.primary
               }}
             >
               <div className="text-center">
@@ -75,11 +75,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
               </div>
             </div>
           </div>
-          {/* Subtle Accent Glow */}
-          <div
-            className="absolute inset-0 rounded-full border blur-sm pointer-events-none opacity-40"
-            style={{ borderColor: colors.gold }}
-          />
         </div>
 
 
@@ -108,20 +103,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
           )}
         </div>
 
-        {/* Subtitle / Invitation Text */}
-        <p
-          className="font-body text-sm sm:text-base max-w-xl mx-auto leading-relaxed mb-8 opacity-90"
-          style={{ color: config.heroImg ? 'rgba(255,255,255,0.9)' : colors.primary }}
-        >
-          request the honour of your presence as they exchange vows of everlasting love and celebrate their holy matrimony.
-        </p>
+        {/* Subtitle / Scripture Text */}
+        {config.scripture && config.scripture !== 'ሁሉን ያዘጋጀ ግን እግዚአብሔር ነው።' && (
+          <p
+            className="font-serif-heading text-base sm:text-lg max-w-xl mx-auto leading-relaxed mb-8 opacity-90 tracking-wide"
+            style={{ color: config.heroImg ? 'rgba(255,255,255,0.95)' : colors.primary }}
+          >
+            {config.scripture}
+          </p>
+        )}
 
-        {/* Key Event Badges */}
+        {/* Key Event Date & Location Info */}
         <div
-          className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs sm:text-sm font-body px-6 py-4 rounded-2xl border shadow-md backdrop-blur-md"
+          className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm font-body tracking-wider uppercase font-medium"
           style={{
-            backgroundColor: config.heroImg ? 'rgba(0,0,0,0.45)' : 'rgba(255,255,255,0.85)',
-            borderColor: colors.gold + '60',
             color: config.heroImg ? '#FFFFFF' : colors.primary
           }}
         >
@@ -129,9 +124,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
             <Calendar className="w-4 h-4" style={{ color: colors.gold }} />
             <span className="font-semibold">{config.dateGC || 'Saturday, May 09, 2026'}</span>
           </div>
-          <span className="hidden sm:inline" style={{ color: colors.blush }}>•</span>
+          <span className="hidden sm:inline" style={{ color: colors.gold }}>•</span>
           <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4" style={{ color: colors.blush }} />
+            <MapPin className="w-4 h-4" style={{ color: colors.gold }} />
             <span>{config.dateEC || 'ግንቦት 01, 2018 ዓ.ም'}</span>
           </div>
         </div>

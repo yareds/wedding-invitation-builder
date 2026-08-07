@@ -117,8 +117,8 @@ export const DateCard: React.FC<DateCardProps> = ({ config, onOpenRSVP }) => {
           </span>
         </div>
 
-        <p className="font-quote italic text-base sm:text-lg mb-8 max-w-md mx-auto" style={{ color: colors.primary + 'D0' }}>
-          "{config.scripture || 'Two lives, two hearts, joined in friendship, united forever in love.'}"
+        <p className="font-quote italic text-base sm:text-lg mb-8 max-w-md mx-auto leading-relaxed" style={{ color: colors.primary + 'D0' }}>
+          {config.scripture ? `"${config.scripture}"` : "We request the honor of your presence as we exchange our vows of everlasting love and celebrate our holy matrimony."}
         </p>
 
         {/* Countdown Timer Grid */}

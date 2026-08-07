@@ -19,7 +19,7 @@ export const BotanicalFooter: React.FC<BotanicalFooterProps> = ({ config }) => {
       id="botanical-footer"
       className="relative pt-12 pb-16 px-4 text-center overflow-hidden border-t-2 transition-colors duration-500"
       style={{
-        backgroundColor: '#59102e',
+        backgroundColor: colors.primary,
         borderColor: colors.gold,
         color: '#FAF0F3'
       }}
@@ -33,7 +33,7 @@ export const BotanicalFooter: React.FC<BotanicalFooterProps> = ({ config }) => {
           className="inline-flex items-center justify-center w-14 h-14 rounded-full border shadow-lg mb-2"
           style={{
             borderColor: colors.gold,
-            backgroundColor: '#3D0A1F'
+            backgroundColor: colors.primary
           }}
         >
           <span className="font-serif-heading text-lg tracking-widest" style={{ color: colors.gold }}>

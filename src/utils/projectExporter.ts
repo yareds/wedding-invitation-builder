@@ -294,9 +294,9 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
 
       <div class="max-w-4xl mx-auto relative z-10 flex flex-col items-center">
         <!-- Monogram Circle -->
-        <div class="relative mb-8 group cursor-pointer">
-          <div class="w-28 h-28 sm:w-36 sm:h-36 rounded-full border-2 p-2 shadow-2xl flex items-center justify-center" style="border-color: ${colors.gold}; background-color: ${colors.bg}">
-            <div class="w-full h-full rounded-full border border-dashed flex items-center justify-center shadow-inner" style="border-color: ${colors.blush}; background-color: ${colors.primary}">
+        <div class="relative w-28 h-28 sm:w-36 sm:h-36 mb-8 group cursor-pointer">
+          <div class="w-full h-full rounded-full border-2 p-2 shadow-2xl flex items-center justify-center" style="border-color: ${colors.gold}; background-color: ${colors.primary}">
+            <div class="w-full h-full rounded-full border border-dashed flex items-center justify-center shadow-inner" style="border-color: ${colors.gold}90; background-color: ${colors.primary}">
               <div class="text-center">
                 <span class="font-serif-heading text-3xl sm:text-4xl font-light tracking-widest block" style="color: ${colors.gold}">
                   ${groomInit} <span class="font-serif-heading text-xl sm:text-2xl font-normal" style="color: ${colors.blush}">&amp;</span> ${brideInit}
@@ -316,18 +316,18 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
           <p class="font-quote italic text-base sm:text-xl text-white/90 tracking-wide mt-2 opacity-90">${groomEn} &amp; ${brideEn}</p>
         </div>
 
-        <p class="font-body text-sm sm:text-base max-w-xl mx-auto leading-relaxed mb-8 opacity-90" style="color: ${colors.primary}">
-          request the honour of your presence as they exchange vows of everlasting love and celebrate their holy matrimony.
-        </p>
+        ${config.scripture && config.scripture !== 'ሁሉን ያዘጋጀ ግን እግዚአብሔር ነው።' ? `<p class="font-serif-heading text-base sm:text-lg max-w-xl mx-auto leading-relaxed mb-8 opacity-90 tracking-wide" style="color: ${colors.primary}">
+          ${config.scripture}
+        </p>` : ''}
 
-        <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs sm:text-sm font-body px-6 py-4 rounded-2xl border shadow-md backdrop-blur-md" style="background-color: rgba(255,255,255,0.85); border-color: ${colors.gold}60; color: ${colors.primary}">
+        <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm font-body tracking-wider uppercase font-medium" style="color: ${colors.primary}">
           <div class="flex items-center gap-2">
             <span style="color: ${colors.gold}">📅</span>
             <span class="font-semibold">${config.dateGC || 'Saturday, May 09, 2026'}</span>
           </div>
-          <span class="hidden sm:inline" style="color: ${colors.blush}">•</span>
+          <span class="hidden sm:inline" style="color: ${colors.gold}">•</span>
           <div class="flex items-center gap-2">
-            <span style="color: ${colors.blush}">📍</span>
+            <span style="color: ${colors.gold}">📍</span>
             <span>${config.dateEC || 'ግንቦት 01, 2018 ዓ.ም'}</span>
           </div>
         </div>
@@ -350,8 +350,8 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
           <span class="block font-serif-heading text-2xl sm:text-3xl tracking-widest font-light" style="color: ${colors.primary}">2026</span>
         </div>
 
-        <p class="font-quote italic text-base sm:text-lg mb-8 max-w-md mx-auto" style="color: ${colors.primary}D0">
-          "${config.scripture || 'Two lives, two hearts, joined in friendship, united forever in love.'}"
+        <p class="font-quote italic text-base sm:text-lg mb-8 max-w-md mx-auto leading-relaxed" style="color: ${colors.primary}D0">
+          ${config.scripture ? `"${config.scripture}"` : 'We request the honor of your presence as we exchange our vows of everlasting love and celebrate our holy matrimony.'}
         </p>
 
         <div id="countdown" class="grid grid-cols-4 gap-2 sm:gap-4 max-w-md mx-auto mb-8 p-4 rounded-2xl border" style="background-color: ${colors.blushPale}; border-color: ${colors.blush}40">
