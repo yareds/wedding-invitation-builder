@@ -259,7 +259,7 @@ export async function saveProjectToDatabase(
   const ownerUid = existingProject?.ownerUid || currentUid || '';
 
   const orderStatus = existingProject?.orderStatus || 'draft';
-  const rsvpEnabled = existingProject?.rsvpEnabled ?? config.rsvpEnabled ?? false;
+  const rsvpEnabled = true;
   const customerName = existingProject?.customerName || '';
   const customerPhone = existingProject?.customerPhone || '';
   const transactionRef = existingProject?.transactionRef || '';

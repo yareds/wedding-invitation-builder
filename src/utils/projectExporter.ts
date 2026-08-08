@@ -111,7 +111,7 @@ export async function generateAndDownloadProjectZip(config: WeddingConfig, proje
 }
 
 function generateStandaloneHtml(config: WeddingConfig, projectId: string): string {
-  const isRsvpEnabled = Boolean(config.rsvpEnabled);
+  const isRsvpEnabled = true;
   const theme = THEME_PRESETS[config.themeId] || THEME_PRESETS.bordeaux;
   const colors = theme.colors;
 
@@ -377,7 +377,7 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
 
         <div class="flex justify-center">
           <button onclick="openRSVPModal()" class="inline-flex items-center justify-center gap-2 px-10 py-3.5 rounded-full font-body text-xs font-semibold uppercase tracking-wider shadow-lg hover:scale-105 transition-all cursor-pointer" style="background-color: ${colors.primary}; color: ${colors.blushPale}">
-            <span>${isRsvpEnabled ? '✓ RSVP Online' : '🔒 RSVP Coming Soon'}</span>
+            <span>✓ RSVP Online</span>
           </button>
         </div>
       </div>
@@ -554,7 +554,7 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
         <h3 class="font-serif-heading text-2xl sm:text-3xl font-normal" style="color: ${colors.gold}">Will You Join Our Celebration?</h3>
         <p class="font-body text-xs sm:text-sm opacity-80">Please let us know your attendance and meal preferences by ${config.rsvpDeadlineEn || 'April 1, 2026'}.</p>
         <button onclick="openRSVPModal()" class="inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-body text-xs font-semibold uppercase tracking-wider shadow-xl hover:scale-105 transition-all cursor-pointer" style="background-color: ${colors.gold}; color: ${colors.primary}">
-          <span>${isRsvpEnabled ? 'Respond to Invitation' : '🔒 RSVP Coming Soon'}</span>
+          <span>Respond to Invitation</span>
         </button>
       </div>
     </section>
@@ -584,7 +584,6 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
     <div class="relative w-full max-w-lg bg-white rounded-3xl border-2 shadow-2xl p-6 sm:p-8 my-auto text-[#3B0B1F]" style="border-color: ${colors.gold}">
       <button onclick="closeRSVPModal()" class="absolute top-4 right-4 p-2 rounded-full text-gray-500 hover:bg-gray-100 cursor-pointer">&times;</button>
       
-      ${isRsvpEnabled ? `
       <div id="rsvpFormView">
         <div class="text-center mb-6">
           <p class="text-xs uppercase tracking-widest font-semibold mb-1" style="color: ${colors.gold}">Kindly Respond By ${config.rsvpDeadlineEn || 'April 1, 2026'}</p>
@@ -636,18 +635,6 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
           </button>
         </form>
       </div>
-      ` : `
-      <div id="rsvpFormView" class="text-center py-6 space-y-4">
-        <div class="w-16 h-16 mx-auto rounded-full bg-amber-50 border-2 border-amber-500 flex items-center justify-center text-amber-600 text-2xl font-bold">🔒</div>
-        <h3 class="font-serif-heading text-2xl font-semibold" style="color: ${colors.primary}">RSVP Coming Soon</h3>
-        <p class="text-xs text-gray-600 max-w-sm mx-auto leading-relaxed">
-          Online RSVP submissions for this wedding celebration will be enabled shortly once order verification is completed by the hosts.
-        </p>
-        <button onclick="closeRSVPModal()" class="px-6 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider cursor-pointer" style="background-color: ${colors.primary}; color: ${colors.blushPale}">
-          Close Window
-        </button>
-      </div>
-      `}
 
       <div id="rsvpSuccessView" class="hidden text-center py-6 space-y-4">
         <div class="w-16 h-16 mx-auto rounded-full bg-green-50 border-2 border-green-500 flex items-center justify-center text-green-600 text-2xl font-bold">✓</div>
