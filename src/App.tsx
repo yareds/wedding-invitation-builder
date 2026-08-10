@@ -16,7 +16,7 @@ import { LightboxGallery } from './components/LightboxGallery';
 import { RSVPModal } from './components/RSVPModal';
 import { BotanicalFooter } from './components/BotanicalFooter';
 import { romanticPiano } from './utils/audioEngine';
-import { Eye, Smartphone, Monitor, ShoppingBag, Sparkles, FolderOpen, ShieldCheck, Lock, UserCheck, Home } from 'lucide-react';
+import { Eye, Smartphone, Monitor, ShoppingBag, Sparkles, FolderOpen, ShieldCheck, Lock, UserCheck, Home, AlertTriangle, X } from 'lucide-react';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<'landing' | 'builder'>('landing');
@@ -28,6 +28,18 @@ export default function App() {
   const [deviceMode, setDeviceMode] = useState<'desktop' | 'mobile'>('desktop');
   const [activeViewMode, setActiveViewMode] = useState<'split' | 'guest'>('split');
   const [currentProjectId, setCurrentProjectId] = useState<string>('WED-2026-[#3B0B1F]');
+  const [cloudSaveError, setCloudSaveError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleSaveError = (e: any) => {
+      const msg = e?.detail?.message || 'Failed to save project to cloud database.';
+      setCloudSaveError(msg);
+    };
+    window.addEventListener('firestore-save-error', handleSaveError);
+    return () => {
+      window.removeEventListener('firestore-save-error', handleSaveError);
+    };
+  }, []);
 
   const handleOpenInvitation = () => {
     setShowSplash(false);
@@ -223,6 +235,24 @@ export default function App() {
         onClose={() => setIsOrderModalOpen(false)}
         onUpdateConfig={setConfig}
       />
+
+      {/* Cloud Save Error Alert Toast Banner */}
+      {cloudSaveError && (
+        <div className="fixed bottom-5 right-5 z-[9999] max-w-md bg-red-950 text-red-100 border-2 border-red-500 rounded-2xl p-4 shadow-2xl flex items-start gap-3 animate-in fade-in slide-in-from-bottom-5">
+          <AlertTriangle className="w-5 h-5 text-red-400 shrink-0 mt-0.5 animate-pulse" />
+          <div className="flex-1 text-xs">
+            <p className="font-bold uppercase tracking-wider mb-1 text-red-300">Cloud Sync Warning</p>
+            <p className="leading-relaxed opacity-90">{cloudSaveError}</p>
+          </div>
+          <button
+            onClick={() => setCloudSaveError(null)}
+            className="p-1 hover:bg-red-900 rounded-lg text-red-300 hover:text-white transition-colors cursor-pointer"
+            title="Dismiss error notification"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       {/* Admin Studio Portal & Customer Projects Registry Modal (Admin Facing) */}
       <ProjectRegistryModal

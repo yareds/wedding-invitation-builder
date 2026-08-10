@@ -1,5 +1,5 @@
 import { WeddingConfig, RSVPData, SavedProject } from '../types';
-import { db, auth } from '../lib/firebase';
+import { db, auth, uploadBase64ToFirebaseStorage } from '../lib/firebase';
 import { signInAnonymously } from 'firebase/auth';
 import {
   collection,
@@ -264,8 +264,42 @@ export async function saveProjectToDatabase(
   const customerPhone = existingProject?.customerPhone || '';
   const transactionRef = existingProject?.transactionRef || '';
 
+  // Convert any remaining base64 media fields to Firebase Storage URLs
+  let heroImg = config.heroImg;
+  let bgMusicUrl = config.bgMusicUrl;
+  let galleryImgs = config.galleryImgs || [];
+
+  if (heroImg && heroImg.startsWith('data:')) {
+    try {
+      heroImg = await uploadBase64ToFirebaseStorage(heroImg, 'hero_images');
+    } catch (err) {
+      console.warn('Failed to upload base64 heroImg to Firebase Storage:', err);
+    }
+  }
+
+  if (bgMusicUrl && bgMusicUrl.startsWith('data:')) {
+    try {
+      bgMusicUrl = await uploadBase64ToFirebaseStorage(bgMusicUrl, 'audio');
+    } catch (err) {
+      console.warn('Failed to upload base64 bgMusicUrl to Firebase Storage:', err);
+    }
+  }
+
+  if (galleryImgs.some((img) => img && img.startsWith('data:'))) {
+    try {
+      galleryImgs = await Promise.all(
+        galleryImgs.map((img) => uploadBase64ToFirebaseStorage(img, 'gallery').then((url) => url || img))
+      );
+    } catch (err) {
+      console.warn('Failed to upload base64 galleryImgs to Firebase Storage:', err);
+    }
+  }
+
   const updatedConfig: WeddingConfig = {
     ...config,
+    heroImg,
+    bgMusicUrl,
+    galleryImgs,
     rsvpEnabled
   };
 
@@ -305,8 +339,17 @@ export async function saveProjectToDatabase(
     const projectRef = doc(db, 'projects', id);
     await setDoc(projectRef, projectRecord, { merge: true });
     console.log(`[Firestore] Project ${id} saved successfully with ownerUid: ${ownerUid}`);
-  } catch (err) {
+  } catch (err: any) {
     console.error('Failed to save project to Firestore:', err);
+    const errorMsg = err?.message || 'Request payload or network error saving to cloud';
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('firestore-save-error', {
+          detail: { message: `Cloud Save Error: ${errorMsg}` },
+        })
+      );
+    }
+    throw new Error(`Cloud Save Failed: ${errorMsg}`);
   }
 
   return projectRecord;

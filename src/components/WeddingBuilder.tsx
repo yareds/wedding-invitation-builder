@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { WeddingConfig, ThemeId, TimelineEvent } from '../types';
 import { THEME_PRESETS, SAMPLE_WEDDING_CONFIG, DEFAULT_WEDDING_CONFIG } from '../utils/themePresets';
-import { Palette, Heart, Image as ImageIcon, Music, MapPin, Plus, Trash2, Check, ShoppingBag, Monitor, Smartphone, Upload, AlertCircle, Sparkles, RefreshCw } from 'lucide-react';
+import { uploadFileToFirebaseStorage } from '../lib/firebase';
+import { Palette, Heart, Image as ImageIcon, Music, MapPin, Plus, Trash2, Check, ShoppingBag, Monitor, Smartphone, Upload, AlertCircle, Sparkles, RefreshCw, Loader2 } from 'lucide-react';
 
 interface WeddingBuilderProps {
   config: WeddingConfig;
@@ -85,32 +86,43 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
     });
   };
 
-  // Image Upload handler for Hero Background
+  const [isUploadingHero, setIsUploadingHero] = useState<boolean>(false);
+  const [isUploadingMusic, setIsUploadingMusic] = useState<boolean>(false);
+  const [isUploadingGallery, setIsUploadingGallery] = useState<boolean>(false);
+
+  // Image Upload handler for Hero Background (Uploads to Firebase Storage)
   const handleHeroImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const compressed = await compressImageFile(file, 1400, 1400, 0.82);
-      if (compressed) {
-        handleTextChange('heroImg', compressed);
-      }
+    if (!file) return;
+    setIsUploadingHero(true);
+    try {
+      const downloadUrl = await uploadFileToFirebaseStorage(file, 'hero_images');
+      handleTextChange('heroImg', downloadUrl);
+    } catch (err: any) {
+      console.error('Hero Image Upload Error:', err);
+      alert(`Failed to upload cover photo to Firebase Storage: ${err?.message || 'Unknown error'}`);
+    } finally {
+      setIsUploadingHero(false);
     }
   };
 
-  // Audio Upload handler for Background Music
-  const handleAudioUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Audio Upload handler for Background Music (Uploads to Firebase Storage)
+  const handleAudioUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          handleTextChange('bgMusicUrl', event.target.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+    setIsUploadingMusic(true);
+    try {
+      const downloadUrl = await uploadFileToFirebaseStorage(file, 'audio');
+      handleTextChange('bgMusicUrl', downloadUrl);
+    } catch (err: any) {
+      console.error('Audio Upload Error:', err);
+      alert(`Failed to upload audio soundtrack to Firebase Storage: ${err?.message || 'Unknown error'}`);
+    } finally {
+      setIsUploadingMusic(false);
     }
   };
 
-  // Gallery Image Upload (up to 10 images)
+  // Gallery Image Upload (up to 10 images uploaded directly to Firebase Storage)
   const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const files: File[] = Array.from(e.target.files);
@@ -124,16 +136,23 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
     }
 
     const filesToProcess = files.slice(0, remainingSlots);
-    const compressedImages = await Promise.all(
-      filesToProcess.map((f) => compressImageFile(f, 1200, 1200, 0.8))
-    );
-
-    const validNewImages = compressedImages.filter(Boolean);
-    if (validNewImages.length > 0) {
-      onChangeConfig({
-        ...config,
-        galleryImgs: [...(config.galleryImgs || []), ...validNewImages]
-      });
+    setIsUploadingGallery(true);
+    try {
+      const uploadedUrls = await Promise.all(
+        filesToProcess.map((f) => uploadFileToFirebaseStorage(f, 'gallery'))
+      );
+      const validUrls = uploadedUrls.filter(Boolean);
+      if (validUrls.length > 0) {
+        onChangeConfig({
+          ...config,
+          galleryImgs: [...(config.galleryImgs || []), ...validUrls]
+        });
+      }
+    } catch (err: any) {
+      console.error('Gallery Upload Error:', err);
+      alert(`Failed to upload gallery photos to Firebase Storage: ${err?.message || 'Unknown error'}`);
+    } finally {
+      setIsUploadingGallery(false);
     }
   };
 
@@ -469,12 +488,17 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
                   )}
                 </div>
                 <div className="flex-1 space-y-2">
-                  <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#3B0B1F] text-[#FDF0F3] font-body text-xs font-semibold cursor-pointer hover:bg-[#2D0817] shadow-sm">
-                    <Upload className="w-4 h-4 text-[#C8A84B]" />
-                    <span>Upload Custom Image</span>
+                  <label className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#3B0B1F] text-[#FDF0F3] font-body text-xs font-semibold cursor-pointer hover:bg-[#2D0817] shadow-sm ${isUploadingHero ? 'opacity-70 pointer-events-none' : ''}`}>
+                    {isUploadingHero ? (
+                      <Loader2 className="w-4 h-4 text-[#C8A84B] animate-spin" />
+                    ) : (
+                      <Upload className="w-4 h-4 text-[#C8A84B]" />
+                    )}
+                    <span>{isUploadingHero ? 'Uploading to Storage...' : 'Upload Custom Image'}</span>
                     <input
                       type="file"
                       accept="image/*"
+                      disabled={isUploadingHero}
                       onChange={handleHeroImageUpload}
                       className="hidden"
                     />
@@ -492,19 +516,24 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
                 Background Music / Soundtrack
               </label>
               <div className="flex flex-col gap-2">
-                <label className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#FDF0F3] border border-[#C8A84B] text-[#3B0B1F] font-body text-xs font-semibold cursor-pointer hover:bg-[#D4849A]/20">
-                  <Music className="w-4 h-4 text-[#C8A84B]" />
-                  <span>Upload Audio MP3 File</span>
+                <label className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#FDF0F3] border border-[#C8A84B] text-[#3B0B1F] font-body text-xs font-semibold cursor-pointer hover:bg-[#D4849A]/20 ${isUploadingMusic ? 'opacity-70 pointer-events-none' : ''}`}>
+                  {isUploadingMusic ? (
+                    <Loader2 className="w-4 h-4 text-[#C8A84B] animate-spin" />
+                  ) : (
+                    <Music className="w-4 h-4 text-[#C8A84B]" />
+                  )}
+                  <span>{isUploadingMusic ? 'Uploading Audio to Storage...' : 'Upload Audio MP3 File'}</span>
                   <input
                     type="file"
                     accept="audio/*"
+                    disabled={isUploadingMusic}
                     onChange={handleAudioUpload}
                     className="hidden"
                   />
                 </label>
                 <p className="text-[11px] text-[#3B0B1F]/60 font-body">
                   Currently selected music: <span className="font-mono text-[10px] text-[#C8A84B]">
-                    {config.bgMusicUrl ? `${config.bgMusicUrl.slice(0, 30)}...` : 'Default Synthesized Piano'}
+                    {config.bgMusicUrl ? `${config.bgMusicUrl.slice(0, 35)}...` : 'Default Synthesized Piano'}
                   </span>
                 </p>
               </div>
@@ -690,13 +719,18 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
                 <span className="font-body text-xs font-semibold text-[#3B0B1F]">
                   Gallery Photos (Max 10): {config.galleryImgs?.length || 0} / 10
                 </span>
-                <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#3B0B1F] text-[#FDF0F3] font-body text-xs font-semibold cursor-pointer hover:bg-[#2D0817]">
-                  <Plus className="w-4 h-4 text-[#C8A84B]" />
-                  <span>Add Photos</span>
+                <label className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#3B0B1F] text-[#FDF0F3] font-body text-xs font-semibold cursor-pointer hover:bg-[#2D0817] ${isUploadingGallery ? 'opacity-70 pointer-events-none' : ''}`}>
+                  {isUploadingGallery ? (
+                    <Loader2 className="w-4 h-4 text-[#C8A84B] animate-spin" />
+                  ) : (
+                    <Plus className="w-4 h-4 text-[#C8A84B]" />
+                  )}
+                  <span>{isUploadingGallery ? 'Uploading to Storage...' : 'Add Photos'}</span>
                   <input
                     type="file"
                     accept="image/*"
                     multiple
+                    disabled={isUploadingGallery}
                     onChange={handleGalleryUpload}
                     className="hidden"
                   />
