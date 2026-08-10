@@ -105,7 +105,7 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
         file,
         'audio',
         (progress) => setMusicProgress(progress),
-        90000
+        160000
       );
       handleTextChange('bgMusicUrl', downloadUrl);
     } catch (err: any) {
