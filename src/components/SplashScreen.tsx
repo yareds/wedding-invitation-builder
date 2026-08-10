@@ -52,9 +52,9 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ config, onOpenInvita
         <div className="relative mb-6">
           <div
             className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 flex items-center justify-center p-1 shadow-lg"
-            style={{ borderColor: colors.gold, backgroundColor: colors.primary }}
+            style={{ borderColor: colors.gold, backgroundColor: 'transparent' }}
           >
-            <div className="w-full h-full rounded-full border flex items-center justify-center" style={{ borderColor: colors.blush + '50' }}>
+            <div className="w-full h-full rounded-full border flex items-center justify-center" style={{ borderColor: colors.blush + '50', backgroundColor: 'transparent' }}>
               <span className="font-serif-heading text-2xl sm:text-3xl tracking-widest font-light" style={{ color: colors.gold }}>
                 {groomInit} <span className="text-lg font-normal" style={{ color: colors.blush }}>እና</span> {brideInit}
               </span>

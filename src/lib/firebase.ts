@@ -34,7 +34,8 @@ export async function uploadFileToFirebaseStorage(
   file: File | Blob,
   folder = 'media',
   onProgress?: (progress: number) => void,
-  timeoutMs = 90000
+  timeoutMs = 90000,
+  customContentType?: string
 ): Promise<string> {
   if (!auth.currentUser) {
     try {
@@ -47,7 +48,23 @@ export async function uploadFileToFirebaseStorage(
   const uniqueName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}_${fileName}`;
   const storageRef = ref(storage, `${folder}/${uniqueName}`);
 
-  const uploadTask = uploadBytesResumable(storageRef, file);
+  // Determine explicit content type (crucial for audio/video HTML5 element compatibility)
+  let contentType = customContentType || file.type;
+  if (!contentType || contentType === 'application/octet-stream') {
+    if (folder === 'audio' || fileName.endsWith('.mp3')) {
+      contentType = 'audio/mpeg';
+    } else if (fileName.endsWith('.wav')) {
+      contentType = 'audio/wav';
+    } else if (fileName.endsWith('.ogg')) {
+      contentType = 'audio/ogg';
+    } else if (fileName.endsWith('.m4a')) {
+      contentType = 'audio/mp4';
+    } else {
+      contentType = 'application/octet-stream';
+    }
+  }
+
+  const uploadTask = uploadBytesResumable(storageRef, file, { contentType });
 
   return new Promise<string>((resolve, reject) => {
     let timer: any = null;
@@ -93,8 +110,21 @@ export async function uploadFileToFirebaseStorage(
  */
 export async function uploadBase64ToFirebaseStorage(dataUrl: string | null, folder = 'media'): Promise<string | null> {
   if (!dataUrl || !dataUrl.startsWith('data:')) return dataUrl;
+
+  // Explicitly extract MIME type from data URL prefix (e.g. 'audio/mpeg' from 'data:audio/mpeg;base64,...')
+  let extractedMime = '';
+  const mimeMatch = dataUrl.match(/^data:([^;,]+)/);
+  if (mimeMatch && mimeMatch[1]) {
+    extractedMime = mimeMatch[1];
+    if (extractedMime === 'audio/mp3') {
+      extractedMime = 'audio/mpeg';
+    }
+  }
+
   const res = await fetch(dataUrl);
   const blob = await res.blob();
-  return await uploadFileToFirebaseStorage(blob, folder);
+
+  const contentType = extractedMime || blob.type || 'application/octet-stream';
+  return await uploadFileToFirebaseStorage(blob, folder, undefined, 90000, contentType);
 }
 

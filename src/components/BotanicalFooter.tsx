@@ -33,7 +33,7 @@ export const BotanicalFooter: React.FC<BotanicalFooterProps> = ({ config }) => {
           className="inline-flex items-center justify-center w-14 h-14 rounded-full border shadow-lg mb-2"
           style={{
             borderColor: colors.gold,
-            backgroundColor: colors.primary
+            backgroundColor: 'transparent'
           }}
         >
           <span className="font-serif-heading text-lg tracking-widest" style={{ color: colors.gold }}>

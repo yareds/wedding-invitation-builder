@@ -854,10 +854,15 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
 
             {/* Gallery Uploader */}
             <div className="pt-3 border-t border-[#D4849A]/30">
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-body text-xs font-semibold text-[#3B0B1F]">
-                  Gallery Photos (Max 8): {config.galleryImgs?.length || 0} / 8
-                </span>
+              <div className="flex items-[#3B0B1F] justify-between mb-2">
+                <div className="flex flex-col">
+                  <span className="font-body text-xs font-semibold text-[#3B0B1F]">
+                    Gallery Photos (Max 8): {config.galleryImgs?.length || 0} / 8
+                  </span>
+                  <p className="text-[11px] text-[#C8A84B] font-body font-medium italic mt-0.5">
+                    You can delete the sample images and replace them with your own.
+                  </p>
+                </div>
                 <div className="flex flex-col items-end gap-1">
                   <label className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#3B0B1F] text-[#FDF0F3] font-body text-xs font-semibold cursor-pointer hover:bg-[#2D0817] ${isUploadingGallery ? 'opacity-70 pointer-events-none' : ''}`}>
                     {isUploadingGallery ? (

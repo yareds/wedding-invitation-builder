@@ -361,7 +361,7 @@ export async function submitProjectOrder(
   details: {
     customerName: string;
     customerPhone: string;
-    transactionRef: string;
+    transactionRef?: string;
   }
 ): Promise<SavedProject | null> {
   const projects = [...getAllSavedProjects()];
@@ -375,7 +375,7 @@ export async function submitProjectOrder(
       orderStatus: 'submitted',
       customerName: details.customerName,
       customerPhone: details.customerPhone,
-      transactionRef: details.transactionRef,
+      transactionRef: details.transactionRef || '',
       updatedAt: now,
     };
     projects[index] = updatedProj;
@@ -392,7 +392,7 @@ export async function submitProjectOrder(
         orderStatus: 'submitted',
         customerName: details.customerName,
         customerPhone: details.customerPhone,
-        transactionRef: details.transactionRef,
+        transactionRef: details.transactionRef || '',
         updatedAt: now,
       },
       { merge: true }

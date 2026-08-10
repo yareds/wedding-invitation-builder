@@ -261,8 +261,8 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
   <div id="splashScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-6 text-center transition-all duration-700 ease-in-out" style="background-color: ${colors.primary}; color: ${colors.blushPale}">
     <div class="relative w-[90%] max-w-lg mx-auto p-8 sm:p-12 text-center border rounded-sm shadow-2xl backdrop-blur-md flex flex-col items-center" style="border-color: ${colors.gold}60; background-color: ${colors.primary}E6">
       
-      <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 flex items-center justify-center p-1 shadow-lg mb-6" style="border-color: ${colors.gold}; background-color: ${colors.primary}">
-        <div class="w-full h-full rounded-full border flex items-center justify-center" style="border-color: ${colors.blush}50">
+      <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 flex items-center justify-center p-1 shadow-lg mb-6" style="border-color: ${colors.gold}; background-color: transparent">
+        <div class="w-full h-full rounded-full border flex items-center justify-center" style="border-color: ${colors.blush}50; background-color: transparent">
           <span class="font-serif-heading text-2xl sm:text-3xl tracking-widest font-light" style="color: ${colors.gold}">
             ${groomInit} <span class="text-lg font-normal" style="color: ${colors.blush}">እና</span> ${brideInit}
           </span>
@@ -292,13 +292,13 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
 
     <!-- 1. Hero Section -->
     <section class="relative pt-20 pb-16 px-4 sm:px-6 md:px-8 overflow-hidden text-center transition-colors duration-500" style="background-color: ${colors.bg}; color: ${colors.primary}">
-      ${config.heroImg ? `<div class="absolute inset-0 z-0 overflow-hidden"><img src="${config.heroImg}" class="w-full h-full object-cover object-top opacity-30" /><div class="absolute inset-0" style="background-color: ${colors.heroOv}"></div></div>` : ''}
+      ${config.heroImg ? `<div class="absolute inset-0 z-0 overflow-hidden"><img src="${config.heroImg}" alt="Hero Background" class="w-full h-full object-cover object-center opacity-70 transition-opacity duration-700 pointer-events-none" /><div class="absolute inset-0" style="background-color: ${colors.heroOv || 'rgba(0,0,0,0.45)'}"></div></div>` : ''}
 
       <div class="max-w-4xl mx-auto relative z-10 flex flex-col items-center">
         <!-- Monogram Circle -->
-        <div class="relative w-28 h-28 sm:w-36 sm:h-36 mb-8 group cursor-pointer">
-          <div class="w-full h-full rounded-full border-2 p-2 shadow-2xl flex items-center justify-center" style="border-color: ${colors.gold}; background-color: ${colors.primary}">
-            <div class="w-full h-full rounded-full border border-dashed flex items-center justify-center shadow-inner" style="border-color: ${colors.gold}90; background-color: ${colors.primary}">
+        <div class="relative w-28 h-28 sm:w-36 sm:h-36 mb-6 group cursor-pointer">
+          <div class="w-full h-full rounded-full border-2 p-2 shadow-2xl flex items-center justify-center" style="border-color: ${colors.gold}; background-color: transparent">
+            <div class="w-full h-full rounded-full border border-dashed flex items-center justify-center shadow-inner" style="border-color: ${colors.gold}90; background-color: transparent">
               <div class="text-center">
                 <span class="font-serif-heading text-3xl sm:text-4xl font-light tracking-widest block" style="color: ${colors.gold}">
                   ${groomInit} <span class="font-serif-heading text-xl sm:text-2xl font-normal" style="color: ${colors.blush}">&amp;</span> ${brideInit}
@@ -525,28 +525,6 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
         </div>
       </div>
     </section>
-
-    <!-- 7. Traditional Accounts & Gifts -->
-    ${
-      config.bankDetails?.length
-        ? `
-    <section class="py-16 px-4 max-w-3xl mx-auto">
-      <div class="bg-white/90 rounded-3xl p-6 sm:p-10 border shadow-xl space-y-6" style="border-color: ${colors.gold}40">
-        <div class="text-center space-y-1">
-          <p class="text-xs uppercase tracking-widest font-semibold" style="color: ${colors.gold}">Gifts &amp; Blessings</p>
-          <h2 class="font-serif-heading text-2xl sm:text-3xl font-normal" style="color: ${colors.primary}">Traditional Accounts &amp; Gifts</h2>
-          <p class="text-xs text-center max-w-md mx-auto pt-1 opacity-80">
-            Your prayers and presence are our greatest blessings. Should you wish to honor us with a gift, traditional Ethiopian bank accounts are provided below:
-          </p>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
-          ${bankHtml}
-        </div>
-      </div>
-    </section>
-    `
-        : ''
-    }
 
     <!-- 8. RSVP Banner Section -->
     <section class="py-12 text-center px-4 my-8" style="background-color: ${colors.primary}; color: ${colors.blushPale}">

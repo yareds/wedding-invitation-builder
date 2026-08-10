@@ -16,10 +16,10 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
   const [sentSuccess, setSentSuccess] = useState<string | null>(null);
   const [currentProject, setCurrentProject] = useState<SavedProject | null>(null);
 
-  // Customer Order & Payment Contact Form State
+  // Customer Order & Contact Form State
   const [customerName, setCustomerName] = useState<string>('');
   const [customerPhone, setCustomerPhone] = useState<string>('');
-  const [transactionRef, setTransactionRef] = useState<string>('');
+  const [isOrderSubmitted, setIsOrderSubmitted] = useState<boolean>(false);
   const [showValidationErrors, setShowValidationErrors] = useState<boolean>(false);
 
   useEffect(() => {
@@ -62,18 +62,16 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
 
   const isEssentialWeddingComplete = essentialWeddingMissing.length === 0;
 
-  // Check customer payment details validity
+  // Check customer contact details validity
   const isCustomerNameValid = Boolean(customerName.trim());
   const isCustomerPhoneValid = Boolean(customerPhone.trim());
-  const isTransactionRefValid = Boolean(transactionRef.trim());
 
   // Combined missing list
   const missingFields: { key: string; label: string }[] = [...essentialWeddingMissing];
   if (!isCustomerNameValid) missingFields.push({ key: 'customerName', label: 'Your Full Name' });
   if (!isCustomerPhoneValid) missingFields.push({ key: 'customerPhone', label: 'Your Contact Phone Number' });
-  if (!isTransactionRefValid) missingFields.push({ key: 'transactionRef', label: 'Payment Receipt / Transaction Ref Number' });
 
-  const isAllInfoComplete = isEssentialWeddingComplete && isCustomerNameValid && isCustomerPhoneValid && isTransactionRefValid;
+  const isAllInfoComplete = isEssentialWeddingComplete && isCustomerNameValid && isCustomerPhoneValid;
 
   // Render Basic Notification View if essential wedding information is missing
   if (!isEssentialWeddingComplete) {
@@ -153,11 +151,10 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
   );
 
   const orderSummaryText = `
-💒 WEDDING WEBSITE ORDER & PAYMENT RECEIPT:
+💒 WEDDING WEBSITE ORDER SUBMISSION:
 • Order ID: ${projectId}
 • Customer Full Name: ${customerName}
 • Customer Phone: ${customerPhone}
-• Payment Ref / Txn ID: ${transactionRef}
 ----------------------------------
 • Couple: ${groom} & ${bride}
 • Date (GC): ${dateGC}
@@ -169,7 +166,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
 • RSVP Deadline: ${config.rsvpDeadlineEn}
 • Package Price: 30,000 ETB
 ----------------------------------
-Payment Receipt submitted for online publishing.
+Order details submitted for online hosting.
   `.trim();
 
   const handleCopyAccount = (acc: string) => {
@@ -189,7 +186,6 @@ Payment Receipt submitted for online publishing.
         await submitProjectOrder(projectId, {
           customerName,
           customerPhone,
-          transactionRef,
         });
       } catch (err) {
         console.error('Error setting order status to submitted:', err);
@@ -269,7 +265,7 @@ Payment Receipt submitted for online publishing.
           </div>
         )}
 
-        {/* Section 1: Customer Contact & Payment Info Inputs */}
+        {/* Section 1: Customer Contact Info Inputs */}
         <div className="bg-white rounded-2xl p-4 border border-[#E0D0B8] mb-5 space-y-3 shadow-sm">
           <h3 className="font-serif-heading text-base font-semibold text-[#3D0A1F] flex items-center gap-1.5">
             <User className="w-4 h-4 text-[#A68224]" />
@@ -320,29 +316,6 @@ Payment Receipt submitted for online publishing.
                   }`}
                 />
                 <Phone className="w-3.5 h-3.5 text-[#A68224] absolute left-2.5 top-2.5" />
-              </div>
-            </div>
-
-            <div className="sm:col-span-2">
-              <label className="block font-semibold text-[#3D0A1F] mb-1 flex items-center justify-between">
-                <span>Payment Transaction Reference / Slip ID <span className="text-red-500">*</span></span>
-                {!isTransactionRefValid && showValidationErrors && (
-                  <span className="text-red-500 text-[10px]">Required</span>
-                )}
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  value={transactionRef}
-                  onChange={(e) => setTransactionRef(e.target.value)}
-                  placeholder="e.g. CBE Ref # 1002938472 or Telebirr Txn # 928374"
-                  className={`w-full pl-8 pr-3 py-2 rounded-xl bg-[#FAF7F2] border text-xs text-[#3D0A1F] focus:outline-none focus:border-[#C8A84B] focus:bg-white ${
-                    !isTransactionRefValid && showValidationErrors
-                      ? 'border-red-500 ring-2 ring-red-500/20'
-                      : 'border-[#D8C7A8]'
-                  }`}
-                />
-                <FileText className="w-3.5 h-3.5 text-[#A68224] absolute left-2.5 top-2.5" />
               </div>
             </div>
           </div>
@@ -497,11 +470,31 @@ Payment Receipt submitted for online publishing.
           </div>
         </div>
 
-        {/* Submit Order Buttons */}
+        {/* Confirmation Message Card when order is submitted */}
+        {isOrderSubmitted && (
+          <div className="p-6 bg-emerald-50 rounded-2xl border-2 border-emerald-500 text-[#3D0A1F] space-y-3 text-center my-4 shadow-lg animate-in fade-in">
+            <div className="w-14 h-14 rounded-full bg-emerald-100 border-2 border-emerald-500 flex items-center justify-center mx-auto text-emerald-700 shadow-inner">
+              <Check className="w-7 h-7 text-emerald-600" />
+            </div>
+            <h3 className="font-serif-heading text-2xl font-bold text-emerald-950">
+              Your order is submitted!
+            </h3>
+            <p className="font-body text-sm text-emerald-900 leading-relaxed max-w-md mx-auto font-medium">
+              Once we receive your payment we will host your invitation online and will send you the link.
+            </p>
+            <div className="pt-2 border-t border-emerald-200/80">
+              <p className="font-mono text-xs font-semibold text-emerald-800">
+                Order ID: <span className="font-bold text-emerald-950">{projectId}</span>
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Submit Order Action Controls */}
         <div className="space-y-3 pt-4 border-t border-[#E0D0B8]">
           <div className="flex items-center justify-between">
             <p className="font-body text-xs font-semibold text-[#3D0A1F] uppercase tracking-wider">
-              Send Payment Receipt
+              Submit Order &amp; Confirm
             </p>
             {!isAllInfoComplete && (
               <span className="text-[11px] font-semibold text-amber-700 flex items-center gap-1">
@@ -510,38 +503,77 @@ Payment Receipt submitted for online publishing.
             )}
           </div>
 
-          {sentSuccess && (
-            <div className="p-3 bg-emerald-50 border border-emerald-400 text-emerald-900 text-xs rounded-xl text-center font-medium">
-              ✓ Redirecting to {sentSuccess} to send payment receipt for Order ID <code className="font-mono font-bold text-[#A68224]">{projectId}</code>!
+          <button
+            onClick={() => {
+              if (!isAllInfoComplete) {
+                setShowValidationErrors(true);
+                return;
+              }
+              saveProjectToDatabase(config, currentProject?.id).then(() => {
+                setIsOrderSubmitted(true);
+              });
+            }}
+            disabled={!isAllInfoComplete}
+            className={`w-full py-4 px-6 rounded-2xl font-body text-sm font-bold uppercase tracking-wider transition-all shadow-lg flex items-center justify-center gap-2 ${
+              isAllInfoComplete
+                ? 'bg-[#3D0A1F] text-[#FAF5F0] hover:bg-[#2D0817] cursor-pointer hover:shadow-xl border-2 border-[#C8A84B]'
+                : 'bg-gray-200 text-gray-500 opacity-60 cursor-not-allowed border border-gray-300'
+            }`}
+          >
+            <Check className="w-5 h-5 text-[#C8A84B]" />
+            <span>Submit Order</span>
+          </button>
+
+          {/* Optional Direct Messaging Channels */}
+          <div className="pt-2 border-t border-[#E0D0B8]/60 space-y-2">
+            <p className="text-[11px] font-body text-[#6B4752] text-center">
+              Or send your order details directly via messaging app:
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button
+                onClick={() => {
+                  if (!isAllInfoComplete) {
+                    setShowValidationErrors(true);
+                    return;
+                  }
+                  saveProjectToDatabase(config, currentProject?.id).then(() => {
+                    setIsOrderSubmitted(true);
+                    handleAttemptSend('Telegram');
+                  });
+                }}
+                disabled={!isAllInfoComplete}
+                className={`py-2.5 px-3 rounded-xl font-body text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
+                  isAllInfoComplete
+                    ? 'bg-[#0088cc] text-white hover:bg-[#0077b5] shadow-sm cursor-pointer'
+                    : 'bg-gray-200 text-gray-500 opacity-60 cursor-not-allowed border border-gray-300'
+                }`}
+              >
+                <Send className="w-3.5 h-3.5" />
+                <span>Notify via Telegram</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  if (!isAllInfoComplete) {
+                    setShowValidationErrors(true);
+                    return;
+                  }
+                  saveProjectToDatabase(config, currentProject?.id).then(() => {
+                    setIsOrderSubmitted(true);
+                    handleAttemptSend('WhatsApp');
+                  });
+                }}
+                disabled={!isAllInfoComplete}
+                className={`py-2.5 px-3 rounded-xl font-body text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
+                  isAllInfoComplete
+                    ? 'bg-[#25D366] text-white hover:bg-[#20ba5a] shadow-sm cursor-pointer'
+                    : 'bg-gray-200 text-gray-500 opacity-60 cursor-not-allowed border border-gray-300'
+                }`}
+              >
+                <MessageSquare className="w-3.5 h-3.5" />
+                <span>Notify via WhatsApp</span>
+              </button>
             </div>
-          )}
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <button
-              onClick={() => handleAttemptSend('Telegram')}
-              disabled={!isAllInfoComplete}
-              className={`py-3.5 px-4 rounded-xl font-body text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
-                isAllInfoComplete
-                  ? 'bg-[#0088cc] text-white hover:bg-[#0077b5] shadow-md cursor-pointer'
-                  : 'bg-gray-200 text-gray-500 opacity-60 cursor-not-allowed border border-gray-300'
-              }`}
-            >
-              {isAllInfoComplete ? <Send className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
-              <span>{isAllInfoComplete ? 'Send Payment Receipt (Telegram)' : '🔒 Complete All Information to Submit'}</span>
-            </button>
-
-            <button
-              onClick={() => handleAttemptSend('WhatsApp')}
-              disabled={!isAllInfoComplete}
-              className={`py-3.5 px-4 rounded-xl font-body text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
-                isAllInfoComplete
-                  ? 'bg-[#25D366] text-white hover:bg-[#20ba5a] shadow-md cursor-pointer'
-                  : 'bg-gray-200 text-gray-500 opacity-60 cursor-not-allowed border border-gray-300'
-              }`}
-            >
-              {isAllInfoComplete ? <MessageSquare className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
-              <span>{isAllInfoComplete ? 'Send Payment Receipt (WhatsApp)' : '🔒 Complete All Information to Submit'}</span>
-            </button>
           </div>
         </div>
       </div>

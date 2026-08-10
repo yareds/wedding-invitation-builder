@@ -30,11 +30,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
           <img
             src={config.heroImg}
             alt="Hero Background"
-            className="w-full h-full object-cover object-top animate-fade-in"
+            className="w-full h-full object-cover object-center opacity-70 transition-opacity duration-700 pointer-events-none"
           />
           <div
             className="absolute inset-0"
-            style={{ backgroundColor: colors.heroOv }}
+            style={{ backgroundColor: colors.heroOv || 'rgba(0,0,0,0.45)' }}
           />
         </div>
       )}
@@ -45,12 +45,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
 
       <div className={`max-w-4xl mx-auto relative z-10 flex flex-col items-center ${config.heroImg ? 'text-white' : ''}`}>
         {/* Monogram Circle in Hero */}
-        <div className="relative w-28 h-28 sm:w-36 sm:h-36 mb-8 group cursor-pointer">
+        <div className="relative w-28 h-28 sm:w-36 sm:h-36 mb-6 group cursor-pointer">
           <div
             className="w-full h-full rounded-full border-2 p-2 shadow-2xl transition-transform duration-500 hover:scale-105 flex items-center justify-center"
             style={{
               borderColor: colors.gold,
-              backgroundColor: colors.primary
+              backgroundColor: 'transparent'
             }}
           >
             {/* Inner Decorative Bezel */}
@@ -58,7 +58,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
               className="w-full h-full rounded-full border border-dashed flex items-center justify-center shadow-inner"
               style={{
                 borderColor: colors.gold + '90',
-                backgroundColor: colors.primary
+                backgroundColor: 'transparent'
               }}
             >
               <div className="text-center">
@@ -76,6 +76,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
             </div>
           </div>
         </div>
+
+
 
 
         {/* Couple Names (Amharic & English) */}
