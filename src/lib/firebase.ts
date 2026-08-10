@@ -23,6 +23,13 @@ onAuthStateChanged(auth, (user) => {
  * Uploads a File or Blob to Firebase Storage and returns its public HTTPS download URL.
  */
 export async function uploadFileToFirebaseStorage(file: File | Blob, folder = 'media'): Promise<string> {
+  if (!auth.currentUser) {
+    try {
+      await signInAnonymously(auth);
+    } catch {
+      // ignore if anonymous auth is not configured
+    }
+  }
   const fileName = (file instanceof File && file.name) ? file.name.replace(/[^a-zA-Z0-9._-]/g, '_') : 'file.bin';
   const uniqueName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}_${fileName}`;
   const storageRef = ref(storage, `${folder}/${uniqueName}`);
@@ -32,6 +39,7 @@ export async function uploadFileToFirebaseStorage(file: File | Blob, folder = 'm
 
 /**
  * Uploads a base64 Data URL to Firebase Storage if it starts with 'data:', otherwise returns as-is.
+ * If Firebase Storage upload fails (e.g. storage/unauthorized), falls back to returning the dataUrl.
  */
 export async function uploadBase64ToFirebaseStorage(dataUrl: string | null, folder = 'media'): Promise<string | null> {
   if (!dataUrl || !dataUrl.startsWith('data:')) return dataUrl;
@@ -40,8 +48,8 @@ export async function uploadBase64ToFirebaseStorage(dataUrl: string | null, fold
     const blob = await res.blob();
     return await uploadFileToFirebaseStorage(blob, folder);
   } catch (err) {
-    console.error(`Failed to upload base64 to Firebase Storage for folder ${folder}:`, err);
-    throw err;
+    console.warn(`Firebase Storage upload skipped for folder ${folder} (${(err as any)?.code || err}); using inline data fallback.`);
+    return dataUrl;
   }
 }
 

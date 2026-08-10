@@ -90,39 +90,56 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
   const [isUploadingMusic, setIsUploadingMusic] = useState<boolean>(false);
   const [isUploadingGallery, setIsUploadingGallery] = useState<boolean>(false);
 
-  // Image Upload handler for Hero Background (Uploads to Firebase Storage)
+  // Image Upload handler for Hero Background (Uploads to Firebase Storage with compressed fallback)
   const handleHeroImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setIsUploadingHero(true);
     try {
-      const downloadUrl = await uploadFileToFirebaseStorage(file, 'hero_images');
-      handleTextChange('heroImg', downloadUrl);
+      try {
+        const downloadUrl = await uploadFileToFirebaseStorage(file, 'hero_images');
+        handleTextChange('heroImg', downloadUrl);
+      } catch (storageErr) {
+        console.warn('Firebase Storage upload failed for hero image, using compressed data fallback:', storageErr);
+        const compressed = await compressImageFile(file, 1200, 1200, 0.75);
+        if (compressed) {
+          handleTextChange('heroImg', compressed);
+        }
+      }
     } catch (err: any) {
       console.error('Hero Image Upload Error:', err);
-      alert(`Failed to upload cover photo to Firebase Storage: ${err?.message || 'Unknown error'}`);
     } finally {
       setIsUploadingHero(false);
     }
   };
 
-  // Audio Upload handler for Background Music (Uploads to Firebase Storage)
+  // Audio Upload handler for Background Music (Uploads to Firebase Storage with local fallback)
   const handleAudioUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setIsUploadingMusic(true);
     try {
-      const downloadUrl = await uploadFileToFirebaseStorage(file, 'audio');
-      handleTextChange('bgMusicUrl', downloadUrl);
+      try {
+        const downloadUrl = await uploadFileToFirebaseStorage(file, 'audio');
+        handleTextChange('bgMusicUrl', downloadUrl);
+      } catch (storageErr) {
+        console.warn('Firebase Storage upload failed for audio, using local data fallback:', storageErr);
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          if (event.target?.result) {
+            handleTextChange('bgMusicUrl', event.target.result as string);
+          }
+        };
+        reader.readAsDataURL(file);
+      }
     } catch (err: any) {
       console.error('Audio Upload Error:', err);
-      alert(`Failed to upload audio soundtrack to Firebase Storage: ${err?.message || 'Unknown error'}`);
     } finally {
       setIsUploadingMusic(false);
     }
   };
 
-  // Gallery Image Upload (up to 10 images uploaded directly to Firebase Storage)
+  // Gallery Image Upload (up to 10 images with Firebase Storage & compressed fallback)
   const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const files: File[] = Array.from(e.target.files);
@@ -138,10 +155,17 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
     const filesToProcess = files.slice(0, remainingSlots);
     setIsUploadingGallery(true);
     try {
-      const uploadedUrls = await Promise.all(
-        filesToProcess.map((f) => uploadFileToFirebaseStorage(f, 'gallery'))
+      const processedUrls = await Promise.all(
+        filesToProcess.map(async (f) => {
+          try {
+            return await uploadFileToFirebaseStorage(f, 'gallery');
+          } catch (storageErr) {
+            console.warn('Firebase Storage upload failed for gallery photo, using compressed data fallback:', storageErr);
+            return await compressImageFile(f, 1000, 1000, 0.75);
+          }
+        })
       );
-      const validUrls = uploadedUrls.filter(Boolean);
+      const validUrls = processedUrls.filter(Boolean);
       if (validUrls.length > 0) {
         onChangeConfig({
           ...config,
@@ -150,7 +174,6 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
       }
     } catch (err: any) {
       console.error('Gallery Upload Error:', err);
-      alert(`Failed to upload gallery photos to Firebase Storage: ${err?.message || 'Unknown error'}`);
     } finally {
       setIsUploadingGallery(false);
     }
