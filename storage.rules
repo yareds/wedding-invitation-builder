@@ -6,19 +6,22 @@ service firebase.storage {
       return request.auth != null;
     }
 
-    // Public read and write access for invitation media assets
+    // Public read and authenticated write access for invitation media assets
     match /hero_images/{allPaths=**} {
-      allow read, write: if true;
+      allow read: if true;
+      allow write: if isSignedIn();
     }
 
-    // Public read and write access for background audio tracks
+    // Public read and authenticated write access for background audio tracks
     match /audio/{allPaths=**} {
-      allow read, write: if true;
+      allow read: if true;
+      allow write: if isSignedIn();
     }
 
-    // Public read and write access for invitation gallery photos
+    // Public read and authenticated write access for invitation gallery photos
     match /gallery/{allPaths=**} {
-      allow read, write: if true;
+      allow read: if true;
+      allow write: if isSignedIn();
     }
 
     // Default deny all other paths
