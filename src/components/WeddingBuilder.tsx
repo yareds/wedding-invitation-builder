@@ -97,19 +97,23 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
     }
 
     setIsUploadingMusic(true);
-    setMusicProgress(40);
+    setMusicProgress(0);
     setMusicUploadError(null);
 
     try {
-      // Create Object URL (blob:...) for instant, native, error-free HTML5 audio playback
-      const blobUrl = URL.createObjectURL(file);
-      handleTextChange('bgMusicUrl', blobUrl);
-      setMusicProgress(100);
-    } catch {
-      setMusicUploadError('Could not read the selected audio file. Please try another MP3 file.');
+      const downloadUrl = await uploadFileToFirebaseStorage(
+        file,
+        'audio',
+        (progress) => setMusicProgress(progress),
+        90000
+      );
+      handleTextChange('bgMusicUrl', downloadUrl);
+    } catch (err: any) {
+      console.error('Audio Upload Error:', err);
+      setMusicUploadError('Audio failed to upload. Please try again or choose a smaller file.');
     } finally {
       setIsUploadingMusic(false);
-      setTimeout(() => setMusicProgress(null), 300);
+      setMusicProgress(null);
       e.target.value = '';
     }
   };
