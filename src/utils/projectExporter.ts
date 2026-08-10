@@ -233,12 +233,12 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
     .animate-scroll-right {
       display: flex;
       width: max-content;
-      animation: scrollRight 35s linear infinite;
+      animation: scrollRight 85s linear infinite;
     }
     .animate-scroll-left {
       display: flex;
       width: max-content;
-      animation: scrollLeft 35s linear infinite;
+      animation: scrollLeft 85s linear infinite;
     }
     .animate-scroll-right:hover, .animate-scroll-left:hover {
       animation-play-state: paused;
@@ -255,7 +255,7 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
   </div>
 
   <!-- Audio Element -->
-  <audio id="bgAudio" loop src="${config.bgMusicUrl || ''}"></audio>
+  <audio id="bgAudio" loop ${config.bgMusicUrl ? `src="${config.bgMusicUrl}"` : ''} onerror="if(typeof isPlaying !== 'undefined'){ isPlaying = false; updateAudioUI(); }"></audio>
 
   <!-- Splash Screen Overlay -->
   <div id="splashScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-6 text-center transition-all duration-700 ease-in-out" style="background-color: ${colors.primary}; color: ${colors.blushPale}">
@@ -692,7 +692,12 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
     // Audio Control Logic (Supports custom file or synthetic piano synth)
     function playAudio() {
       const audio = document.getElementById('bgAudio');
-      if (audio.src && audio.src !== window.location.href && audio.src !== '') {
+      if (audio && audio.src && audio.src !== window.location.href && audio.src !== '') {
+        try {
+          if (audio.readyState === 0 || audio.error) {
+            audio.load();
+          }
+        } catch(e) {}
         audio.play().then(() => {
           isPlaying = true;
           updateAudioUI();

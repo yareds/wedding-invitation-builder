@@ -75,13 +75,13 @@
 .animate-scroll-right {
   display: flex;
   width: max-content;
-  animation: scrollRight 35s linear infinite;
+  animation: scrollRight 85s linear infinite;
 }
 
 .animate-scroll-left {
   display: flex;
   width: max-content;
-  animation: scrollLeft 35s linear infinite;
+  animation: scrollLeft 85s linear infinite;
 }
 
 .animate-scroll-right:hover,

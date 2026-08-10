@@ -10,16 +10,25 @@ interface MusicPlayerProps {
 export const MusicPlayer: React.FC<MusicPlayerProps> = ({ config }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [showTooltip, setShowTooltip] = useState<boolean>(false);
+  const [hasAudioError, setHasAudioError] = useState<boolean>(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const customAudioUrl = config?.bgMusicUrl || null;
+  const customAudioUrl = config?.bgMusicUrl && config.bgMusicUrl.trim() !== '' ? config.bgMusicUrl : null;
 
   useEffect(() => {
-    if (customAudioUrl) {
-      // Pause synthesizer if custom audio is uploaded
-      romanticPiano.pause();
-    } else {
-      setIsPlaying(romanticPiano.getIsPlaying());
+    // Reset state on audio URL change
+    setHasAudioError(false);
+    setIsPlaying(false);
+
+    // Mute/pause existing playbacks
+    romanticPiano.pause();
+    if (audioRef.current) {
+      audioRef.current.pause();
+      try {
+        audioRef.current.currentTime = 0;
+      } catch {
+        // ignore
+      }
     }
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -41,41 +50,71 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ config }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [customAudioUrl]);
 
-  const handleToggle = () => {
-    if (customAudioUrl && audioRef.current) {
-      if (isPlaying) {
+  const handleToggle = async () => {
+    if (isPlaying) {
+      // Pause everything
+      if (audioRef.current) {
         audioRef.current.pause();
-        setIsPlaying(false);
-      } else {
-        audioRef.current.play().then(() => {
-          setIsPlaying(true);
-        }).catch((err) => {
-          console.warn('Audio play blocked', err);
-        });
+      }
+      romanticPiano.pause();
+      setIsPlaying(false);
+      return;
+    }
+
+    // Starting playback
+    if (customAudioUrl && audioRef.current && !hasAudioError) {
+      romanticPiano.pause();
+      try {
+        audioRef.current.currentTime = audioRef.current.currentTime || 0;
+        await audioRef.current.play();
+        setIsPlaying(true);
+        setHasAudioError(false);
+      } catch (err) {
+        console.warn('Custom audio playback failed, resorting to romantic piano synth:', err);
+        setHasAudioError(true);
+        romanticPiano.start();
+        setIsPlaying(true);
       }
     } else {
-      const newState = romanticPiano.toggle();
-      setIsPlaying(newState);
+      // Use built-in Romantic Piano Synth
+      const started = romanticPiano.toggle();
+      setIsPlaying(started);
     }
   };
 
   return (
     <div className="fixed top-5 right-5 z-40 flex items-center gap-2">
-      {/* Hidden HTML5 Audio Element for custom MP3 uploads */}
+      {/* Hidden HTML5 Audio Element for custom MP3 uploads / URLs */}
       {customAudioUrl && (
         <audio
+          key={customAudioUrl}
           ref={audioRef}
           src={customAudioUrl}
+          preload="auto"
+          playsInline
           loop
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
+          onError={() => {
+            // Only flag error if error happens during active playback
+            if (isPlaying) {
+              setHasAudioError(true);
+              setIsPlaying(false);
+              romanticPiano.start();
+              setIsPlaying(true);
+            }
+          }}
         />
       )}
 
       {/* Tooltip hint */}
       {showTooltip && (
         <div className="bg-[#3B0B1F] text-[#FDF0F3] text-xs px-3 py-1.5 rounded-md border border-[#C8A84B]/40 shadow-lg font-body animate-fade-in whitespace-nowrap">
-          {customAudioUrl ? 'Click to toggle custom audio' : 'Press Space to toggle score'}
+          {hasAudioError
+            ? 'Custom audio unplayable – playing Romantic Piano Synth'
+            : customAudioUrl
+            ? 'Click to toggle custom soundtrack'
+            : 'Click to toggle Romantic Piano Synth'}
         </div>
       )}
 

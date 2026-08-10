@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { WeddingConfig, ThemeId, TimelineEvent } from '../types';
 import { THEME_PRESETS, SAMPLE_WEDDING_CONFIG, DEFAULT_WEDDING_CONFIG } from '../utils/themePresets';
 import { uploadFileToFirebaseStorage } from '../lib/firebase';
-import { Palette, Heart, Image as ImageIcon, Music, MapPin, Plus, Trash2, Check, ShoppingBag, Monitor, Smartphone, Upload, AlertCircle, Sparkles, RefreshCw, Loader2 } from 'lucide-react';
+import { Palette, Heart, Image as ImageIcon, Music, MapPin, Plus, Trash2, Check, ShoppingBag, Monitor, Smartphone, Upload, AlertCircle, Sparkles, RefreshCw, Loader2, X } from 'lucide-react';
 
 interface WeddingBuilderProps {
   config: WeddingConfig;
@@ -37,135 +37,130 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
     });
   };
 
-  // Utility: Compress image file to lightweight canvas JPEG data URL
-  const compressImageFile = (file: File, maxWidth = 1200, maxHeight = 1200, quality = 0.82): Promise<string> => {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = (event) => {
-        const rawDataUrl = event.target?.result as string;
-        if (!file.type.startsWith('image/')) {
-          resolve(rawDataUrl);
-          return;
-        }
-
-        const img = new Image();
-        img.src = rawDataUrl;
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          let width = img.width;
-          let height = img.height;
-
-          if (width > height) {
-            if (width > maxWidth) {
-              height = Math.round((height * maxWidth) / width);
-              width = maxWidth;
-            }
-          } else {
-            if (height > maxHeight) {
-              width = Math.round((width * maxHeight) / height);
-              height = maxHeight;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-
-          const ctx = canvas.getContext('2d');
-          if (!ctx) {
-            resolve(rawDataUrl);
-            return;
-          }
-
-          ctx.drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL('image/jpeg', quality));
-        };
-        img.onerror = () => resolve(rawDataUrl);
-      };
-      reader.onerror = () => resolve('');
-    });
-  };
-
   const [isUploadingHero, setIsUploadingHero] = useState<boolean>(false);
-  const [isUploadingMusic, setIsUploadingMusic] = useState<boolean>(false);
-  const [isUploadingGallery, setIsUploadingGallery] = useState<boolean>(false);
+  const [heroProgress, setHeroProgress] = useState<number | null>(null);
+  const [heroUploadError, setHeroUploadError] = useState<string | null>(null);
 
-  // Image Upload handler for Hero Background (Uploads to Firebase Storage with compressed fallback)
+  const [isUploadingMusic, setIsUploadingMusic] = useState<boolean>(false);
+  const [musicProgress, setMusicProgress] = useState<number | null>(null);
+  const [musicUploadError, setMusicUploadError] = useState<string | null>(null);
+
+  const [isUploadingGallery, setIsUploadingGallery] = useState<boolean>(false);
+  const [galleryProgress, setGalleryProgress] = useState<number | null>(null);
+  const [galleryUploadError, setGalleryUploadError] = useState<string | null>(null);
+
+  // Constants for max upload sizes
+  const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
+  const MAX_AUDIO_SIZE_BYTES = 8 * 1024 * 1024; // 8MB
+
+  // Image Upload handler for Hero Background (Uploads directly to Firebase Storage)
   const handleHeroImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    if (file.size > MAX_IMAGE_SIZE_BYTES) {
+      setHeroUploadError('Image file is too large (max 5MB). Please choose a smaller photo.');
+      e.target.value = '';
+      return;
+    }
+
     setIsUploadingHero(true);
+    setHeroProgress(0);
+    setHeroUploadError(null);
     try {
-      try {
-        const downloadUrl = await uploadFileToFirebaseStorage(file, 'hero_images');
-        handleTextChange('heroImg', downloadUrl);
-      } catch (storageErr) {
-        console.warn('Firebase Storage upload failed for hero image, using compressed data fallback:', storageErr);
-        const compressed = await compressImageFile(file, 1200, 1200, 0.75);
-        if (compressed) {
-          handleTextChange('heroImg', compressed);
-        }
-      }
+      const downloadUrl = await uploadFileToFirebaseStorage(
+        file,
+        'hero_images',
+        (progress) => setHeroProgress(progress),
+        90000
+      );
+      handleTextChange('heroImg', downloadUrl);
     } catch (err: any) {
       console.error('Hero Image Upload Error:', err);
+      setHeroUploadError('Photo failed to upload. Please try again or select a smaller photo.');
     } finally {
       setIsUploadingHero(false);
+      setHeroProgress(null);
+      e.target.value = '';
     }
   };
 
-  // Audio Upload handler for Background Music (Uploads to Firebase Storage with local fallback)
+  // Audio Upload handler for Background Music
   const handleAudioUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    if (file.size > MAX_AUDIO_SIZE_BYTES) {
+      setMusicUploadError('Audio file is too large (max 8MB). Please choose a smaller audio file.');
+      e.target.value = '';
+      return;
+    }
+
     setIsUploadingMusic(true);
+    setMusicProgress(40);
+    setMusicUploadError(null);
+
     try {
-      try {
-        const downloadUrl = await uploadFileToFirebaseStorage(file, 'audio');
-        handleTextChange('bgMusicUrl', downloadUrl);
-      } catch (storageErr) {
-        console.warn('Firebase Storage upload failed for audio, using local data fallback:', storageErr);
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          if (event.target?.result) {
-            handleTextChange('bgMusicUrl', event.target.result as string);
-          }
-        };
-        reader.readAsDataURL(file);
-      }
-    } catch (err: any) {
-      console.error('Audio Upload Error:', err);
+      // Create Object URL (blob:...) for instant, native, error-free HTML5 audio playback
+      const blobUrl = URL.createObjectURL(file);
+      handleTextChange('bgMusicUrl', blobUrl);
+      setMusicProgress(100);
+    } catch {
+      setMusicUploadError('Could not read the selected audio file. Please try another MP3 file.');
     } finally {
       setIsUploadingMusic(false);
+      setTimeout(() => setMusicProgress(null), 300);
+      e.target.value = '';
     }
   };
 
-  // Gallery Image Upload (up to 10 images with Firebase Storage & compressed fallback)
+  // Gallery Image Upload (up to 8 images directly to Firebase Storage)
   const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const files: File[] = Array.from(e.target.files);
     if (!files.length) return;
 
     const currentGallery = config.galleryImgs || [];
-    const remainingSlots = 10 - currentGallery.length;
+    const MAX_GALLERY_PHOTOS = 8;
+    const remainingSlots = MAX_GALLERY_PHOTOS - currentGallery.length;
     if (remainingSlots <= 0) {
-      alert('You have reached the maximum limit of 10 gallery photos.');
+      setGalleryUploadError(`You have reached the maximum limit of ${MAX_GALLERY_PHOTOS} gallery photos.`);
+      e.target.value = '';
       return;
     }
 
     const filesToProcess = files.slice(0, remainingSlots);
+
+    const oversizedFiles = filesToProcess.filter((f) => f.size > MAX_IMAGE_SIZE_BYTES);
+    if (oversizedFiles.length > 0) {
+      setGalleryUploadError('One or more photos exceed the 5MB limit. Please select smaller images.');
+      e.target.value = '';
+      return;
+    }
+
     setIsUploadingGallery(true);
+    setGalleryProgress(0);
+    setGalleryUploadError(null);
+
+    const fileProgresses = new Array(filesToProcess.length).fill(0);
+    const updateOverallProgress = (index: number, p: number) => {
+      fileProgresses[index] = p;
+      const avg = Math.round(fileProgresses.reduce((a, b) => a + b, 0) / filesToProcess.length);
+      setGalleryProgress(avg);
+    };
+
     try {
-      const processedUrls = await Promise.all(
-        filesToProcess.map(async (f) => {
-          try {
-            return await uploadFileToFirebaseStorage(f, 'gallery');
-          } catch (storageErr) {
-            console.warn('Firebase Storage upload failed for gallery photo, using compressed data fallback:', storageErr);
-            return await compressImageFile(f, 1000, 1000, 0.75);
-          }
-        })
+      const uploadedUrls = await Promise.all(
+        filesToProcess.map((f, idx) =>
+          uploadFileToFirebaseStorage(
+            f,
+            'gallery',
+            (p) => updateOverallProgress(idx, p),
+            90000
+          )
+        )
       );
-      const validUrls = processedUrls.filter(Boolean);
+      const validUrls = uploadedUrls.filter(Boolean);
       if (validUrls.length > 0) {
         onChangeConfig({
           ...config,
@@ -174,8 +169,11 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
       }
     } catch (err: any) {
       console.error('Gallery Upload Error:', err);
+      setGalleryUploadError('Photo failed to upload. Please try again or select smaller photos.');
     } finally {
       setIsUploadingGallery(false);
+      setGalleryProgress(null);
+      e.target.value = '';
     }
   };
 
@@ -511,21 +509,49 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
                   )}
                 </div>
                 <div className="flex-1 space-y-2">
-                  <label className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#3B0B1F] text-[#FDF0F3] font-body text-xs font-semibold cursor-pointer hover:bg-[#2D0817] shadow-sm ${isUploadingHero ? 'opacity-70 pointer-events-none' : ''}`}>
-                    {isUploadingHero ? (
-                      <Loader2 className="w-4 h-4 text-[#C8A84B] animate-spin" />
-                    ) : (
-                      <Upload className="w-4 h-4 text-[#C8A84B]" />
-                    )}
-                    <span>{isUploadingHero ? 'Uploading to Storage...' : 'Upload Custom Image'}</span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      disabled={isUploadingHero}
-                      onChange={handleHeroImageUpload}
-                      className="hidden"
-                    />
-                  </label>
+                  <div className="flex items-center gap-3">
+                    <label className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#3B0B1F] text-[#FDF0F3] font-body text-xs font-semibold cursor-pointer hover:bg-[#2D0817] shadow-sm ${isUploadingHero ? 'opacity-70 pointer-events-none' : ''}`}>
+                      {isUploadingHero ? (
+                        <Loader2 className="w-4 h-4 text-[#C8A84B] animate-spin" />
+                      ) : (
+                        <Upload className="w-4 h-4 text-[#C8A84B]" />
+                      )}
+                      <span>
+                        {isUploadingHero
+                          ? `Uploading (${heroProgress ?? 0}%)`
+                          : 'Upload Custom Image'}
+                      </span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        disabled={isUploadingHero}
+                        onChange={handleHeroImageUpload}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                  {isUploadingHero && (
+                    <div className="w-full max-w-xs bg-[#FDF0F3] border border-[#C8A84B]/40 rounded-full h-2 overflow-hidden p-0.5 shadow-inner">
+                      <div
+                        className="bg-[#C8A84B] h-full rounded-full transition-all duration-150"
+                        style={{ width: `${heroProgress ?? 0}%` }}
+                      />
+                    </div>
+                  )}
+                  {heroUploadError && (
+                    <div className="flex items-center gap-2 p-2.5 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl mt-2 animate-in fade-in">
+                      <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
+                      <span className="flex-1 font-medium">{heroUploadError}</span>
+                      <button
+                        type="button"
+                        onClick={() => setHeroUploadError(null)}
+                        className="p-1 text-red-400 hover:text-red-600 rounded-lg cursor-pointer"
+                        title="Dismiss error"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  )}
                   <p className="text-[11px] text-[#3B0B1F]/60 font-body">
                     Recommended high-resolution couple photo or wedding banner.
                   </p>
@@ -533,32 +559,122 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
               </div>
             </div>
 
-            {/* Audio Upload */}
-            <div className="space-y-2 pt-3 border-t border-[#D4849A]/30">
-              <label className="block font-body text-xs font-semibold text-[#3B0B1F] uppercase">
-                Background Music / Soundtrack
-              </label>
-              <div className="flex flex-col gap-2">
-                <label className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#FDF0F3] border border-[#C8A84B] text-[#3B0B1F] font-body text-xs font-semibold cursor-pointer hover:bg-[#D4849A]/20 ${isUploadingMusic ? 'opacity-70 pointer-events-none' : ''}`}>
-                  {isUploadingMusic ? (
-                    <Loader2 className="w-4 h-4 text-[#C8A84B] animate-spin" />
-                  ) : (
-                    <Music className="w-4 h-4 text-[#C8A84B]" />
-                  )}
-                  <span>{isUploadingMusic ? 'Uploading Audio to Storage...' : 'Upload Audio MP3 File'}</span>
-                  <input
-                    type="file"
-                    accept="audio/*"
-                    disabled={isUploadingMusic}
-                    onChange={handleAudioUpload}
-                    className="hidden"
-                  />
+            {/* Background Music / Soundtrack Customization */}
+            <div className="space-y-3 pt-3 border-t border-[#D4849A]/30">
+              <div className="flex items-center justify-between">
+                <label className="block font-body text-xs font-semibold text-[#3B0B1F] uppercase">
+                  Background Music / Soundtrack
                 </label>
-                <p className="text-[11px] text-[#3B0B1F]/60 font-body">
-                  Currently selected music: <span className="font-mono text-[10px] text-[#C8A84B]">
-                    {config.bgMusicUrl ? `${config.bgMusicUrl.slice(0, 35)}...` : 'Default Synthesized Piano'}
-                  </span>
-                </p>
+                {config.bgMusicUrl && (
+                  <button
+                    type="button"
+                    onClick={() => handleTextChange('bgMusicUrl', '')}
+                    className="text-[11px] text-red-600 hover:text-red-800 underline font-body font-medium cursor-pointer"
+                  >
+                    Reset to Default Piano Synth
+                  </button>
+                )}
+              </div>
+
+              {/* Music Presets */}
+              <div className="space-y-1.5">
+                <span className="text-[11px] text-[#3B0B1F]/70 font-body font-medium block">
+                  Quick Soundtrack Presets:
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => handleTextChange('bgMusicUrl', '')}
+                    className={`px-3 py-2 rounded-xl text-xs text-left font-body font-medium transition-all cursor-pointer border ${
+                      !config.bgMusicUrl
+                        ? 'bg-[#3B0B1F] text-[#FDF0F3] border-[#C8A84B]'
+                        : 'bg-white text-[#3B0B1F] border-gray-200 hover:border-[#D4849A]'
+                    }`}
+                  >
+                    🎹 Romantic Piano Synth (Built-in)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleTextChange('bgMusicUrl', 'https://upload.wikimedia.org/wikipedia/commons/5/52/Pachelbel_Canon_in_D_Major_Piano.mp3')}
+                    className={`px-3 py-2 rounded-xl text-xs text-left font-body font-medium transition-all cursor-pointer border ${
+                      config.bgMusicUrl === 'https://upload.wikimedia.org/wikipedia/commons/5/52/Pachelbel_Canon_in_D_Major_Piano.mp3'
+                        ? 'bg-[#3B0B1F] text-[#FDF0F3] border-[#C8A84B]'
+                        : 'bg-white text-[#3B0B1F] border-gray-200 hover:border-[#D4849A]'
+                    }`}
+                  >
+                    🎻 Canon in D (Piano MP3)
+                  </button>
+                </div>
+              </div>
+
+              {/* Custom Audio URL Input or MP3 File Upload */}
+              <div className="space-y-2 pt-2">
+                <span className="text-[11px] text-[#3B0B1F]/70 font-body font-medium block">
+                  Or use Custom MP3 File / Direct URL:
+                </span>
+                
+                <div className="flex flex-col gap-2">
+                  <input
+                    type="url"
+                    value={config.bgMusicUrl || ''}
+                    onChange={(e) => handleTextChange('bgMusicUrl', e.target.value)}
+                    placeholder="Paste Direct Audio MP3 URL (https://...)"
+                    className="w-full px-3 py-2 rounded-xl border border-[#D4849A]/40 text-xs text-[#3B0B1F] bg-white focus:outline-none focus:border-[#C8A84B]"
+                  />
+
+                  <div className="flex items-center gap-2">
+                    <label className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#FDF0F3] border border-[#C8A84B] text-[#3B0B1F] font-body text-xs font-semibold cursor-pointer hover:bg-[#D4849A]/20 ${isUploadingMusic ? 'opacity-70 pointer-events-none' : ''}`}>
+                      {isUploadingMusic ? (
+                        <Loader2 className="w-4 h-4 text-[#C8A84B] animate-spin" />
+                      ) : (
+                        <Music className="w-4 h-4 text-[#C8A84B]" />
+                      )}
+                      <span>
+                        {isUploadingMusic
+                          ? `Uploading (${musicProgress ?? 0}%)`
+                          : 'Upload MP3 File'}
+                      </span>
+                      <input
+                        type="file"
+                        accept="audio/*"
+                        disabled={isUploadingMusic}
+                        onChange={handleAudioUpload}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+
+                  {isUploadingMusic && (
+                    <div className="w-full max-w-sm bg-[#FDF0F3] border border-[#C8A84B]/40 rounded-full h-2 overflow-hidden p-0.5 shadow-inner">
+                      <div
+                        className="bg-[#C8A84B] h-full rounded-full transition-all duration-150"
+                        style={{ width: `${musicProgress ?? 0}%` }}
+                      />
+                    </div>
+                  )}
+
+                  {musicUploadError && (
+                    <div className="flex items-center gap-2 p-2.5 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl mt-1 animate-in fade-in">
+                      <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
+                      <span className="flex-1 font-medium">{musicUploadError}</span>
+                      <button
+                        type="button"
+                        onClick={() => setMusicUploadError(null)}
+                        className="p-1 text-red-400 hover:text-red-600 rounded-lg cursor-pointer"
+                        title="Dismiss error"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  )}
+
+                  <p className="text-[11px] text-[#3B0B1F]/60 font-body">
+                    Active Soundtrack:{' '}
+                    <span className="font-mono text-[10px] text-[#C8A84B]">
+                      {config.bgMusicUrl ? (config.bgMusicUrl.length > 40 ? `${config.bgMusicUrl.slice(0, 40)}...` : config.bgMusicUrl) : 'Default Romantic Piano (Synthesized)'}
+                    </span>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -740,25 +856,54 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
             <div className="pt-3 border-t border-[#D4849A]/30">
               <div className="flex items-center justify-between mb-2">
                 <span className="font-body text-xs font-semibold text-[#3B0B1F]">
-                  Gallery Photos (Max 10): {config.galleryImgs?.length || 0} / 10
+                  Gallery Photos (Max 8): {config.galleryImgs?.length || 0} / 8
                 </span>
-                <label className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#3B0B1F] text-[#FDF0F3] font-body text-xs font-semibold cursor-pointer hover:bg-[#2D0817] ${isUploadingGallery ? 'opacity-70 pointer-events-none' : ''}`}>
-                  {isUploadingGallery ? (
-                    <Loader2 className="w-4 h-4 text-[#C8A84B] animate-spin" />
-                  ) : (
-                    <Plus className="w-4 h-4 text-[#C8A84B]" />
+                <div className="flex flex-col items-end gap-1">
+                  <label className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#3B0B1F] text-[#FDF0F3] font-body text-xs font-semibold cursor-pointer hover:bg-[#2D0817] ${isUploadingGallery ? 'opacity-70 pointer-events-none' : ''}`}>
+                    {isUploadingGallery ? (
+                      <Loader2 className="w-4 h-4 text-[#C8A84B] animate-spin" />
+                    ) : (
+                      <Plus className="w-4 h-4 text-[#C8A84B]" />
+                    )}
+                    <span>
+                      {isUploadingGallery
+                        ? `Uploading (${galleryProgress ?? 0}%)`
+                        : 'Add Photos'}
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      disabled={isUploadingGallery}
+                      onChange={handleGalleryUpload}
+                      className="hidden"
+                    />
+                  </label>
+                  {isUploadingGallery && (
+                    <div className="w-32 bg-[#FDF0F3] border border-[#C8A84B]/40 rounded-full h-1.5 overflow-hidden p-0.5 shadow-inner">
+                      <div
+                        className="bg-[#C8A84B] h-full rounded-full transition-all duration-150"
+                        style={{ width: `${galleryProgress ?? 0}%` }}
+                      />
+                    </div>
                   )}
-                  <span>{isUploadingGallery ? 'Uploading to Storage...' : 'Add Photos'}</span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    disabled={isUploadingGallery}
-                    onChange={handleGalleryUpload}
-                    className="hidden"
-                  />
-                </label>
+                </div>
               </div>
+
+              {galleryUploadError && (
+                <div className="flex items-center gap-2 p-2.5 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl mb-2 animate-in fade-in">
+                  <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
+                  <span className="flex-1 font-medium">{galleryUploadError}</span>
+                  <button
+                    type="button"
+                    onClick={() => setGalleryUploadError(null)}
+                    className="p-1 text-red-400 hover:text-red-600 rounded-lg cursor-pointer"
+                    title="Dismiss error"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
 
               {/* Gallery Thumbnails Grid */}
               <div className="grid grid-cols-4 gap-2 border border-[#D4849A]/30 p-2.5 rounded-2xl bg-[#FDF0F3]/40 min-h-[100px]">
