@@ -51,7 +51,7 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
 
   // Constants for max upload sizes
   const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
-  const MAX_AUDIO_SIZE_BYTES = 8 * 1024 * 1024; // 8MB
+  const MAX_AUDIO_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
 
   // Image Upload handler for Hero Background (Uploads directly to Firebase Storage)
   const handleHeroImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,7 +91,7 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
     if (!file) return;
 
     if (file.size > MAX_AUDIO_SIZE_BYTES) {
-      setMusicUploadError('Audio file is too large (max 8MB). Please choose a smaller audio file.');
+      setMusicUploadError('Audio file is too large (max 10MB). Please choose a smaller audio file.');
       e.target.value = '';
       return;
     }

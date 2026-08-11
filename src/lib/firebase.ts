@@ -51,14 +51,15 @@ export async function uploadFileToFirebaseStorage(
   // Determine explicit content type (crucial for audio/video HTML5 element compatibility)
   let contentType = customContentType || file.type;
   if (!contentType || contentType === 'application/octet-stream') {
-    if (folder === 'audio' || fileName.endsWith('.mp3')) {
-      contentType = 'audio/mpeg';
-    } else if (fileName.endsWith('.wav')) {
+    const lowerName = fileName.toLowerCase();
+    if (lowerName.endsWith('.wav')) {
       contentType = 'audio/wav';
-    } else if (fileName.endsWith('.ogg')) {
+    } else if (lowerName.endsWith('.ogg')) {
       contentType = 'audio/ogg';
-    } else if (fileName.endsWith('.m4a')) {
+    } else if (lowerName.endsWith('.m4a') || lowerName.endsWith('.aac')) {
       contentType = 'audio/mp4';
+    } else if (lowerName.endsWith('.mp3') || folder === 'audio') {
+      contentType = 'audio/mpeg';
     } else {
       contentType = 'application/octet-stream';
     }

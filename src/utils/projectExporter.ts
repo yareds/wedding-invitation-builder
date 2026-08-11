@@ -1,6 +1,7 @@
 import JSZip from 'jszip';
 import { WeddingConfig } from '../types';
 import { THEME_PRESETS } from './themePresets';
+import { getBotanicalFrameHtml } from '../components/BotanicalFrame';
 import firebaseAppletConfig from '../../firebase-applet-config.json';
 
 export async function generateAndDownloadProjectZip(config: WeddingConfig, projectId: string) {
@@ -126,7 +127,12 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
   const galleryImgs = config.galleryImgs && config.galleryImgs.length > 0 ? config.galleryImgs : [
     'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80',
     'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80'
+    'https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=800&q=80'
   ];
   const galleryImgsJson = JSON.stringify(galleryImgs);
 
@@ -186,19 +192,38 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
     )
     .join('');
 
-  // Marquee HTML generation
-  const marqueeItems = [...galleryImgs, ...galleryImgs, ...galleryImgs, ...galleryImgs]
-    .map(
-      (url, idx) => `
-      <div onclick="openLightbox(${idx % galleryImgs.length})" class="group relative w-64 sm:w-80 aspect-[4/3] shrink-0 bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border cursor-pointer" style="border-color: ${colors.blush}40">
-        <img src="${url}" alt="Photo ${(idx % galleryImgs.length) + 1}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+  // Dual Row Marquee HTML generation (4 images in row 1, 4 images in row 2)
+  const row1Images = galleryImgs.length >= 8 ? galleryImgs.slice(0, 4) : galleryImgs.slice(0, Math.ceil(galleryImgs.length / 2));
+  const row2Images = galleryImgs.length >= 8 ? galleryImgs.slice(4, 8) : (galleryImgs.slice(Math.ceil(galleryImgs.length / 2)).length > 0 ? galleryImgs.slice(Math.ceil(galleryImgs.length / 2)) : row1Images);
+
+  const marqueeRow1Items = [...row1Images, ...row1Images, ...row1Images, ...row1Images]
+    .map((url) => {
+      const origIdx = galleryImgs.indexOf(url) >= 0 ? galleryImgs.indexOf(url) : 0;
+      return `
+      <div onclick="openLightbox(${origIdx})" class="group relative w-64 sm:w-80 aspect-[4/3] shrink-0 bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border cursor-pointer" style="border-color: ${colors.blush}40">
+        <img src="${url}" alt="Photo ${origIdx + 1}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
         <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 text-white" style="background: linear-gradient(to top, ${colors.primary}E0, transparent)">
           <span class="font-serif-heading text-sm font-normal" style="color: ${colors.gold}">${groomEn} &amp; ${brideEn}</span>
           <span class="font-body text-[11px] opacity-80">Click to expand</span>
         </div>
       </div>
-    `
-    )
+    `;
+    })
+    .join('');
+
+  const marqueeRow2Items = [...row2Images, ...row2Images, ...row2Images, ...row2Images]
+    .map((url) => {
+      const origIdx = galleryImgs.indexOf(url) >= 0 ? galleryImgs.indexOf(url) : 0;
+      return `
+      <div onclick="openLightbox(${origIdx})" class="group relative w-64 sm:w-80 aspect-[4/3] shrink-0 bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border cursor-pointer" style="border-color: ${colors.blush}40">
+        <img src="${url}" alt="Photo ${origIdx + 1}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+        <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 text-white" style="background: linear-gradient(to top, ${colors.primary}E0, transparent)">
+          <span class="font-serif-heading text-sm font-normal" style="color: ${colors.gold}">${groomEn} &amp; ${brideEn}</span>
+          <span class="font-body text-[11px] opacity-80">Click to expand</span>
+        </div>
+      </div>
+    `;
+    })
     .join('');
 
   return `<!DOCTYPE html>
@@ -259,6 +284,11 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
 
   <!-- Splash Screen Overlay -->
   <div id="splashScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-6 text-center transition-all duration-700 ease-in-out" style="background-color: ${colors.primary}; color: ${colors.blushPale}">
+    ${getBotanicalFrameHtml('top-left', config.themeId, 'absolute top-0 left-0 z-10')}
+    ${getBotanicalFrameHtml('top-right', config.themeId, 'absolute top-0 right-0 z-10')}
+    ${getBotanicalFrameHtml('bottom-left', config.themeId, 'absolute bottom-0 left-0 z-10')}
+    ${getBotanicalFrameHtml('bottom-right', config.themeId, 'absolute bottom-0 right-0 z-10')}
+
     <div class="relative w-[90%] max-w-lg mx-auto p-8 sm:p-12 text-center border rounded-sm shadow-2xl backdrop-blur-md flex flex-col items-center" style="border-color: ${colors.gold}60; background-color: ${colors.primary}E6">
       
       <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 flex items-center justify-center p-1 shadow-lg mb-6" style="border-color: ${colors.gold}; background-color: transparent">
@@ -294,6 +324,9 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
     <section class="relative pt-20 pb-16 px-4 sm:px-6 md:px-8 overflow-hidden text-center transition-colors duration-500" style="background-color: ${colors.bg}; color: ${colors.primary}">
       ${config.heroImg ? `<div class="absolute inset-0 z-0 overflow-hidden"><img src="${config.heroImg}" alt="Hero Background" class="w-full h-full object-cover object-center opacity-70 transition-opacity duration-700 pointer-events-none" /><div class="absolute inset-0" style="background-color: ${colors.heroOv || 'rgba(0,0,0,0.45)'}"></div></div>` : ''}
 
+      ${getBotanicalFrameHtml('top-left', config.themeId, 'absolute top-2 left-2 sm:top-6 sm:left-6 z-10')}
+      ${getBotanicalFrameHtml('top-right', config.themeId, 'absolute top-2 right-2 sm:top-6 sm:right-6 z-10')}
+
       <div class="max-w-4xl mx-auto relative z-10 flex flex-col items-center">
         <!-- Monogram Circle -->
         <div class="relative w-28 h-28 sm:w-36 sm:h-36 mb-6 group cursor-pointer">
@@ -301,7 +334,7 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
             <div class="w-full h-full rounded-full border border-dashed flex items-center justify-center shadow-inner" style="border-color: ${colors.gold}90; background-color: transparent">
               <div class="text-center">
                 <span class="font-serif-heading text-3xl sm:text-4xl font-light tracking-widest block" style="color: ${colors.gold}">
-                  ${groomInit} <span class="font-serif-heading text-xl sm:text-2xl font-normal" style="color: ${colors.blush}">&amp;</span> ${brideInit}
+                  ${groomInit} <span class="font-serif-heading text-xl sm:text-2xl font-normal" style="color: ${colors.blushLt || '#E5A4B5'}">&amp;</span> ${brideInit}
                 </span>
               </div>
             </div>
@@ -310,30 +343,32 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
 
 
         <div class="mb-4 max-w-3xl">
-          <h1 class="font-serif-heading text-3xl sm:text-5xl md:text-6xl font-normal leading-tight tracking-tight mb-2" style="color: ${colors.primary}">
+          <h1 class="font-serif-heading text-3xl sm:text-5xl md:text-6xl font-normal leading-tight tracking-tight mb-2" style="color: #FFFFFF">
             ${groomEth}
             <span class="block font-quote italic text-2xl sm:text-4xl my-2 font-light" style="color: ${colors.gold}">እና</span>
             ${brideEth}
           </h1>
-          <p class="font-quote italic text-base sm:text-xl text-white/90 tracking-wide mt-2 opacity-90">${groomEn} &amp; ${brideEn}</p>
+          <p class="font-quote italic text-base sm:text-xl tracking-wide mt-2 opacity-90" style="color: #FFFFFF">${groomEn} &amp; ${brideEn}</p>
         </div>
 
-        ${config.scripture && config.scripture !== 'ሁሉን ያዘጋጀ ግን እግዚአብሔር ነው።' ? `<p class="font-serif-heading text-base sm:text-lg max-w-xl mx-auto leading-relaxed mb-8 opacity-90 tracking-wide" style="color: ${colors.primary}">
+        ${config.scripture && config.scripture !== 'ሁሉን ያዘጋጀ ግን እግዚአብሔር ነው።' ? `<p class="font-serif-heading text-base sm:text-lg max-w-xl mx-auto leading-relaxed mb-8 opacity-90 tracking-wide" style="color: #FFFFFF">
           ${config.scripture}
         </p>` : ''}
 
-        <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm font-body tracking-wider uppercase font-medium" style="color: ${colors.primary}">
+        <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm font-body tracking-wider uppercase font-medium" style="color: #FFFFFF">
           <div class="flex items-center gap-2">
-            <span style="color: ${colors.gold}">📅</span>
+            <svg class="w-4 h-4 inline-block" style="color: ${colors.gold}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 002-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
             <span class="font-semibold">${config.dateGC || 'Saturday, May 09, 2026'}</span>
           </div>
           <span class="hidden sm:inline" style="color: ${colors.gold}">•</span>
           <div class="flex items-center gap-2">
-            <span style="color: ${colors.gold}">📍</span>
+            <svg class="w-4 h-4 inline-block" style="color: ${colors.gold}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
             <span>${config.dateEC || 'ግንቦት 01, 2018 ዓ.ም'}</span>
           </div>
         </div>
       </div>
+
+      ${getBotanicalFrameHtml('banner-bottom', config.themeId, 'mt-12 z-10')}
     </section>
 
     <!-- 2. Date Card & Countdown Section -->
@@ -474,7 +509,12 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
     </section>
 
     <!-- 4. Story Quote Section -->
-    <section class="relative py-20 px-4 sm:px-6 overflow-hidden my-12" style="background-color: ${colors.primary}; color: ${colors.blushPale}">
+    <section class="relative py-20 px-4 sm:px-6 overflow-hidden my-12" style="background-color: ${colors.blushPale}; color: ${colors.primary}">
+      ${getBotanicalFrameHtml('top-left', config.themeId, 'absolute top-2 left-2 z-10')}
+      ${getBotanicalFrameHtml('top-right', config.themeId, 'absolute top-2 right-2 z-10')}
+      ${getBotanicalFrameHtml('bottom-left', config.themeId, 'absolute bottom-2 left-2 z-10')}
+      ${getBotanicalFrameHtml('bottom-right', config.themeId, 'absolute bottom-2 right-2 z-10')}
+
       <div class="max-w-3xl mx-auto text-center relative z-10 px-4">
         <div class="font-serif-heading text-7xl sm:text-9xl leading-none opacity-80 -mb-8 sm:-mb-12 font-serif" style="color: ${colors.gold}">“</div>
         <blockquote class="font-quote italic text-xl sm:text-3xl leading-relaxed mb-8 font-light max-w-2xl mx-auto">
@@ -487,7 +527,7 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
           </span>
           <span class="h-[1px] w-12 opacity-60" style="background-color: ${colors.gold}"></span>
         </div>
-        <div class="rounded-3xl p-6 sm:p-10 border shadow-2xl text-left sm:text-center space-y-4" style="background-color: ${colors.mid}A0; border-color: ${colors.gold}40">
+        <div class="rounded-3xl p-6 sm:p-10 border shadow-2xl text-left sm:text-center space-y-4" style="background-color: #FFFFFF; border-color: ${colors.gold}60">
           <h3 class="font-serif-heading text-2xl text-center font-normal" style="color: ${colors.gold}">Our Love Story</h3>
           <p class="font-body text-sm sm:text-base leading-relaxed opacity-95">
             ${config.storyText || 'We first crossed paths five years ago. What began as an unexpected conversation over coffee quickly blossomed into a profound companionship built on shared dreams, art, and quiet Sunday strolls.'}
@@ -518,10 +558,10 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
       </div>
       <div class="space-y-6">
         <div class="overflow-hidden py-2 relative">
-          <div class="animate-scroll-right gap-4 px-2">${marqueeItems}</div>
+          <div class="animate-scroll-right gap-4 px-2">${marqueeRow1Items}</div>
         </div>
         <div class="overflow-hidden py-2 relative">
-          <div class="animate-scroll-left gap-4 px-2">${marqueeItems}</div>
+          <div class="animate-scroll-left gap-4 px-2">${marqueeRow2Items}</div>
         </div>
       </div>
     </section>
@@ -538,15 +578,17 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
     </section>
 
     <!-- 9. Botanical Footer -->
-    <footer class="relative pt-12 pb-16 px-4 text-center overflow-hidden border-t-2" style="background-color: ${colors.footerBg}; border-color: ${colors.gold}60; color: ${colors.blushPale}">
+    <footer class="relative pt-12 pb-16 px-4 text-center overflow-hidden border-t-2" style="background-color: ${colors.primary}; border-color: ${colors.gold}; color: #FAF0F3">
+      ${getBotanicalFrameHtml('banner-top', config.themeId, '-mt-8 mb-4')}
       <div class="max-w-2xl mx-auto relative z-10 space-y-4 my-4">
-        <div class="inline-flex items-center justify-center w-14 h-14 rounded-full border shadow-lg mb-2" style="border-color: ${colors.gold}; background-color: ${colors.primary}">
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-full border shadow-lg mb-2" style="border-color: ${colors.gold}; background-color: transparent">
           <span class="font-serif-heading text-lg tracking-widest" style="color: ${colors.gold}">${groomInit} እና ${brideInit}</span>
         </div>
-        <h3 class="font-serif-heading text-2xl sm:text-3xl font-normal" style="color: ${colors.blushPale}">${groomEth} እና ${brideEth}</h3>
-        <p class="font-quote italic text-sm max-w-md mx-auto" style="color: ${colors.blush}">"We cannot wait to share the magic of our wedding day with you."</p>
-        <p class="font-body text-xs tracking-widest uppercase pt-4 opacity-70">${config.dateGC || 'May 09, 2026'} • ${config.dateEC || 'ግንቦት 01, 2018 ዓ.ም'}</p>
+        <h3 class="font-serif-heading text-2xl sm:text-3xl font-normal text-[#FAF0F3]">${groomEth} እና ${brideEth}</h3>
+        <p class="font-quote italic text-sm max-w-md mx-auto text-[#E5A4B5]">"We cannot wait to share the magic of our wedding day with you."</p>
+        <p class="font-body text-xs tracking-widest uppercase pt-4 text-[#FAF0F3]/80">${config.dateGC || 'May 09, 2026'} • ${config.dateEC || 'ግንቦት 01, 2018 ዓ.ም'}</p>
       </div>
+      ${getBotanicalFrameHtml('banner-bottom', config.themeId, 'mt-8 -mb-12')}
     </footer>
 
   </div>

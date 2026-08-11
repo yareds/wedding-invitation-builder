@@ -17,7 +17,12 @@ export const LightboxGallery: React.FC<LightboxGalleryProps> = ({ config }) => {
   const imagesList = config.galleryImgs && config.galleryImgs.length > 0 ? config.galleryImgs : [
     'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80',
     'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80'
+    'https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=800&q=80'
   ];
 
   // Keyboard navigation support in lightbox
@@ -60,8 +65,8 @@ export const LightboxGallery: React.FC<LightboxGalleryProps> = ({ config }) => {
     setTouchStartX(null);
   };
 
-  const row1Images = imagesList.length >= 2 ? imagesList.filter((_, i) => i % 2 === 0) : imagesList;
-  const row2Images = imagesList.length >= 2 ? imagesList.filter((_, i) => i % 2 === 1) : imagesList;
+  const row1Images = imagesList.length >= 8 ? imagesList.slice(0, 4) : imagesList.slice(0, Math.ceil(imagesList.length / 2));
+  const row2Images = imagesList.length >= 8 ? imagesList.slice(4, 8) : (imagesList.slice(Math.ceil(imagesList.length / 2)).length > 0 ? imagesList.slice(Math.ceil(imagesList.length / 2)) : row1Images);
 
   // Quadruple arrays for seamless infinite marquee loop
   const marqueeRow1 = [...row1Images, ...row1Images, ...row1Images, ...row1Images];

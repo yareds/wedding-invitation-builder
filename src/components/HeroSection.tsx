@@ -85,7 +85,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
           {/* Amharic Heading */}
           <h1
             className="font-serif-heading text-3xl sm:text-5xl md:text-6xl font-normal leading-tight tracking-tight mb-2"
-            style={{ color: config.heroImg ? '#FFFFFF' : colors.primary }}
+            style={{ color: '#FFFFFF' }}
           >
             {config.groomEth || config.groomEn || 'የሙሽራው ስም'}
             <span className="block font-quote italic text-2xl sm:text-4xl my-2 font-light" style={{ color: colors.gold }}>
@@ -98,7 +98,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
           {(config.groomEn || config.brideEn) && (
             <p
               className="font-quote italic text-base sm:text-xl tracking-wide mt-2 opacity-90"
-              style={{ color: config.heroImg ? 'rgba(255,255,255,0.9)' : colors.primary }}
+              style={{ color: '#FFFFFF' }}
             >
               {config.groomEn} &amp; {config.brideEn}
             </p>
@@ -109,7 +109,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
         {config.scripture && config.scripture !== 'ሁሉን ያዘጋጀ ግን እግዚአብሔር ነው።' && (
           <p
             className="font-serif-heading text-base sm:text-lg max-w-xl mx-auto leading-relaxed mb-8 opacity-90 tracking-wide"
-            style={{ color: config.heroImg ? 'rgba(255,255,255,0.95)' : colors.primary }}
+            style={{ color: '#FFFFFF' }}
           >
             {config.scripture}
           </p>
@@ -119,7 +119,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
         <div
           className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm font-body tracking-wider uppercase font-medium"
           style={{
-            color: config.heroImg ? '#FFFFFF' : colors.primary
+            color: '#FFFFFF'
           }}
         >
           <div className="flex items-center gap-2">
