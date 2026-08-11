@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "target": "wedding-invitations-builder",
     "public": "dist",
     "ignore": [
       "firebase.json",
