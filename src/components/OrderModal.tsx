@@ -1,17 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { WeddingConfig } from '../types';
 import { THEME_PRESETS } from '../utils/themePresets';
-import { saveProjectToDatabase, submitProjectOrder, SavedProject } from '../utils/projectDatabase';
-import { X, Send, Copy, Check, MessageSquare, ShieldCheck, Banknote, AlertCircle, Lock, User, Phone, FileText, AlertTriangle, ArrowLeft } from 'lucide-react';
+import {
+  saveProjectToDatabase,
+  submitProjectOrder,
+  getDraftFilesLocally,
+  clearDraftFilesLocally,
+  SavedProject
+} from '../utils/projectDatabase';
+import { uploadFileToFirebaseStorage } from '../lib/firebase';
+import { X, Send, Copy, Check, MessageSquare, ShieldCheck, Banknote, AlertCircle, Lock, User, Phone, FileText, AlertTriangle, ArrowLeft, Loader2 } from 'lucide-react';
 
 interface OrderModalProps {
   config: WeddingConfig;
   isOpen: boolean;
   onClose: () => void;
   onUpdateConfig?: (updated: WeddingConfig) => void;
+  projectId: string;
 }
 
-export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose, onUpdateConfig }) => {
+export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose, onUpdateConfig, projectId }) => {
   const [copiedAccount, setCopiedAccount] = useState<string | null>(null);
   const [sentSuccess, setSentSuccess] = useState<string | null>(null);
   const [currentProject, setCurrentProject] = useState<SavedProject | null>(null);
@@ -22,14 +30,137 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
   const [isOrderSubmitted, setIsOrderSubmitted] = useState<boolean>(false);
   const [showValidationErrors, setShowValidationErrors] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (isOpen) {
-      // Save project record in database registry for admin processing
-      saveProjectToDatabase(config, currentProject?.id).then((savedRecord) => {
-        setCurrentProject(savedRecord);
-      });
+  // Submission process state
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [submitStatusText, setSubmitStatusText] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  if (!isOpen) return null;
+
+  const handleSubmitOrder = async (actionType: 'submit_only' | 'Telegram' | 'WhatsApp') => {
+    if (!isAllInfoComplete) {
+      setShowValidationErrors(true);
+      return;
     }
-  }, [isOpen, config]);
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+    setSubmitStatusText('Preparing order submission...');
+
+    try {
+      // 1. Retrieve pending draft files from IndexedDB
+      const draftFiles = await getDraftFilesLocally(projectId);
+
+      let finalHeroImg = config.heroImg;
+      let finalBgMusicUrl = config.bgMusicUrl;
+      let finalGalleryImgs = [...(config.galleryImgs || [])];
+
+      // 2. Upload pending files to Firebase Storage if present
+      if (draftFiles?.heroImgFile) {
+        setSubmitStatusText('Uploading hero image to storage...');
+        finalHeroImg = await uploadFileToFirebaseStorage(
+          draftFiles.heroImgFile,
+          'hero_images',
+          undefined,
+          90000
+        );
+      }
+
+      if (draftFiles?.bgMusicFile) {
+        setSubmitStatusText('Uploading audio track to storage...');
+        finalBgMusicUrl = await uploadFileToFirebaseStorage(
+          draftFiles.bgMusicFile,
+          'audio',
+          undefined,
+          160000
+        );
+      }
+
+      if (draftFiles?.galleryFiles && draftFiles.galleryFiles.length > 0) {
+        setSubmitStatusText(`Uploading ${draftFiles.galleryFiles.length} gallery photos...`);
+        const uploadedGalleryUrls: string[] = [];
+        for (const file of draftFiles.galleryFiles) {
+          const url = await uploadFileToFirebaseStorage(file, 'gallery', undefined, 90000);
+          uploadedGalleryUrls.push(url);
+        }
+
+        let uploadedIdx = 0;
+        finalGalleryImgs = finalGalleryImgs.map((imgUrl) => {
+          if (imgUrl.startsWith('blob:') && uploadedIdx < uploadedGalleryUrls.length) {
+            return uploadedGalleryUrls[uploadedIdx++];
+          }
+          return imgUrl;
+        });
+
+        while (uploadedIdx < uploadedGalleryUrls.length) {
+          finalGalleryImgs.push(uploadedGalleryUrls[uploadedIdx++]);
+        }
+      }
+
+      // Ensure no local blob URLs remain in final config
+      if (finalHeroImg && finalHeroImg.startsWith('blob:')) {
+        finalHeroImg = '';
+      }
+      if (finalBgMusicUrl && finalBgMusicUrl.startsWith('blob:')) {
+        finalBgMusicUrl = '';
+      }
+      finalGalleryImgs = finalGalleryImgs.filter((u) => !u.startsWith('blob:'));
+
+      const finalConfig: WeddingConfig = {
+        ...config,
+        heroImg: finalHeroImg,
+        bgMusicUrl: finalBgMusicUrl,
+        galleryImgs: finalGalleryImgs
+      };
+
+      setSubmitStatusText('Saving project to database...');
+
+      // 3. Save project to local + Firestore database
+      const savedRecord = await saveProjectToDatabase(finalConfig, projectId);
+      setCurrentProject(savedRecord);
+
+      setSubmitStatusText('Submitting order details...');
+
+      // 4. Submit order details so orderStatus becomes 'submitted' from its very first cloud save
+      await submitProjectOrder(projectId, {
+        customerName,
+        customerPhone,
+        transactionRef: ''
+      });
+
+      // 5. Clear pending draft files from IndexedDB
+      await clearDraftFilesLocally(projectId);
+
+      if (onUpdateConfig) {
+        onUpdateConfig(finalConfig);
+      }
+
+      setIsOrderSubmitted(true);
+
+      // 6. Optional messaging app redirects
+      if (actionType === 'Telegram') {
+        const text = encodeURIComponent(
+          `Hello! I am sending my order confirmation for my wedding invitation:\n\nCustomer: ${customerName}\nPhone: ${customerPhone}\nProject ID: ${projectId}`
+        );
+        window.open(`https://t.me/yared_abegaz?text=${text}`, '_blank');
+        setSentSuccess('Telegram');
+      } else if (actionType === 'WhatsApp') {
+        const text = encodeURIComponent(
+          `Hello! I am sending my order confirmation for my wedding invitation:\n\nCustomer: ${customerName}\nPhone: ${customerPhone}\nProject ID: ${projectId}`
+        );
+        window.open(`https://wa.me/15714749554?text=${text}`, '_blank');
+        setSentSuccess('WhatsApp');
+      }
+    } catch (err: any) {
+      console.error('Order submission failed:', err);
+      setSubmitError(
+        err?.message || 'Order submission failed. Please check your network connection and try again.'
+      );
+    } finally {
+      setIsSubmitting(false);
+      setSubmitStatusText(null);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -41,7 +172,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
   const church = (config.churchEn || config.churchEth || '').trim();
   const reception = (config.receptionEn || config.receptionEth || '').trim();
   const contactPhone = (config.phone1 || '').trim();
-  const projectId = currentProject?.id || 'WED-2026-TEMP';
+  const activeProjectId = currentProject?.id || projectId;
 
   // Check validity of essential wedding fields
   const isGroomValid = Boolean(groom && groom !== 'የሙሽራው ስም');
@@ -503,25 +634,43 @@ Order details submitted for online hosting.
             )}
           </div>
 
+          {/* Submission Loading & Error Feedback */}
+          {submitError && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs flex items-center gap-2 animate-in fade-in mb-3">
+              <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
+              <span className="flex-1 font-medium">{submitError}</span>
+              <button
+                type="button"
+                onClick={() => setSubmitError(null)}
+                className="p-1 text-red-400 hover:text-red-600 rounded-lg cursor-pointer"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
+
+          {isSubmitting && (
+            <div className="p-4 bg-[#FDF0F3] border border-[#C8A84B] rounded-2xl text-[#3D0A1F] text-xs flex items-center justify-center gap-3 animate-pulse mb-3">
+              <Loader2 className="w-5 h-5 text-[#C8A84B] animate-spin shrink-0" />
+              <span className="font-semibold text-sm">{submitStatusText || 'Processing order...'}</span>
+            </div>
+          )}
+
           <button
-            onClick={() => {
-              if (!isAllInfoComplete) {
-                setShowValidationErrors(true);
-                return;
-              }
-              saveProjectToDatabase(config, currentProject?.id).then(() => {
-                setIsOrderSubmitted(true);
-              });
-            }}
-            disabled={!isAllInfoComplete}
+            onClick={() => handleSubmitOrder('submit_only')}
+            disabled={!isAllInfoComplete || isSubmitting}
             className={`w-full py-4 px-6 rounded-2xl font-body text-sm font-bold uppercase tracking-wider transition-all shadow-lg flex items-center justify-center gap-2 ${
-              isAllInfoComplete
+              isAllInfoComplete && !isSubmitting
                 ? 'bg-[#3D0A1F] text-[#FAF5F0] hover:bg-[#2D0817] cursor-pointer hover:shadow-xl border-2 border-[#C8A84B]'
                 : 'bg-gray-200 text-gray-500 opacity-60 cursor-not-allowed border border-gray-300'
             }`}
           >
-            <Check className="w-5 h-5 text-[#C8A84B]" />
-            <span>Submit Order</span>
+            {isSubmitting ? (
+              <Loader2 className="w-5 h-5 text-[#C8A84B] animate-spin" />
+            ) : (
+              <Check className="w-5 h-5 text-[#C8A84B]" />
+            )}
+            <span>{isSubmitting ? 'Submitting Order...' : 'Submit Order'}</span>
           </button>
 
           {/* Optional Direct Messaging Channels */}
@@ -531,19 +680,10 @@ Order details submitted for online hosting.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
-                onClick={() => {
-                  if (!isAllInfoComplete) {
-                    setShowValidationErrors(true);
-                    return;
-                  }
-                  saveProjectToDatabase(config, currentProject?.id).then(() => {
-                    setIsOrderSubmitted(true);
-                    handleAttemptSend('Telegram');
-                  });
-                }}
-                disabled={!isAllInfoComplete}
+                onClick={() => handleSubmitOrder('Telegram')}
+                disabled={!isAllInfoComplete || isSubmitting}
                 className={`py-2.5 px-3 rounded-xl font-body text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
-                  isAllInfoComplete
+                  isAllInfoComplete && !isSubmitting
                     ? 'bg-[#0088cc] text-white hover:bg-[#0077b5] shadow-sm cursor-pointer'
                     : 'bg-gray-200 text-gray-500 opacity-60 cursor-not-allowed border border-gray-300'
                 }`}
@@ -553,19 +693,10 @@ Order details submitted for online hosting.
               </button>
 
               <button
-                onClick={() => {
-                  if (!isAllInfoComplete) {
-                    setShowValidationErrors(true);
-                    return;
-                  }
-                  saveProjectToDatabase(config, currentProject?.id).then(() => {
-                    setIsOrderSubmitted(true);
-                    handleAttemptSend('WhatsApp');
-                  });
-                }}
-                disabled={!isAllInfoComplete}
+                onClick={() => handleSubmitOrder('WhatsApp')}
+                disabled={!isAllInfoComplete || isSubmitting}
                 className={`py-2.5 px-3 rounded-xl font-body text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
-                  isAllInfoComplete
+                  isAllInfoComplete && !isSubmitting
                     ? 'bg-[#25D366] text-white hover:bg-[#20ba5a] shadow-sm cursor-pointer'
                     : 'bg-gray-200 text-gray-500 opacity-60 cursor-not-allowed border border-gray-300'
                 }`}

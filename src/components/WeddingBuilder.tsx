@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { WeddingConfig, ThemeId, TimelineEvent } from '../types';
 import { THEME_PRESETS, SAMPLE_WEDDING_CONFIG, DEFAULT_WEDDING_CONFIG } from '../utils/themePresets';
-import { uploadFileToFirebaseStorage } from '../lib/firebase';
+import { saveDraftFilesLocally, getDraftFilesLocally, saveLocalDraftConfig } from '../utils/projectDatabase';
 import { Palette, Heart, Image as ImageIcon, Music, MapPin, Plus, Trash2, Check, ShoppingBag, Monitor, Smartphone, Upload, AlertCircle, Sparkles, RefreshCw, Loader2, X } from 'lucide-react';
 
 interface WeddingBuilderProps {
@@ -10,6 +10,7 @@ interface WeddingBuilderProps {
   onOpenOrderModal: () => void;
   deviceMode: 'desktop' | 'mobile';
   onToggleDeviceMode: (mode: 'desktop' | 'mobile') => void;
+  projectId: string;
 }
 
 export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
@@ -17,7 +18,8 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
   onChangeConfig,
   onOpenOrderModal,
   deviceMode,
-  onToggleDeviceMode
+  onToggleDeviceMode,
+  projectId
 }) => {
   const [activeStep, setActiveStep] = useState<number>(1);
 
@@ -29,6 +31,63 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
     { id: 5, title: 'Story & Gallery', icon: ImageIcon }
   ];
 
+  // Raw File objects stored locally in React state for pending upload
+  const [rawHeroFile, setRawHeroFile] = useState<File | undefined>(undefined);
+  const [rawMusicFile, setRawMusicFile] = useState<File | undefined>(undefined);
+  const [rawGalleryFiles, setRawGalleryFiles] = useState<File[]>([]);
+
+  // Load existing draft files on mount or projectId change
+  useEffect(() => {
+    let isMounted = true;
+    if (projectId) {
+      getDraftFilesLocally(projectId).then((draft) => {
+        if (!isMounted || !draft) return;
+
+        let updated = { ...config };
+        let configChanged = false;
+
+        if (draft.heroImgFile) {
+          setRawHeroFile(draft.heroImgFile);
+          updated.heroImg = URL.createObjectURL(draft.heroImgFile);
+          configChanged = true;
+        }
+
+        if (draft.bgMusicFile) {
+          setRawMusicFile(draft.bgMusicFile);
+          updated.bgMusicUrl = URL.createObjectURL(draft.bgMusicFile);
+          configChanged = true;
+        }
+
+        if (draft.galleryFiles && draft.galleryFiles.length > 0) {
+          setRawGalleryFiles(draft.galleryFiles);
+          const freshBlobUrls = draft.galleryFiles.map((f) => URL.createObjectURL(f));
+          const existingNonBlob = (config.galleryImgs || []).filter((url) => !url.startsWith('blob:'));
+          updated.galleryImgs = [...existingNonBlob, ...freshBlobUrls];
+          configChanged = true;
+        }
+
+        if (configChanged) {
+          onChangeConfig(updated);
+        }
+      });
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [projectId]);
+
+  // Debounced autosave (~1s) of text config fields to IndexedDB/localStorage only
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (projectId && config) {
+        saveLocalDraftConfig(config, projectId);
+      }
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [config, projectId]);
+
   // Handler for text input updates
   const handleTextChange = (field: keyof WeddingConfig, val: any) => {
     onChangeConfig({
@@ -37,23 +96,15 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
     });
   };
 
-  const [isUploadingHero, setIsUploadingHero] = useState<boolean>(false);
-  const [heroProgress, setHeroProgress] = useState<number | null>(null);
   const [heroUploadError, setHeroUploadError] = useState<string | null>(null);
-
-  const [isUploadingMusic, setIsUploadingMusic] = useState<boolean>(false);
-  const [musicProgress, setMusicProgress] = useState<number | null>(null);
   const [musicUploadError, setMusicUploadError] = useState<string | null>(null);
-
-  const [isUploadingGallery, setIsUploadingGallery] = useState<boolean>(false);
-  const [galleryProgress, setGalleryProgress] = useState<number | null>(null);
   const [galleryUploadError, setGalleryUploadError] = useState<string | null>(null);
 
   // Constants for max upload sizes
   const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
   const MAX_AUDIO_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
 
-  // Image Upload handler for Hero Background (Uploads directly to Firebase Storage)
+  // Image Upload handler for Hero Background (local preview + IndexedDB draft store)
   const handleHeroImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -64,28 +115,26 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
       return;
     }
 
-    setIsUploadingHero(true);
-    setHeroProgress(0);
     setHeroUploadError(null);
     try {
-      const downloadUrl = await uploadFileToFirebaseStorage(
-        file,
-        'hero_images',
-        (progress) => setHeroProgress(progress),
-        90000
-      );
-      handleTextChange('heroImg', downloadUrl);
+      const previewUrl = URL.createObjectURL(file);
+      handleTextChange('heroImg', previewUrl);
+      setRawHeroFile(file);
+
+      await saveDraftFilesLocally(projectId, {
+        heroImgFile: file,
+        bgMusicFile: rawMusicFile,
+        galleryFiles: rawGalleryFiles
+      });
     } catch (err: any) {
-      console.error('Hero Image Upload Error:', err);
-      setHeroUploadError('Photo failed to upload. Please try again or select a smaller photo.');
+      console.error('Hero Image Local Save Error:', err);
+      setHeroUploadError('Photo failed to load. Please try again.');
     } finally {
-      setIsUploadingHero(false);
-      setHeroProgress(null);
       e.target.value = '';
     }
   };
 
-  // Audio Upload handler for Background Music
+  // Audio Upload handler for Background Music (local preview + IndexedDB draft store)
   const handleAudioUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -96,29 +145,27 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
       return;
     }
 
-    setIsUploadingMusic(true);
-    setMusicProgress(0);
     setMusicUploadError(null);
 
     try {
-      const downloadUrl = await uploadFileToFirebaseStorage(
-        file,
-        'audio',
-        (progress) => setMusicProgress(progress),
-        160000
-      );
-      handleTextChange('bgMusicUrl', downloadUrl);
+      const previewUrl = URL.createObjectURL(file);
+      handleTextChange('bgMusicUrl', previewUrl);
+      setRawMusicFile(file);
+
+      await saveDraftFilesLocally(projectId, {
+        heroImgFile: rawHeroFile,
+        bgMusicFile: file,
+        galleryFiles: rawGalleryFiles
+      });
     } catch (err: any) {
-      console.error('Audio Upload Error:', err);
-      setMusicUploadError('Audio failed to upload. Please try again or choose a smaller file.');
+      console.error('Audio Local Save Error:', err);
+      setMusicUploadError('Audio failed to load. Please try again.');
     } finally {
-      setIsUploadingMusic(false);
-      setMusicProgress(null);
       e.target.value = '';
     }
   };
 
-  // Gallery Image Upload (up to 8 images directly to Firebase Storage)
+  // Gallery Image Upload (local previews + IndexedDB draft store)
   const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const files: File[] = Array.from(e.target.files);
@@ -142,48 +189,54 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
       return;
     }
 
-    setIsUploadingGallery(true);
-    setGalleryProgress(0);
     setGalleryUploadError(null);
 
-    const fileProgresses = new Array(filesToProcess.length).fill(0);
-    const updateOverallProgress = (index: number, p: number) => {
-      fileProgresses[index] = p;
-      const avg = Math.round(fileProgresses.reduce((a, b) => a + b, 0) / filesToProcess.length);
-      setGalleryProgress(avg);
-    };
-
     try {
-      const uploadedUrls = await Promise.all(
-        filesToProcess.map((f, idx) =>
-          uploadFileToFirebaseStorage(
-            f,
-            'gallery',
-            (p) => updateOverallProgress(idx, p),
-            90000
-          )
-        )
-      );
-      const validUrls = uploadedUrls.filter(Boolean);
-      if (validUrls.length > 0) {
-        onChangeConfig({
-          ...config,
-          galleryImgs: [...(config.galleryImgs || []), ...validUrls]
-        });
-      }
+      const previewUrls = filesToProcess.map((f) => URL.createObjectURL(f));
+      const updatedGalleryImgs = [...currentGallery, ...previewUrls];
+      const updatedRawGalleryFiles = [...rawGalleryFiles, ...filesToProcess];
+
+      onChangeConfig({
+        ...config,
+        galleryImgs: updatedGalleryImgs
+      });
+      setRawGalleryFiles(updatedRawGalleryFiles);
+
+      await saveDraftFilesLocally(projectId, {
+        heroImgFile: rawHeroFile,
+        bgMusicFile: rawMusicFile,
+        galleryFiles: updatedRawGalleryFiles
+      });
     } catch (err: any) {
-      console.error('Gallery Upload Error:', err);
-      setGalleryUploadError('Photo failed to upload. Please try again or select smaller photos.');
+      console.error('Gallery Local Save Error:', err);
+      setGalleryUploadError('Photos failed to load. Please try again.');
     } finally {
-      setIsUploadingGallery(false);
-      setGalleryProgress(null);
       e.target.value = '';
     }
   };
 
-  const removeGalleryImage = (index: number) => {
-    const updated = (config.galleryImgs || []).filter((_, idx) => idx !== index);
-    handleTextChange('galleryImgs', updated);
+  const removeGalleryImage = async (index: number) => {
+    const currentImgs = config.galleryImgs || [];
+    const removedUrl = currentImgs[index];
+    const updatedConfigImgs = currentImgs.filter((_, idx) => idx !== index);
+
+    let updatedRawFiles = [...rawGalleryFiles];
+    if (removedUrl && removedUrl.startsWith('blob:') && rawGalleryFiles.length > 0) {
+      const blobUrls = currentImgs.filter((u) => u.startsWith('blob:'));
+      const blobIdx = blobUrls.indexOf(removedUrl);
+      if (blobIdx >= 0 && blobIdx < updatedRawFiles.length) {
+        updatedRawFiles.splice(blobIdx, 1);
+      }
+    }
+
+    handleTextChange('galleryImgs', updatedConfigImgs);
+    setRawGalleryFiles(updatedRawFiles);
+
+    await saveDraftFilesLocally(projectId, {
+      heroImgFile: rawHeroFile,
+      bgMusicFile: rawMusicFile,
+      galleryFiles: updatedRawFiles
+    });
   };
 
   // Calendar date picker change handler
@@ -514,34 +567,17 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
                 </div>
                 <div className="flex-1 space-y-2">
                   <div className="flex items-center gap-3">
-                    <label className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#3B0B1F] text-[#FDF0F3] font-body text-xs font-semibold cursor-pointer hover:bg-[#2D0817] shadow-sm ${isUploadingHero ? 'opacity-70 pointer-events-none' : ''}`}>
-                      {isUploadingHero ? (
-                        <Loader2 className="w-4 h-4 text-[#C8A84B] animate-spin" />
-                      ) : (
-                        <Upload className="w-4 h-4 text-[#C8A84B]" />
-                      )}
-                      <span>
-                        {isUploadingHero
-                          ? `Uploading (${heroProgress ?? 0}%)`
-                          : 'Upload Custom Image'}
-                      </span>
+                    <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#3B0B1F] text-[#FDF0F3] font-body text-xs font-semibold cursor-pointer hover:bg-[#2D0817] shadow-sm">
+                      <Upload className="w-4 h-4 text-[#C8A84B]" />
+                      <span>Upload Custom Image</span>
                       <input
                         type="file"
                         accept="image/*"
-                        disabled={isUploadingHero}
                         onChange={handleHeroImageUpload}
                         className="hidden"
                       />
                     </label>
                   </div>
-                  {isUploadingHero && (
-                    <div className="w-full max-w-xs bg-[#FDF0F3] border border-[#C8A84B]/40 rounded-full h-2 overflow-hidden p-0.5 shadow-inner">
-                      <div
-                        className="bg-[#C8A84B] h-full rounded-full transition-all duration-150"
-                        style={{ width: `${heroProgress ?? 0}%` }}
-                      />
-                    </div>
-                  )}
                   {heroUploadError && (
                     <div className="flex items-center gap-2 p-2.5 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl mt-2 animate-in fade-in">
                       <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
@@ -627,35 +663,17 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
                   />
 
                   <div className="flex items-center gap-2">
-                    <label className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#FDF0F3] border border-[#C8A84B] text-[#3B0B1F] font-body text-xs font-semibold cursor-pointer hover:bg-[#D4849A]/20 ${isUploadingMusic ? 'opacity-70 pointer-events-none' : ''}`}>
-                      {isUploadingMusic ? (
-                        <Loader2 className="w-4 h-4 text-[#C8A84B] animate-spin" />
-                      ) : (
-                        <Music className="w-4 h-4 text-[#C8A84B]" />
-                      )}
-                      <span>
-                        {isUploadingMusic
-                          ? `Uploading (${musicProgress ?? 0}%)`
-                          : 'Upload MP3 File'}
-                      </span>
+                    <label className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#FDF0F3] border border-[#C8A84B] text-[#3B0B1F] font-body text-xs font-semibold cursor-pointer hover:bg-[#D4849A]/20">
+                      <Music className="w-4 h-4 text-[#C8A84B]" />
+                      <span>Upload MP3 File</span>
                       <input
                         type="file"
                         accept="audio/*"
-                        disabled={isUploadingMusic}
                         onChange={handleAudioUpload}
                         className="hidden"
                       />
                     </label>
                   </div>
-
-                  {isUploadingMusic && (
-                    <div className="w-full max-w-sm bg-[#FDF0F3] border border-[#C8A84B]/40 rounded-full h-2 overflow-hidden p-0.5 shadow-inner">
-                      <div
-                        className="bg-[#C8A84B] h-full rounded-full transition-all duration-150"
-                        style={{ width: `${musicProgress ?? 0}%` }}
-                      />
-                    </div>
-                  )}
 
                   {musicUploadError && (
                     <div className="flex items-center gap-2 p-2.5 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl mt-1 animate-in fade-in">
@@ -868,34 +886,17 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
                   </p>
                 </div>
                 <div className="flex flex-col items-end gap-1">
-                  <label className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#3B0B1F] text-[#FDF0F3] font-body text-xs font-semibold cursor-pointer hover:bg-[#2D0817] ${isUploadingGallery ? 'opacity-70 pointer-events-none' : ''}`}>
-                    {isUploadingGallery ? (
-                      <Loader2 className="w-4 h-4 text-[#C8A84B] animate-spin" />
-                    ) : (
-                      <Plus className="w-4 h-4 text-[#C8A84B]" />
-                    )}
-                    <span>
-                      {isUploadingGallery
-                        ? `Uploading (${galleryProgress ?? 0}%)`
-                        : 'Add Photos'}
-                    </span>
+                  <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#3B0B1F] text-[#FDF0F3] font-body text-xs font-semibold cursor-pointer hover:bg-[#2D0817]">
+                    <Plus className="w-4 h-4 text-[#C8A84B]" />
+                    <span>Add Photos</span>
                     <input
                       type="file"
                       accept="image/*"
                       multiple
-                      disabled={isUploadingGallery}
                       onChange={handleGalleryUpload}
                       className="hidden"
                     />
                   </label>
-                  {isUploadingGallery && (
-                    <div className="w-32 bg-[#FDF0F3] border border-[#C8A84B]/40 rounded-full h-1.5 overflow-hidden p-0.5 shadow-inner">
-                      <div
-                        className="bg-[#C8A84B] h-full rounded-full transition-all duration-150"
-                        style={{ width: `${galleryProgress ?? 0}%` }}
-                      />
-                    </div>
-                  )}
                 </div>
               </div>
 

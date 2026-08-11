@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { WeddingConfig, ThemeId } from './types';
 import { DEFAULT_WEDDING_CONFIG, THEME_PRESETS } from './utils/themePresets';
+import { generateProjectId } from './utils/projectDatabase';
 import { LandingPage } from './components/LandingPage';
 import { WeddingBuilder } from './components/WeddingBuilder';
 import { OrderModal } from './components/OrderModal';
@@ -27,7 +28,7 @@ export default function App() {
   const [isRegistryOpen, setIsRegistryOpen] = useState<boolean>(false);
   const [deviceMode, setDeviceMode] = useState<'desktop' | 'mobile'>('desktop');
   const [activeViewMode, setActiveViewMode] = useState<'split' | 'guest'>('split');
-  const [currentProjectId, setCurrentProjectId] = useState<string>('WED-2026-[#3B0B1F]');
+  const [currentProjectId, setCurrentProjectId] = useState<string>(() => generateProjectId());
   const [cloudSaveError, setCloudSaveError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -155,6 +156,7 @@ export default function App() {
             onOpenOrderModal={() => setIsOrderModalOpen(true)}
             deviceMode={deviceMode}
             onToggleDeviceMode={setDeviceMode}
+            projectId={currentProjectId}
           />
         )}
 
@@ -234,6 +236,7 @@ export default function App() {
         isOpen={isOrderModalOpen}
         onClose={() => setIsOrderModalOpen(false)}
         onUpdateConfig={setConfig}
+        projectId={currentProjectId}
       />
 
       {/* Cloud Save Error Alert Toast Banner */}

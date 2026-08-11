@@ -18,8 +18,17 @@ export type { SavedProject };
 
 const STORAGE_KEY = 'ethiopian_wedding_projects_db';
 const DB_NAME = 'EthiopianWeddingStudioDB';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const STORE_NAME = 'projects';
+const DRAFT_STORE_NAME = 'pendingDraftFiles';
+
+export interface PendingDraftFiles {
+  id: string;
+  heroImgFile?: File;
+  bgMusicFile?: File;
+  galleryFiles?: File[];
+  updatedAt?: string;
+}
 
 // In-memory cache for synchronous fast access
 let inMemoryProjects: SavedProject[] | null = null;
@@ -45,11 +54,132 @@ function openIndexedDB(): Promise<IDBDatabase> {
       if (!dbInstance.objectStoreNames.contains(STORE_NAME)) {
         dbInstance.createObjectStore(STORE_NAME, { keyPath: 'id' });
       }
+      if (!dbInstance.objectStoreNames.contains(DRAFT_STORE_NAME)) {
+        dbInstance.createObjectStore(DRAFT_STORE_NAME, { keyPath: 'id' });
+      }
     };
 
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
   });
+}
+
+// Save pending draft File/Blob objects locally to IndexedDB 'pendingDraftFiles' store
+export async function saveDraftFilesLocally(
+  id: string,
+  files: { heroImgFile?: File; bgMusicFile?: File; galleryFiles?: File[] }
+): Promise<void> {
+  try {
+    const idb = await openIndexedDB();
+    const existing = await getDraftFilesLocally(id);
+    const updated: PendingDraftFiles = {
+      id,
+      heroImgFile: files.heroImgFile !== undefined ? files.heroImgFile : existing?.heroImgFile,
+      bgMusicFile: files.bgMusicFile !== undefined ? files.bgMusicFile : existing?.bgMusicFile,
+      galleryFiles: files.galleryFiles !== undefined ? files.galleryFiles : existing?.galleryFiles,
+      updatedAt: new Date().toISOString()
+    };
+
+    return new Promise((resolve, reject) => {
+      const transaction = idb.transaction(DRAFT_STORE_NAME, 'readwrite');
+      const store = transaction.objectStore(DRAFT_STORE_NAME);
+      const request = store.put(updated);
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(request.error);
+    });
+  } catch (err) {
+    console.warn('saveDraftFilesLocally error:', err);
+  }
+}
+
+// Retrieve pending draft File/Blob objects from IndexedDB 'pendingDraftFiles' store
+export async function getDraftFilesLocally(id: string): Promise<PendingDraftFiles | null> {
+  try {
+    const idb = await openIndexedDB();
+    return new Promise((resolve) => {
+      const transaction = idb.transaction(DRAFT_STORE_NAME, 'readonly');
+      const store = transaction.objectStore(DRAFT_STORE_NAME);
+      const request = store.get(id);
+      request.onsuccess = () => {
+        resolve((request.result as PendingDraftFiles) || null);
+      };
+      request.onerror = () => resolve(null);
+    });
+  } catch (err) {
+    console.warn('getDraftFilesLocally error:', err);
+    return null;
+  }
+}
+
+// Delete pending draft File/Blob entry from IndexedDB 'pendingDraftFiles' store
+export async function clearDraftFilesLocally(id: string): Promise<void> {
+  try {
+    const idb = await openIndexedDB();
+    return new Promise((resolve) => {
+      const transaction = idb.transaction(DRAFT_STORE_NAME, 'readwrite');
+      const store = transaction.objectStore(DRAFT_STORE_NAME);
+      const request = store.delete(id);
+      request.onsuccess = () => resolve();
+      request.onerror = () => resolve();
+    });
+  } catch (err) {
+    console.warn('clearDraftFilesLocally error:', err);
+  }
+}
+
+// Local-only save path for autosaving config text fields (never touches Firestore or Storage)
+export function saveLocalDraftConfig(
+  config: WeddingConfig,
+  existingId?: string
+): SavedProject {
+  const projects = [...getAllSavedProjects()];
+  const id = existingId || generateProjectId();
+  const groom = config.groomEth || config.groomEn || 'የሙሽራው ስም';
+  const bride = config.brideEth || config.brideEn || 'የሙሽሪት ስም';
+  const coupleNames = `${groom} እና ${bride}`;
+  const now = new Date().toISOString();
+
+  let currentUid = auth.currentUser?.uid || '';
+
+  const existingIndex = projects.findIndex((p) => p.id === id);
+  const existingProject = existingIndex >= 0 ? projects[existingIndex] : null;
+
+  const ownerUid = existingProject?.ownerUid || currentUid;
+  const orderStatus = existingProject?.orderStatus || 'draft';
+  const rsvpEnabled = true;
+  const customerName = existingProject?.customerName || '';
+  const customerPhone = existingProject?.customerPhone || '';
+  const transactionRef = existingProject?.transactionRef || '';
+
+  const projectRecord: SavedProject = {
+    id,
+    coupleNames,
+    themeId: config.themeId,
+    themeName: config.themeId.toUpperCase(),
+    createdAt: existingProject ? existingProject.createdAt : now,
+    updatedAt: now,
+    config,
+    deploymentStatus: 'generated',
+    customUrl: `https://wedding-invitations.et/view/${id}`,
+    ownerUid,
+    orderStatus,
+    rsvpEnabled,
+    customerName,
+    customerPhone,
+    transactionRef
+  };
+
+  if (existingIndex >= 0) {
+    projects[existingIndex] = projectRecord;
+  } else {
+    projects.unshift(projectRecord);
+  }
+
+  inMemoryProjects = projects;
+  saveToIndexedDB(projectRecord).catch(() => {});
+  safeSaveToLocalStorage(projects);
+
+  return projectRecord;
 }
 
 // Asynchronously load all projects from IndexedDB and sync into memory cache
