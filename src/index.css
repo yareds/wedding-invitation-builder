@@ -61,6 +61,52 @@
   animation: floatSlow 5s infinite ease-in-out;
 }
 
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background-size: 200% auto;
+  animation: shimmer 6s linear infinite;
+}
+
+.text-gold-shimmer {
+  background: linear-gradient(
+    110deg,
+    #8C6B1B 0%,
+    #C8A84B 25%,
+    #FFF2C2 50%,
+    #C8A84B 75%,
+    #8C6B1B 100%
+  );
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shimmer 5s linear infinite;
+}
+
+.text-gold-shimmer-light {
+  background: linear-gradient(
+    110deg,
+    #EAD284 0%,
+    #FAF0C5 30%,
+    #FFFFFF 50%,
+    #FAF0C5 70%,
+    #EAD284 100%
+  );
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
+
 /* Dual-Row Marquee Gallery Animations */
 @keyframes scrollRight {
   0% { transform: translateX(-50%); }
