@@ -533,7 +533,7 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
                   <ul className="text-xs text-[#332200] font-medium space-y-2.5 leading-relaxed">
                     <li className="flex items-start gap-1.5">
                       <span className="text-[#8C6B1B] font-bold">•</span>
-                      <span><strong>እንዴት ተገናኘን?</strong> ጥንዶቹ ለመጀመሪያ ጊዜ እንዴት እንደተገናኙ የሚተርክ ልብ የሚነካ ጽሑፍ።</span>
+                      <span><strong>እንዴት ተገናኘን?</strong> ጥንዶቹ ለመጀመሪያ ጊዜ እንዴት እንደተገናኙ የሚተርክ ጽሑፍ።</span>
                     </li>
                     <li className="flex items-start gap-1.5">
                       <span className="text-[#8C6B1B] font-bold">•</span>
@@ -559,13 +559,13 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
                   <div className="text-xs text-[#022C22] font-medium space-y-2.5 leading-relaxed">
                     <div className="p-2.5 rounded-xl bg-white/90 border border-[#4ADE80]/60 space-y-1 shadow-2xs">
                       <p className="font-bold text-[#14532D]">የቃል ኪዳን ስነ-ስርዓት (Ceremony):</p>
-                      <p className="text-[11px] text-[#064E3B]">⏰ ሰዓት: [ሰዓት ያስገቡ]</p>
-                      <p className="text-[11px] text-[#064E3B]">📍 ቦታ: [የቤተክርስቲያን/ቦታ አድራሻ]</p>
+                      <p className="text-[11px] text-[#064E3B]">⏰ ሰዓት: ሰዓት ያስገቡ</p>
+                      <p className="text-[11px] text-[#064E3B]">📍 ቦታ: ቦታ / አድራሻ</p>
                     </div>
                     <div className="p-2.5 rounded-xl bg-white/90 border border-[#4ADE80]/60 space-y-1 shadow-2xs">
                       <p className="font-bold text-[#14532D]">የሰርግ ግብዣ (Reception):</p>
-                      <p className="text-[11px] text-[#064E3B]">⏰ ሰዓት: [ሰዓት ያስገቡ]</p>
-                      <p className="text-[11px] text-[#064E3B]">📍 ቦታ: [የሆቴል/አዳራሽ አድራሻ]</p>
+                      <p className="text-[11px] text-[#064E3B]">⏰ ሰዓት: ሰዓት ያስገቡ</p>
+                      <p className="text-[11px] text-[#064E3B]">📍 ቦታ: የሆቴል/አዳራሽ አድራሻ</p>
                     </div>
                     <p className="text-[11px] font-bold text-[#15803D] flex items-center gap-1">
                       🗺️ Google Maps ቀጥታ አቅጣጫ ማሳያ
@@ -586,15 +586,15 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
                   <ul className="text-xs text-[#2E1065] font-medium space-y-2.5 leading-relaxed">
                     <li className="flex items-start gap-1.5">
                       <span className="text-[#6B21A8] font-bold">•</span>
-                      <span><strong>ቀጥታ ድረ-ገጽ ሊንክ:</strong> ለእንግዶችዎ በTelegram/WhatsApp በቀላሉ የሚልኩት ማራኪ ሊንክ።</span>
+                      <span><strong>ቀጥታ ድረ-ገጽ ሊንክ:</strong> ለእንግዶችዎ በTelegram/WhatsApp በቀላሉ የሚልኩት ሊንክ።</span>
                     </li>
                     <li className="flex items-start gap-1.5">
                       <span className="text-[#6B21A8] font-bold">•</span>
-                      <span><strong>የክፍያ ማረጋገጫ:</strong> ክፍያዎን ሲፈጽሙ ወዲያውኑ ድረ-ገጽዎ ገቢር ይደረጋል።</span>
+                      <span><strong>የክፍያ ማረጋገጫ:</strong> ክፍያዎን ሲፈጽሙ ወዲያውኑ ድረ-ገጽዎ online post ይደረጋል።</span>
                     </li>
                     <li className="flex items-start gap-1.5">
                       <span className="text-[#6B21A8] font-bold">•</span>
-                      <span><strong>የእንግዶች RSVP:</strong> እንግዶችዎ መምጣታቸውን የሚያረጋግጡበት ቅጽ።</span>
+                      <span><strong>የእንግዶች RSVP:</strong> እንግዶችዎ መምጣታቸውን የሚያረጋግጡበት ቅጽ ያገኛሉ።</span>
                     </li>
                   </ul>
                 </div>
@@ -872,10 +872,6 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
                 <li className="flex items-center gap-2">
                   <Mail className="w-3.5 h-3.5 text-[#C8A84B]" />
                   <span>yared.abegaz@gmail.com</span>
-                </li>
-                <li className="flex items-center gap-2 pt-1 border-t border-white/10">
-                  <MapPin className="w-3.5 h-3.5 text-[#C8A84B]" />
-                  <span>Telebirr: 0995967804 | CBE: 1000450356817</span>
                 </li>
               </ul>
             </div>
