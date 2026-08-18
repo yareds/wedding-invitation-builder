@@ -25,8 +25,8 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
 
   const steps = [
     { id: 1, title: 'Color & Theme', icon: Palette },
-    { id: 2, title: 'Couple & Date', icon: Heart },
-    { id: 3, title: 'Hero & Audio', icon: Music },
+    { id: 2, title: 'Hero & Audio', icon: Music },
+    { id: 3, title: 'Couple & Date', icon: Heart },
     { id: 4, title: 'Venues & RSVP', icon: MapPin },
     { id: 5, title: 'Story & Gallery', icon: ImageIcon }
   ];
@@ -316,25 +316,27 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
         </div>
 
         {/* Step Navigation Tabs */}
-        <div className="flex items-center justify-between bg-[#FAF0F3]/80 px-2 py-2 overflow-x-auto no-scrollbar">
-          {steps.map((step) => {
-            const IconComp = step.icon;
-            const isActive = activeStep === step.id;
-            return (
-              <button
-                key={step.id}
-                onClick={() => setActiveStep(step.id)}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-body font-semibold transition-all whitespace-nowrap cursor-pointer ${
-                  isActive
-                    ? 'bg-[#4A0E17] text-[#FAF0F3] shadow-md'
-                    : 'text-[#3B0B1F]/70 hover:text-[#3B0B1F] hover:bg-[#B85B75]/15'
-                }`}
-              >
-                <IconComp className={`w-3.5 h-3.5 ${isActive ? 'text-[#C8A84B]' : 'text-[#3B0B1F]'}`} />
-                <span>{step.title}</span>
-              </button>
-            );
-          })}
+        <div className="bg-[#3B0B1F] p-2 sm:p-2.5 shadow-md border-b-2 border-[#C8A84B]">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
+            {steps.map((step) => {
+              const IconComp = step.icon;
+              const isActive = activeStep === step.id;
+              return (
+                <button
+                  key={step.id}
+                  onClick={() => setActiveStep(step.id)}
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-body font-bold transition-all whitespace-nowrap cursor-pointer shrink-0 border ${
+                    isActive
+                      ? 'bg-[#C8A84B] text-[#3B0B1F] border-[#FFF2C2] shadow-lg scale-102 ring-2 ring-[#C8A84B]/40'
+                      : 'bg-white/10 text-white/90 border-white/15 hover:bg-white/20 hover:text-white hover:border-[#C8A84B]/60'
+                  }`}
+                >
+                  <IconComp className={`w-3.5 h-3.5 ${isActive ? 'text-[#3B0B1F]' : 'text-[#C8A84B]'}`} />
+                  <span>{step.title}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -407,141 +409,8 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
           </div>
         )}
 
-        {/* STEP 2: COUPLE & DATE INFO */}
+        {/* STEP 2: HERO IMAGE & BACKGROUND MUSIC */}
         {activeStep === 2 && (
-          <div className="space-y-4">
-            <div>
-              <h3 className="font-serif-heading text-lg font-normal text-[#3B0B1F]">
-                Personalized Couple &amp; Date Info
-              </h3>
-              <p className="font-body text-xs text-[#3B0B1F]/70">
-                Enter couple names in English and Amharic, plus select your date via calendar.
-              </p>
-            </div>
-
-            {/* Quick Helper Buttons for Testing Essential Info */}
-            <div className="flex items-center justify-between gap-2 p-2.5 bg-[#FAF0F3] rounded-xl border border-[#C8A84B]/40">
-              <span className="text-[11px] font-semibold text-[#3B0B1F]">Quick Presets:</span>
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => onChangeConfig(SAMPLE_WEDDING_CONFIG)}
-                  className="px-2.5 py-1 rounded-lg bg-[#C8A84B] text-[#3B0B1F] text-[11px] font-bold hover:bg-[#b0923e] transition-all flex items-center gap-1 cursor-pointer shadow-sm"
-                  title="Fill sample demo data to test full order confirmation modal"
-                >
-                  <Sparkles className="w-3 h-3 text-[#3B0B1F]" />
-                  <span>Load Sample Demo</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onChangeConfig(DEFAULT_WEDDING_CONFIG)}
-                  className="px-2.5 py-1 rounded-lg bg-gray-200 text-gray-800 text-[11px] font-bold hover:bg-gray-300 transition-all flex items-center gap-1 cursor-pointer shadow-sm"
-                  title="Clear essential fields to test basic notification modal"
-                >
-                  <RefreshCw className="w-3 h-3 text-gray-700" />
-                  <span>Clear Info</span>
-                </button>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="block font-body text-xs font-semibold text-[#3B0B1F] uppercase mb-1">
-                  Groom Name (English)
-                </label>
-                <input
-                  type="text"
-                  value={config.groomEn}
-                  onChange={(e) => handleTextChange('groomEn', e.target.value)}
-                  placeholder="e.g. Sebastian"
-                  className="w-full px-3 py-2 rounded-xl border border-[#D4849A]/40 bg-[#FDF0F3]/30 text-xs text-[#3B0B1F] focus:outline-none focus:border-[#C8A84B]"
-                />
-              </div>
-              <div>
-                <label className="block font-body text-xs font-semibold text-[#3B0B1F] uppercase mb-1">
-                  Groom Name (Amharic)
-                </label>
-                <input
-                  type="text"
-                  value={config.groomEth}
-                  onChange={(e) => handleTextChange('groomEth', e.target.value)}
-                  placeholder="e.g. ሴባስቲያን"
-                  className="w-full px-3 py-2 rounded-xl border border-[#D4849A]/40 bg-[#FDF0F3]/30 text-xs text-[#3B0B1F] focus:outline-none focus:border-[#C8A84B]"
-                />
-              </div>
-
-              <div>
-                <label className="block font-body text-xs font-semibold text-[#3B0B1F] uppercase mb-1">
-                  Bride Name (English)
-                </label>
-                <input
-                  type="text"
-                  value={config.brideEn}
-                  onChange={(e) => handleTextChange('brideEn', e.target.value)}
-                  placeholder="e.g. Amara"
-                  className="w-full px-3 py-2 rounded-xl border border-[#D4849A]/40 bg-[#FDF0F3]/30 text-xs text-[#3B0B1F] focus:outline-none focus:border-[#C8A84B]"
-                />
-              </div>
-              <div>
-                <label className="block font-body text-xs font-semibold text-[#3B0B1F] uppercase mb-1">
-                  Bride Name (Amharic)
-                </label>
-                <input
-                  type="text"
-                  value={config.brideEth}
-                  onChange={(e) => handleTextChange('brideEth', e.target.value)}
-                  placeholder="e.g. አማራ"
-                  className="w-full px-3 py-2 rounded-xl border border-[#D4849A]/40 bg-[#FDF0F3]/30 text-xs text-[#3B0B1F] focus:outline-none focus:border-[#C8A84B]"
-                />
-              </div>
-            </div>
-
-            {/* Calendar Picker & Dates */}
-            <div className="pt-3 border-t border-[#D4849A]/30 space-y-3">
-              <div>
-                <label className="block font-body text-xs font-semibold text-[#3B0B1F] uppercase mb-1 flex items-center justify-between">
-                  <span>Pick Wedding Date (Calendar)</span>
-                  <span className="text-[10px] text-[#C8A84B] font-bold">Auto-updates Countdown</span>
-                </label>
-                <input
-                  type="date"
-                  onChange={(e) => handleCalendarDateChange(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border-2 border-[#C8A84B] bg-white text-xs font-body font-semibold text-[#3B0B1F] focus:outline-none shadow-sm cursor-pointer"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-body text-xs font-semibold text-[#3B0B1F] uppercase mb-1">
-                    Date (Gregorian GC)
-                  </label>
-                  <input
-                    type="text"
-                    value={config.dateGC}
-                    onChange={(e) => handleTextChange('dateGC', e.target.value)}
-                    placeholder="e.g. Saturday, May 09, 2026"
-                    className="w-full px-3 py-2 rounded-xl border border-[#D4849A]/40 bg-[#FDF0F3]/30 text-xs text-[#3B0B1F] focus:outline-none focus:border-[#C8A84B]"
-                  />
-                </div>
-                <div>
-                  <label className="block font-body text-xs font-semibold text-[#3B0B1F] uppercase mb-1">
-                    Date (Ethiopian EC)
-                  </label>
-                  <input
-                    type="text"
-                    value={config.dateEC}
-                    onChange={(e) => handleTextChange('dateEC', e.target.value)}
-                    placeholder="e.g. ግንቦት 01, 2018 ዓ.ም"
-                    className="w-full px-3 py-2 rounded-xl border border-[#D4849A]/40 bg-[#FDF0F3]/30 text-xs text-[#3B0B1F] focus:outline-none focus:border-[#C8A84B]"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* STEP 3: HERO IMAGE & BACKGROUND MUSIC */}
-        {activeStep === 3 && (
           <div className="space-y-5">
             <div>
               <h3 className="font-serif-heading text-lg font-normal text-[#3B0B1F]">
@@ -702,6 +571,139 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
           </div>
         )}
 
+        {/* STEP 3: COUPLE & DATE INFO */}
+        {activeStep === 3 && (
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-serif-heading text-lg font-normal text-[#3B0B1F]">
+                Personalized Couple &amp; Date Info
+              </h3>
+              <p className="font-body text-xs text-[#3B0B1F]/70">
+                Enter couple names in English and Amharic, plus select your date via calendar.
+              </p>
+            </div>
+
+            {/* Quick Helper Buttons for Testing Essential Info */}
+            <div className="flex items-center justify-between gap-2 p-2.5 bg-[#FAF0F3] rounded-xl border border-[#C8A84B]/40">
+              <span className="text-[11px] font-semibold text-[#3B0B1F]">Quick Presets:</span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => onChangeConfig(SAMPLE_WEDDING_CONFIG)}
+                  className="px-2.5 py-1 rounded-lg bg-[#C8A84B] text-[#3B0B1F] text-[11px] font-bold hover:bg-[#b0923e] transition-all flex items-center gap-1 cursor-pointer shadow-sm"
+                  title="Fill sample demo data to test full order confirmation modal"
+                >
+                  <Sparkles className="w-3 h-3 text-[#3B0B1F]" />
+                  <span>Load Sample Demo</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onChangeConfig(DEFAULT_WEDDING_CONFIG)}
+                  className="px-2.5 py-1 rounded-lg bg-gray-200 text-gray-800 text-[11px] font-bold hover:bg-gray-300 transition-all flex items-center gap-1 cursor-pointer shadow-sm"
+                  title="Clear essential fields to test basic notification modal"
+                >
+                  <RefreshCw className="w-3 h-3 text-gray-700" />
+                  <span>Clear Info</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block font-body text-xs font-semibold text-[#3B0B1F] uppercase mb-1">
+                  Groom Name (English)
+                </label>
+                <input
+                  type="text"
+                  value={config.groomEn}
+                  onChange={(e) => handleTextChange('groomEn', e.target.value)}
+                  placeholder="e.g. Dawit Tesfaye"
+                  className="w-full px-3 py-2 rounded-xl border border-[#D4849A]/40 bg-[#FDF0F3]/30 text-xs text-[#3B0B1F] focus:outline-none focus:border-[#C8A84B]"
+                />
+              </div>
+              <div>
+                <label className="block font-body text-xs font-semibold text-[#3B0B1F] uppercase mb-1">
+                  Groom Name (Amharic)
+                </label>
+                <input
+                  type="text"
+                  value={config.groomEth}
+                  onChange={(e) => handleTextChange('groomEth', e.target.value)}
+                  placeholder="e.g. ዳዊት ተስፋዬ"
+                  className="w-full px-3 py-2 rounded-xl border border-[#D4849A]/40 bg-[#FDF0F3]/30 text-xs text-[#3B0B1F] focus:outline-none focus:border-[#C8A84B]"
+                />
+              </div>
+
+              <div>
+                <label className="block font-body text-xs font-semibold text-[#3B0B1F] uppercase mb-1">
+                  Bride Name (English)
+                </label>
+                <input
+                  type="text"
+                  value={config.brideEn}
+                  onChange={(e) => handleTextChange('brideEn', e.target.value)}
+                  placeholder="e.g. Selamawit Bekele"
+                  className="w-full px-3 py-2 rounded-xl border border-[#D4849A]/40 bg-[#FDF0F3]/30 text-xs text-[#3B0B1F] focus:outline-none focus:border-[#C8A84B]"
+                />
+              </div>
+              <div>
+                <label className="block font-body text-xs font-semibold text-[#3B0B1F] uppercase mb-1">
+                  Bride Name (Amharic)
+                </label>
+                <input
+                  type="text"
+                  value={config.brideEth}
+                  onChange={(e) => handleTextChange('brideEth', e.target.value)}
+                  placeholder="e.g. ሰላማዊት በቀለ"
+                  className="w-full px-3 py-2 rounded-xl border border-[#D4849A]/40 bg-[#FDF0F3]/30 text-xs text-[#3B0B1F] focus:outline-none focus:border-[#C8A84B]"
+                />
+              </div>
+            </div>
+
+            {/* Calendar Picker & Dates */}
+            <div className="pt-3 border-t border-[#D4849A]/30 space-y-3">
+              <div>
+                <label className="block font-body text-xs font-semibold text-[#3B0B1F] uppercase mb-1 flex items-center justify-between">
+                  <span>Pick Wedding Date (Calendar)</span>
+                  <span className="text-[10px] text-[#C8A84B] font-bold">Auto-updates Countdown</span>
+                </label>
+                <input
+                  type="date"
+                  onChange={(e) => handleCalendarDateChange(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl border-2 border-[#C8A84B] bg-white text-xs font-body font-semibold text-[#3B0B1F] focus:outline-none shadow-sm cursor-pointer"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-body text-xs font-semibold text-[#3B0B1F] uppercase mb-1">
+                    Date (Gregorian GC)
+                  </label>
+                  <input
+                    type="text"
+                    value={config.dateGC}
+                    onChange={(e) => handleTextChange('dateGC', e.target.value)}
+                    placeholder="e.g. Saturday, May 09, 2026"
+                    className="w-full px-3 py-2 rounded-xl border border-[#D4849A]/40 bg-[#FDF0F3]/30 text-xs text-[#3B0B1F] focus:outline-none focus:border-[#C8A84B]"
+                  />
+                </div>
+                <div>
+                  <label className="block font-body text-xs font-semibold text-[#3B0B1F] uppercase mb-1">
+                    Date (Ethiopian EC)
+                  </label>
+                  <input
+                    type="text"
+                    value={config.dateEC}
+                    onChange={(e) => handleTextChange('dateEC', e.target.value)}
+                    placeholder="e.g. ግንቦት 01, 2018 ዓ.ም"
+                    className="w-full px-3 py-2 rounded-xl border border-[#D4849A]/40 bg-[#FDF0F3]/30 text-xs text-[#3B0B1F] focus:outline-none focus:border-[#C8A84B]"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* STEP 4: VENUES, DETAILS & WEDDING DAY SCHEDULE */}
         {activeStep === 4 && (
           <div className="space-y-5">
@@ -723,14 +725,14 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
                 type="text"
                 value={config.churchEn}
                 onChange={(e) => handleTextChange('churchEn', e.target.value)}
-                placeholder="Ceremony Venue Name (English)"
+                placeholder="e.g. Holy Trinity Cathedral (Kidist Selassie), Addis Ababa"
                 className="w-full px-3 py-1.5 rounded-lg border text-xs bg-white text-[#3B0B1F]"
               />
               <input
                 type="text"
                 value={config.churchEth}
                 onChange={(e) => handleTextChange('churchEth', e.target.value)}
-                placeholder="Ceremony Venue Name (Amharic)"
+                placeholder="e.g. ቅድስት ሥላሴ ካቴድራል፤ አዲስ አበባ"
                 className="w-full px-3 py-1.5 rounded-lg border text-xs bg-white text-[#3B0B1F]"
               />
             </div>
@@ -744,14 +746,14 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
                 type="text"
                 value={config.receptionEn}
                 onChange={(e) => handleTextChange('receptionEn', e.target.value)}
-                placeholder="Reception Venue Name (English)"
+                placeholder="e.g. Sheraton Addis Luxury Collection Grand Ballroom"
                 className="w-full px-3 py-1.5 rounded-lg border text-xs bg-white text-[#3B0B1F]"
               />
               <input
                 type="text"
                 value={config.receptionEth}
                 onChange={(e) => handleTextChange('receptionEth', e.target.value)}
-                placeholder="Reception Venue Name (Amharic)"
+                placeholder="e.g. ሼራተን አዲስ ላግዠሪ ሆቴል (ግራንድ ቦልሩም)"
                 className="w-full px-3 py-1.5 rounded-lg border text-xs bg-white text-[#3B0B1F]"
               />
             </div>

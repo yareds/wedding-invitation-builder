@@ -1,7 +1,7 @@
 import React from 'react';
 import { WeddingConfig } from '../types';
 import { THEME_PRESETS } from '../utils/themePresets';
-import { Church, Wine, Shirt, Hotel } from 'lucide-react';
+import { Church, Wine } from 'lucide-react';
 
 interface DetailsSectionProps {
   config: WeddingConfig;
@@ -24,7 +24,7 @@ export const DetailsSection: React.FC<DetailsSectionProps> = ({ config }) => {
         <div className="w-16 h-[2px] mx-auto mt-4" style={{ backgroundColor: colors.gold }} />
       </div>
 
-      {/* Four Left-Bordered Cards Stacked Vertical */}
+      {/* Event Cards Stacked Vertical */}
       <div className="space-y-6">
         {/* Card 1: Sacred Ceremony */}
         <div
@@ -46,22 +46,21 @@ export const DetailsSection: React.FC<DetailsSectionProps> = ({ config }) => {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="font-body text-[11px] uppercase tracking-widest font-semibold" style={{ color: colors.blush }}>
-                  {config.timeDisplay || '02:00 PM'}
+                  Sacred Matrimony
                 </span>
-                <span style={{ color: colors.blush }}>•</span>
-                <span className="font-body text-xs opacity-70" style={{ color: colors.primary }}>Sacred Matrimony</span>
               </div>
               <h3 className="font-serif-heading text-xl sm:text-2xl font-normal mb-2" style={{ color: colors.primary }}>
-                {config.churchEth || 'ካቴድራል ኦፍ ዘ ብለስድ ሳክራመንት'}
+                {config.churchEth || 'ቅድስት ሥላሴ ካቴድራል፤ አዲስ አበባ'}
               </h3>
-              {config.churchEn && (
-                <p className="font-body text-sm font-semibold mb-2" style={{ color: colors.primary }}>
+              {config.churchEn ? (
+                <p className="font-body text-sm font-semibold" style={{ color: colors.primary }}>
                   {config.churchEn}
                 </p>
+              ) : (
+                <p className="font-body text-sm font-semibold" style={{ color: colors.primary }}>
+                  Holy Trinity Cathedral (Kidist Selassie), Addis Ababa
+                </p>
               )}
-              <p className="font-quote italic text-xs" style={{ color: colors.blush }}>
-                Organ prelude begins 30 minutes prior. Doors close promptly for the processional.
-              </p>
             </div>
           </div>
         </div>
@@ -92,95 +91,17 @@ export const DetailsSection: React.FC<DetailsSectionProps> = ({ config }) => {
                 <span className="font-body text-xs opacity-70" style={{ color: colors.primary }}>Reception &amp; Dinner</span>
               </div>
               <h3 className="font-serif-heading text-xl sm:text-2xl font-normal mb-2" style={{ color: colors.primary }}>
-                {config.receptionEth || 'ሴንት ሄሌና ቪንያርድ ኤስቴት'}
+                {config.receptionEth || 'ሼራተን አዲስ ላግዠሪ ሆቴል (ግራንድ ቦልሩም)'}
               </h3>
-              {config.receptionEn && (
-                <p className="font-body text-sm font-semibold mb-2" style={{ color: colors.primary }}>
+              {config.receptionEn ? (
+                <p className="font-body text-sm font-semibold" style={{ color: colors.primary }}>
                   {config.receptionEn}
                 </p>
+              ) : (
+                <p className="font-body text-sm font-semibold" style={{ color: colors.primary }}>
+                  Sheraton Addis Luxury Collection Grand Ballroom, Addis Ababa
+                </p>
               )}
-              <p className="font-quote italic text-xs" style={{ color: colors.blush }}>
-                Cocktails, traditional toast, multi-course banquet dinner, and live orchestra dancing.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 3: Dress Code */}
-        <div
-          className="bg-white rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-xl transition-all border-l-4 flex flex-col md:flex-row md:items-center justify-between gap-6 group"
-          style={{ borderLeftColor: colors.blush }}
-        >
-          <div className="flex items-start gap-4">
-            {/* Icon Circle */}
-            <div
-              className="w-12 h-12 rounded-full border flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"
-              style={{
-                backgroundColor: colors.blushPale,
-                borderColor: colors.blush + '60'
-              }}
-            >
-              <Shirt className="w-6 h-6" style={{ color: colors.blush }} />
-            </div>
-
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="font-body text-[11px] uppercase tracking-widest font-semibold" style={{ color: colors.blush }}>
-                  Attire Guidance
-                </span>
-              </div>
-              <h3 className="font-serif-heading text-xl sm:text-2xl font-normal mb-2" style={{ color: colors.primary }}>
-                {config.dressCode || 'Black-Tie Formal & Traditional Elegance'}
-              </h3>
-              <p className="font-body text-sm leading-relaxed mb-2 opacity-80" style={{ color: colors.primary }}>
-                We kindly request formal attire or traditional Ethiopian celebration wear.
-              </p>
-              <div className="flex items-center gap-2 mt-3">
-                <span className="font-body text-xs opacity-70" style={{ color: colors.primary }}>Palette Inspiration:</span>
-                <div className="flex items-center gap-1.5">
-                  <span className="w-4 h-4 rounded-full border shadow-sm" style={{ backgroundColor: colors.primary, borderColor: '#FFF' }} />
-                  <span className="w-4 h-4 rounded-full border shadow-sm" style={{ backgroundColor: colors.blush, borderColor: '#FFF' }} />
-                  <span className="w-4 h-4 rounded-full border shadow-sm" style={{ backgroundColor: colors.gold, borderColor: '#FFF' }} />
-                  <span className="w-4 h-4 rounded-full border shadow-sm" style={{ backgroundColor: colors.bg, borderColor: '#DDD' }} />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 4: Accommodations & Travel */}
-        <div
-          className="bg-white rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-xl transition-all border-l-4 flex flex-col md:flex-row md:items-center justify-between gap-6 group"
-          style={{ borderLeftColor: colors.gold }}
-        >
-          <div className="flex items-start gap-4">
-            {/* Icon Circle */}
-            <div
-              className="w-12 h-12 rounded-full border flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"
-              style={{
-                backgroundColor: colors.blushPale,
-                borderColor: colors.gold + '60'
-              }}
-            >
-              <Hotel className="w-6 h-6" style={{ color: colors.gold }} />
-            </div>
-
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="font-body text-[11px] uppercase tracking-widest font-semibold" style={{ color: colors.blush }}>
-                  Contact &amp; Assistance
-                </span>
-              </div>
-              <h3 className="font-serif-heading text-xl sm:text-2xl font-normal mb-2" style={{ color: colors.primary }}>
-                Wedding Hotline &amp; Inquiry
-              </h3>
-              <p className="font-body text-sm leading-relaxed" style={{ color: colors.primary }}>
-                For special assistance, travel advice, or dietary requirements, please reach us directly:
-              </p>
-              <div className="mt-3 flex flex-wrap items-center gap-4 text-xs font-semibold" style={{ color: colors.primary }}>
-                {config.phone1 && <span className="px-3 py-1 rounded-full bg-slate-100 border">📞 {config.phone1}</span>}
-                {config.phone2 && <span className="px-3 py-1 rounded-full bg-slate-100 border">📞 {config.phone2}</span>}
-              </div>
             </div>
           </div>
         </div>

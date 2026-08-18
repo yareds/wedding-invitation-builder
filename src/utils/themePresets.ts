@@ -140,77 +140,88 @@ export const DEFAULT_WEDDING_CONFIG: WeddingConfig = {
   dateGC: '',
   dateEC: '',
   dayName: 'Saturday · ቅዳሜ',
-  timeDisplay: 'ከቀኑ 8:00 (02:00 PM PST)',
-  countdownDate: '2026-05-09T14:00:00',
-  dressCode: 'Black-Tie Formal & Evening Gowns',
+  timeDisplay: 'ከቀኑ 7:30 (01:30 PM EAT)',
+  countdownDate: '2026-05-09T13:30:00',
+  dressCode: 'Traditional Habesha Attire / Black-Tie Formal (የባህል ልብስ ወይም ፎርማል)',
   churchEth: '',
   churchEn: '',
   receptionEth: '',
   receptionEn: '',
-  scripture: '',
-  scriptureRef: '',
-  storyText: 'Whatever our souls are made of, his and hers are the same. Our story has been a quiet symphony of trust, laughter, and infinite love.',
-  phone1: '+15714749554',
-  phone2: '0995967804',
-  whatsappNumber: '+15714749554',
-  telegramUsername: 'yared_abegaz',
-  emailContact: 'yared.abegaz@gmail.com',
-  rsvpDeadlineEn: 'April 01, 2026',
-  rsvpDeadlineEth: 'መጋቢት 23, 2018 ዓ.ም',
+  scripture: '“ስለዚህ ሰው አባቱንና እናቱን ይተዋል፥ ከሚስቱም ጋር ይተባበራል፥ ሁለቱም አንድ ሥጋ ይሆናሉ።”',
+  scriptureRef: 'የማቴዎስ ወንጌል 19፥6',
+  storyText: 'በእምነት እና በፍቅር የተሳሰረ ጉዟችን ዛሬ በአንድነት አምሮ ደምቋል። From our first meeting in Addis Ababa to this blessed covenant, our journey has been filled with faith, shared laughter, and unconditional love.',
+  phone1: '+251 91 123 4567',
+  phone2: '+251 92 234 5678',
+  whatsappNumber: '+251 91 123 4567',
+  telegramUsername: 'AddisWedding2026',
+  emailContact: 'dawit.selamawit.wedding@gmail.com',
+  rsvpDeadlineEn: 'April 25, 2026',
+  rsvpDeadlineEth: 'ሚያዝያ 17, 2018 ዓ.ም',
   rsvpMethod: 'direct',
   sheetsUrl: '',
   heroImg: null,
   bgMusicUrl: null,
   galleryImgs: [
+    'https://images.unsplash.com/photo-1607190074257-dd4b7af0309f?auto=format&fit=crop&w=800&q=80',
     'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80',
     'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80',
     'https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80',
     'https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=800&q=80',
     'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=800&q=80',
     'https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800&q=80',
     'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=800&q=80'
   ],
   schedule: [
     {
-      time: '02:00 PM',
-      title: 'Holy Matrimony Ceremony',
-      location: 'Cathedral / Church',
-      description: 'Nuptial mass, exchange of vows, and sacred musical performance.'
+      time: '01:30 PM',
+      title: 'የተቀደሰ የጋብቻ ሥነ-ሥርዓት (Holy Matrimony)',
+      location: 'ቅድስት ሥላሴ ካቴድራል (Holy Trinity Cathedral, Addis Ababa)',
+      description: 'የኪዳን ጸሎት፣ የጋብቻ ቀለበት ማሰር እና የቅዳሴ ቡራኬ ሥነ-ሥርዓት።'
     },
     {
-      time: '05:00 PM',
-      title: 'Reception & Grand Celebration',
-      location: 'Reception Hall / Resort',
-      description: 'Grand dinner, wine toast, wedding speeches, and dancing.'
+      time: '04:30 PM',
+      title: 'የሰርግ ድግስ እና አቀባበል (Grand Reception & Dinner)',
+      location: 'ሼራተን አዲስ ግራንድ ቦልሩም (Sheraton Addis Grand Ballroom)',
+      description: 'የክብር ሻምፓኝ፣ የባህል ድግስ፣ የሠርግ ኬክ መቁረጥ እና የሙዚቃ ድግስ።'
+    },
+    {
+      time: '08:00 PM',
+      title: 'የእስክስታ እና ዳንስ ጭፈራ (Cultural Eskista & Dance)',
+      location: 'ሼራተን አዲስ (Sheraton Addis)',
+      description: 'ከቤተሰብ እና ከወዳጅ ዘመድ ጋር የደመቀ ባህላዊ ጭፈራ እና የመልስ ድግስ።'
     }
   ],
   bankDetails: [
     {
-      bankName: 'Telebirr SuperApp',
-      accountName: 'Yared Abegaz',
-      accountNumber: '0995967804'
+      bankName: 'Telebirr (ቴሌብር)',
+      accountName: 'Dawit Tesfaye / Selamawit Bekele',
+      accountNumber: '0911234567'
     },
     {
-      bankName: 'Commercial Bank of Ethiopia (CBE)',
-      accountName: 'Yared Abegaz',
+      bankName: 'Commercial Bank of Ethiopia (CBE / የኢትዮጵያ ንግድ ባንክ)',
+      accountName: 'Dawit Tesfaye & Selamawit Bekele',
       accountNumber: '1000450356817'
+    },
+    {
+      bankName: 'Awash Bank (አዋሽ ባንክ)',
+      accountName: 'Dawit Tesfaye / Selamawit Bekele',
+      accountNumber: '01304123456700'
     }
   ]
 };
 
 export const SAMPLE_WEDDING_CONFIG: WeddingConfig = {
   ...DEFAULT_WEDDING_CONFIG,
-  groomEth: 'ሰባስቲያን',
-  groomEn: 'Sebastian Thornton',
-  brideEth: 'አማራ',
-  brideEn: 'Amara Grace',
+  groomEth: 'ዳዊት',
+  groomEn: 'Dawit Tesfaye',
+  brideEth: 'ሰላማዊት',
+  brideEn: 'Selamawit Bekele',
   dateGC: 'Saturday, May 09, 2026',
   dateEC: 'ግንቦት 01, 2018 ዓ.ም',
-  churchEth: 'ካቴድራል ኦፍ ዘ ብለስድ ሳክራመንት',
-  churchEn: 'Cathedral of the Blessed Sacrament, Sacramento',
-  receptionEth: 'ሴንት ሄሌና ቪንያርድ ኤስቴት',
-  receptionEn: 'St. Helena Vineyard Estate, Napa Valley',
-  phone1: '+251 911 234 567',
-  phone2: '+251 922 888 999'
+  churchEth: 'ቅድስት ሥላሴ ካቴድራል፤ አዲስ አበባ',
+  churchEn: 'Holy Trinity Cathedral, Addis Ababa',
+  receptionEth: 'ሼራተን አዲስ ላግዠሪ ሆቴል (ግራንድ ቦልሩም)',
+  receptionEn: 'Sheraton Addis Luxury Collection Grand Ballroom, Addis Ababa',
+  phone1: '+251 91 123 4567',
+  phone2: '+251 92 234 5678'
 };

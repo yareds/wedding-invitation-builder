@@ -19,12 +19,36 @@
     font-family: 'Bodoni Moda', serif;
   }
 
+  .font-amharic {
+    font-family: 'Noto Sans Ethiopic', sans-serif;
+  }
+
   .font-quote {
     font-family: 'Lora', serif;
   }
 
   .font-body {
     font-family: 'Raleway', sans-serif;
+  }
+
+  .font-cinzel {
+    font-family: 'Cinzel Decorative', serif;
+  }
+
+  .font-cormorant {
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  .font-script {
+    font-family: 'Great Vibes', 'Allura', 'Alex Brush', cursive;
+  }
+
+  .font-geraldine {
+    font-family: 'Great Vibes', 'Allura', 'Pinyon Script', 'Alex Brush', cursive;
+  }
+
+  .font-playfair {
+    font-family: 'Playfair Display', serif;
   }
 }
 
@@ -134,4 +158,89 @@
 .animate-scroll-left:hover {
   animation-play-state: paused;
 }
+
+/* Dynamic Sweeping Light Beam Across Headlines */
+@keyframes sweepLight {
+  0% {
+    transform: translateX(-160%) skewX(-25deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.75;
+  }
+  50% {
+    opacity: 0.9;
+  }
+  85% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateX(280%) skewX(-25deg);
+    opacity: 0;
+  }
+}
+
+.animate-sweep-light {
+  animation: sweepLight 8.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes flashAura {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.96) translateZ(0);
+    filter: blur(40px);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.12) translateZ(0);
+    filter: blur(28px);
+  }
+}
+
+.animate-flash-aura {
+  animation: flashAura 3.2s ease-in-out infinite;
+}
+
+@keyframes headlineShimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.text-dynamic-headline-gold {
+  background: linear-gradient(
+    115deg,
+    #B58A28 0%,
+    #DDB34B 25%,
+    #FFF4D0 48%,
+    #FFE599 52%,
+    #DDB34B 75%,
+    #B58A28 100%
+  );
+  background-size: 250% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: headlineShimmer 4s ease-in-out infinite;
+}
+
+.text-dynamic-headline-wine {
+  background: linear-gradient(
+    115deg,
+    #4A0E17 0%,
+    #6B1728 25%,
+    #D4849A 50%,
+    #6B1728 75%,
+    #4A0E17 100%
+  );
+  background-size: 250% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: headlineShimmer 4.5s ease-in-out infinite;
+}
+
 

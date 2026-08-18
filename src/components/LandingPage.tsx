@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import { THEME_PRESETS, ThemePreset, DEFAULT_WEDDING_CONFIG } from '../utils/themePresets';
 import { ThemeId, WeddingConfig } from '../types';
+import { StudioHeroBanner } from './StudioHeroBanner';
 import { HeroSection } from './HeroSection';
 import { WordReveal, GentleFadeUp, FloatingSparkles } from './AnimatedHeroText';
 
@@ -270,111 +271,18 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
       </header>
 
       {/* 2. HERO SECTION */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#FFF0F3] via-[#FAF0F4] to-[#F5E6EB] text-[#3B0B1F] pt-16 pb-24 lg:pt-24 lg:pb-32 border-b border-[#C8A84B]/20">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#FAF4F6] via-[#F6E8EE] to-[#EED9E2] text-[#3B0B1F] pt-8 pb-20 lg:pt-12 lg:pb-28 border-b border-[#C8A84B]/30">
         {/* Luxury Background Decor Patterns */}
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#C8A84B_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
         <div className="absolute top-1/4 -left-20 w-80 h-80 bg-[#C8A84B]/15 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-10 -right-20 w-96 h-96 bg-[#B85B75]/15 rounded-full blur-3xl pointer-events-none" />
         <FloatingSparkles color="#C8A84B" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-8">
-          {/* Badge */}
-          <GentleFadeUp delay={0.1}>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#C8A84B]/60 text-[#4A0E17] text-xs font-semibold uppercase tracking-widest shadow-sm hover:border-[#C8A84B] transition-colors">
-              <Sparkles className="w-3.5 h-3.5 text-[#C8A84B]" />
-              <span>Stylish Digital Wedding Invitations Builder</span>
-            </div>
-          </GentleFadeUp>
-
-          {/* Main Headline */}
-          <div className="max-w-4xl mx-auto space-y-5">
-            <WordReveal
-              text="Create Your Dream Wedding Invitation Website"
-              highlightWords={["Wedding", "Invitation", "Website"]}
-              highlightClassName="text-gold-shimmer italic font-semibold"
-              className="font-serif-heading text-3xl sm:text-5xl lg:text-6xl font-normal leading-tight tracking-tight text-[#3B0B1F]"
-              stagger={0.07}
-              delay={0.15}
-            />
-
-            <GentleFadeUp delay={0.45}>
-              <p className="font-serif-heading text-3xl sm:text-4xl text-[#4A0E17] font-medium tracking-wide">
-                ማራኪ የሰርግ ጥሪ ድረ-ገጽ ይፍጠሩ
-              </p>
-            </GentleFadeUp>
-
-            <GentleFadeUp delay={0.6}>
-              <p className="font-body text-sm sm:text-lg text-[#3B0B1F]/80 max-w-2xl mx-auto leading-relaxed font-light">
-                Design a beautiful, personalized digital wedding invitation website with custom colors, photos, music, RSVP management, countdown timer, schedule, and more. No design experience required.
-              </p>
-            </GentleFadeUp>
-          </div>
-
-          {/* Action CTA Buttons */}
-          <GentleFadeUp delay={0.75}>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-              <button
-                onClick={() => onStartBuilding()}
-                className="w-full sm:w-auto px-8 py-4 rounded-full bg-[#C8A84B] text-[#3B0B1F] font-body text-xs sm:text-sm font-bold uppercase tracking-wider hover:bg-[#E2C873] hover:scale-105 transition-all shadow-xl flex items-center justify-center gap-3 cursor-pointer group"
-              >
-                <span>Start Building Your Invitation</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
-
-              <button
-                onClick={() => setSelectedDemoTheme(THEME_PRESETS.bordeaux)}
-                className="w-full sm:w-auto px-8 py-4 rounded-full bg-white hover:bg-[#FAF0F3] border border-[#C8A84B] text-[#3B0B1F] font-body text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <Eye className="w-4 h-4 text-[#A87B1B]" />
-                <span>View Demo Invitation</span>
-              </button>
-            </div>
-          </GentleFadeUp>
-
-          {/* Showcase Device Teaser Cards */}
-          <GentleFadeUp delay={0.9}>
-            <div className="pt-12 max-w-5xl mx-auto relative">
-              <div className="bg-white p-3 sm:p-5 rounded-3xl border border-[#C8A84B]/40 shadow-xl overflow-hidden hover:shadow-2xl transition-all">
-                <div className="bg-[#FAF0F3] rounded-2xl overflow-hidden shadow-inner text-[#3B0B1F] p-4 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 border border-[#C8A84B]/30">
-                  <div className="text-left space-y-3 max-w-md">
-                    <span className="text-[11px] font-bold text-[#A87B1B] uppercase tracking-widest block">
-                      Featured Design Preset
-                    </span>
-                    <h3 className="font-serif-heading text-2xl sm:text-3xl text-[#3B0B1F]">
-                      Royal Imperial &bull; Bordeaux Gold
-                    </h3>
-                    <p className="text-xs text-gray-700 leading-relaxed font-body">
-                      Complete with traditional Ethiopian gold borders, countdown timers, dual Amharic/English typography, and interactive RSVP options.
-                    </p>
-                    <div className="flex items-center gap-3 pt-2">
-                      <button
-                        onClick={() => onStartBuilding('bordeaux')}
-                        className="px-5 py-2.5 rounded-full bg-[#4A0E17] text-[#FAF0F3] text-xs font-bold hover:bg-[#3B0B1F] transition-all cursor-pointer shadow-md flex items-center gap-2"
-                      >
-                        <span>Customize This Design</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="w-full md:w-1/2 rounded-xl overflow-hidden border border-[#C8A84B]/40 shadow-lg relative group cursor-pointer" onClick={() => setSelectedDemoTheme(THEME_PRESETS.bordeaux)}>
-                    <img
-                      src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80"
-                      alt="Wedding Invitation Preview"
-                      className="w-full h-56 sm:h-64 object-cover group-hover:scale-105 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#3B0B1F] via-transparent to-transparent opacity-80" />
-                    <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white text-xs font-serif-heading">
-                      <span>የሙശാലው ስም እና የሙሽሪት ስም</span>
-                      <span className="px-3 py-1 rounded-full bg-[#C8A84B] text-[#3B0B1F] font-bold text-[10px] uppercase">
-                        Click to Preview
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </GentleFadeUp>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <StudioHeroBanner
+            onStartBuilding={() => onStartBuilding()}
+            onViewDemo={(preset) => setSelectedDemoTheme(preset || THEME_PRESETS.bordeaux)}
+          />
         </div>
       </section>
 
