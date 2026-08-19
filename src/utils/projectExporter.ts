@@ -284,10 +284,10 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
 
   <!-- Splash Screen Overlay -->
   <div id="splashScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-6 text-center transition-all duration-700 ease-in-out" style="background-color: ${colors.primary}; color: ${colors.blushPale}">
-    ${getBotanicalFrameHtml('top-left', config.themeId, 'absolute top-0 left-0 z-10')}
-    ${getBotanicalFrameHtml('top-right', config.themeId, 'absolute top-0 right-0 z-10')}
-    ${getBotanicalFrameHtml('bottom-left', config.themeId, 'absolute bottom-0 left-0 z-10')}
-    ${getBotanicalFrameHtml('bottom-right', config.themeId, 'absolute bottom-0 right-0 z-10')}
+    ${getBotanicalFrameHtml('top-left', config.themeId, config.frameStyle, 'absolute top-0 left-0 z-10')}
+    ${getBotanicalFrameHtml('top-right', config.themeId, config.frameStyle, 'absolute top-0 right-0 z-10')}
+    ${getBotanicalFrameHtml('bottom-left', config.themeId, config.frameStyle, 'absolute bottom-0 left-0 z-10')}
+    ${getBotanicalFrameHtml('bottom-right', config.themeId, config.frameStyle, 'absolute bottom-0 right-0 z-10')}
 
     <div class="relative w-[90%] max-w-lg mx-auto p-8 sm:p-12 text-center border rounded-sm shadow-2xl backdrop-blur-md flex flex-col items-center" style="border-color: ${colors.gold}60; background-color: ${colors.primary}E6">
       
@@ -324,8 +324,8 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
     <section class="relative pt-20 pb-16 px-4 sm:px-6 md:px-8 overflow-hidden text-center transition-colors duration-500" style="background-color: ${colors.bg}; color: ${colors.primary}">
       ${config.heroImg ? `<div class="absolute inset-0 z-0 overflow-hidden"><img src="${config.heroImg}" alt="Hero Background" class="w-full h-full object-cover object-center opacity-70 transition-opacity duration-700 pointer-events-none" /><div class="absolute inset-0" style="background-color: ${colors.heroOv || 'rgba(0,0,0,0.45)'}"></div></div>` : ''}
 
-      ${getBotanicalFrameHtml('top-left', config.themeId, 'absolute top-2 left-2 sm:top-6 sm:left-6 z-10')}
-      ${getBotanicalFrameHtml('top-right', config.themeId, 'absolute top-2 right-2 sm:top-6 sm:right-6 z-10')}
+      ${getBotanicalFrameHtml('top-left', config.themeId, config.frameStyle, 'absolute top-2 left-2 sm:top-6 sm:left-6 z-10')}
+      ${getBotanicalFrameHtml('top-right', config.themeId, config.frameStyle, 'absolute top-2 right-2 sm:top-6 sm:right-6 z-10')}
 
       <div class="max-w-4xl mx-auto relative z-10 flex flex-col items-center">
         <!-- Monogram Circle -->
@@ -368,7 +368,7 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
         </div>
       </div>
 
-      ${getBotanicalFrameHtml('banner-bottom', config.themeId, 'mt-12 z-10')}
+      ${getBotanicalFrameHtml('banner-bottom', config.themeId, config.frameStyle, 'mt-12 z-10')}
     </section>
 
     <!-- 2. Date Card & Countdown Section -->
@@ -510,10 +510,10 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
 
     <!-- 4. Story Quote Section -->
     <section class="relative py-20 px-4 sm:px-6 overflow-hidden my-12" style="background-color: ${colors.blushPale}; color: ${colors.primary}">
-      ${getBotanicalFrameHtml('top-left', config.themeId, 'absolute top-2 left-2 z-10')}
-      ${getBotanicalFrameHtml('top-right', config.themeId, 'absolute top-2 right-2 z-10')}
-      ${getBotanicalFrameHtml('bottom-left', config.themeId, 'absolute bottom-2 left-2 z-10')}
-      ${getBotanicalFrameHtml('bottom-right', config.themeId, 'absolute bottom-2 right-2 z-10')}
+      ${getBotanicalFrameHtml('top-left', config.themeId, config.frameStyle, 'absolute top-2 left-2 z-10')}
+      ${getBotanicalFrameHtml('top-right', config.themeId, config.frameStyle, 'absolute top-2 right-2 z-10')}
+      ${getBotanicalFrameHtml('bottom-left', config.themeId, config.frameStyle, 'absolute bottom-2 left-2 z-10')}
+      ${getBotanicalFrameHtml('bottom-right', config.themeId, config.frameStyle, 'absolute bottom-2 right-2 z-10')}
 
       <div class="max-w-3xl mx-auto text-center relative z-10 px-4">
         <div class="font-serif-heading text-7xl sm:text-9xl leading-none opacity-80 -mb-8 sm:-mb-12 font-serif" style="color: ${colors.gold}">“</div>
@@ -579,7 +579,7 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
 
     <!-- 9. Botanical Footer -->
     <footer class="relative pt-12 pb-16 px-4 text-center overflow-hidden border-t-2" style="background-color: ${colors.primary}; border-color: ${colors.gold}; color: #FAF0F3">
-      ${getBotanicalFrameHtml('banner-top', config.themeId, '-mt-8 mb-4')}
+      ${getBotanicalFrameHtml('banner-top', config.themeId, config.frameStyle, '-mt-8 mb-4')}
       <div class="max-w-2xl mx-auto relative z-10 space-y-4 my-4">
         <div class="inline-flex items-center justify-center w-14 h-14 rounded-full border shadow-lg mb-2" style="border-color: ${colors.gold}; background-color: transparent">
           <span class="font-serif-heading text-lg tracking-widest" style="color: ${colors.gold}">${groomInit} እና ${brideInit}</span>
@@ -588,7 +588,7 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
         <p class="font-quote italic text-sm max-w-md mx-auto text-[#E5A4B5]">"We cannot wait to share the magic of our wedding day with you."</p>
         <p class="font-body text-xs tracking-widest uppercase pt-4 text-[#FAF0F3]/80">${config.dateGC || 'May 09, 2026'} • ${config.dateEC || 'ግንቦት 01, 2018 ዓ.ም'}</p>
       </div>
-      ${getBotanicalFrameHtml('banner-bottom', config.themeId, 'mt-8 -mb-12')}
+      ${getBotanicalFrameHtml('banner-bottom', config.themeId, config.frameStyle, 'mt-8 -mb-12')}
     </footer>
 
   </div>

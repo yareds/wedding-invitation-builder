@@ -48,8 +48,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
       )}
 
       {/* Corner Botanical SVG Frames */}
-      <BotanicalFrame position="top-left" themeId={config.themeId} className="absolute top-2 left-2 sm:top-6 sm:left-6 z-10" colorMode="gold" />
-      <BotanicalFrame position="top-right" themeId={config.themeId} className="absolute top-2 right-2 sm:top-6 sm:right-6 z-10" colorMode="gold" />
+      <BotanicalFrame position="top-left" themeId={config.themeId} frameStyle={config.frameStyle} className="absolute top-2 left-2 sm:top-6 sm:left-6 z-10" colorMode="gold" />
+      <BotanicalFrame position="top-right" themeId={config.themeId} frameStyle={config.frameStyle} className="absolute top-2 right-2 sm:top-6 sm:right-6 z-10" colorMode="gold" />
 
       <div className={`max-w-4xl mx-auto relative z-10 flex flex-col items-center ${config.heroImg ? 'text-white' : ''}`}>
         {/* Monogram Circle in Hero */}

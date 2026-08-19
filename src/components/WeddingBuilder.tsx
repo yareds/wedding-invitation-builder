@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { WeddingConfig, ThemeId, TimelineEvent } from '../types';
+import { WeddingConfig, ThemeId, FrameStyleId, TimelineEvent } from '../types';
 import { THEME_PRESETS, SAMPLE_WEDDING_CONFIG, DEFAULT_WEDDING_CONFIG } from '../utils/themePresets';
+import { FRAME_STYLE_OPTIONS } from '../utils/frameStyles';
 import { saveDraftFilesLocally, getDraftFilesLocally, saveLocalDraftConfig } from '../utils/projectDatabase';
-import { Palette, Heart, Image as ImageIcon, Music, MapPin, Plus, Trash2, Check, ShoppingBag, Monitor, Smartphone, Upload, AlertCircle, Sparkles, RefreshCw, Loader2, X } from 'lucide-react';
+import { Palette, Heart, Image as ImageIcon, Music, MapPin, Plus, Trash2, Check, ShoppingBag, Monitor, Smartphone, Upload, AlertCircle, Sparkles, RefreshCw, Loader2, X, Frame, Layers } from 'lucide-react';
 
 interface WeddingBuilderProps {
   config: WeddingConfig;
@@ -22,6 +23,8 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
   projectId
 }) => {
   const [activeStep, setActiveStep] = useState<number>(1);
+  const [step1Tab, setStep1Tab] = useState<'palettes' | 'frames'>('palettes');
+  const [selectedFrameCategory, setSelectedFrameCategory] = useState<string>('All');
 
   const steps = [
     { id: 1, title: 'Color & Theme', icon: Palette },
@@ -279,39 +282,59 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
   };
 
   return (
-    <aside className="w-full lg:w-[450px] xl:w-[480px] bg-white border-r border-[#D4849A]/30 flex flex-col h-full shadow-lg overflow-hidden shrink-0">
+    <aside className="w-full lg:h-full bg-white border-b lg:border-b-0 lg:border-r border-[#C8A84B]/30 flex flex-col shadow-lg shrink-0">
       {/* Sticky Top Builder Branding Header & Customization Step Navigation Menu */}
       <div className="sticky top-0 z-20 bg-white border-b border-[#C8A84B]/40 shadow-xs shrink-0">
-        <div className="p-4 bg-[#FAF0F3] text-[#3B0B1F] border-b border-[#C8A84B]/40 flex items-center justify-between">
+        <div className="p-3.5 sm:p-4 bg-[#FAF0F3] text-[#3B0B1F] border-b border-[#C8A84B]/40 flex items-center justify-between">
           <div>
-            <span className="font-body text-[10px] uppercase tracking-[0.25em] text-[#B85B75] block font-semibold">
-              Real-Time Customizer
-            </span>
-            <h1 className="font-serif-heading text-lg font-normal text-[#3B0B1F]">
+            <div className="flex items-center gap-1.5">
+              <span className="font-body text-[10px] uppercase tracking-[0.2em] text-[#B85B75] font-bold">
+                Studio Customizer
+              </span>
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#C8A84B]" />
+              <span className="text-[10px] text-gray-500 font-mono">Ethiopian Edition</span>
+            </div>
+            <h1 className="font-serif-heading text-base sm:text-lg font-normal text-[#3B0B1F]">
               Wedding Invitation Builder
             </h1>
           </div>
 
-          {/* View Mode Toggle */}
-          <div className="flex items-center gap-1 bg-white p-1 rounded-full border border-[#C8A84B]/40 shadow-sm">
+          <div className="flex items-center gap-2">
+            {/* Mobile Jump to Preview Button */}
             <button
-              onClick={() => onToggleDeviceMode('desktop')}
-              className={`p-1.5 rounded-full transition-colors cursor-pointer ${
-                deviceMode === 'desktop' ? 'bg-[#C8A84B] text-[#3B0B1F]' : 'text-[#3B0B1F]/60 hover:text-[#3B0B1F]'
-              }`}
-              title="Desktop View"
+              type="button"
+              onClick={() => {
+                const el = document.getElementById('live-invitation-preview');
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              className="lg:hidden px-2.5 py-1 text-[11px] font-bold rounded-full bg-[#3B0B1F] text-[#FAF0F3] border border-[#C8A84B]/50 hover:bg-[#C8A84B] hover:text-[#3B0B1F] transition-colors flex items-center gap-1 shadow-xs cursor-pointer"
             >
-              <Monitor className="w-4 h-4" />
+              <span>Preview Below ↓</span>
             </button>
-            <button
-              onClick={() => onToggleDeviceMode('mobile')}
-              className={`p-1.5 rounded-full transition-colors cursor-pointer ${
-                deviceMode === 'mobile' ? 'bg-[#C8A84B] text-[#3B0B1F]' : 'text-[#3B0B1F]/60 hover:text-[#3B0B1F]'
-              }`}
-              title="Mobile View"
-            >
-              <Smartphone className="w-4 h-4" />
-            </button>
+
+            {/* View Mode Toggle */}
+            <div className="flex items-center gap-1 bg-white p-1 rounded-full border border-[#C8A84B]/40 shadow-sm">
+              <button
+                onClick={() => onToggleDeviceMode('desktop')}
+                className={`p-1.5 rounded-full transition-colors cursor-pointer ${
+                  deviceMode === 'desktop' ? 'bg-[#C8A84B] text-[#3B0B1F]' : 'text-[#3B0B1F]/60 hover:text-[#3B0B1F]'
+                }`}
+                title="Desktop Preview Mode"
+              >
+                <Monitor className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => onToggleDeviceMode('mobile')}
+                className={`p-1.5 rounded-full transition-colors cursor-pointer ${
+                  deviceMode === 'mobile' ? 'bg-[#C8A84B] text-[#3B0B1F]' : 'text-[#3B0B1F]/60 hover:text-[#3B0B1F]'
+                }`}
+                title="Mobile Device Preview"
+              >
+                <Smartphone className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -340,72 +363,232 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
         </div>
       </div>
 
-      {/* Builder Step Form Body */}
-      <div className="flex-1 overflow-y-auto p-5 space-y-6">
+      {/* Builder Step Form Body - Natural Flow on Mobile/Tablet, Independently Scrollable on Desktop */}
+      <div className="p-4 sm:p-5 space-y-6 lg:flex-1 lg:overflow-y-auto lg:overscroll-contain">
         {/* STEP 1: COLOR PALETTE & VISUAL THEME */}
         {activeStep === 1 && (
           <div className="space-y-5">
-            <div>
-              <h3 className="font-serif-heading text-lg font-normal text-[#3B0B1F]">
-                Choose Color Palette &amp; Theme
-              </h3>
-              <p className="font-body text-xs text-[#3B0B1F]/70">
-                Select a visual theme style and color palette. The live preview updates instantly.
-              </p>
+            {/* Sticky Sub-Tab Menu & Category Navigation for Color & Frame Styling */}
+            <div className="sticky -top-4 sm:-top-5 z-20 bg-white/95 backdrop-blur-md pt-1 pb-3 -mx-4 sm:-mx-5 px-4 sm:px-5 border-b border-[#C8A84B]/30 shadow-xs space-y-2.5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-serif-heading text-base sm:text-lg font-normal text-[#3B0B1F]">
+                    Design, Color &amp; Frame Styling
+                  </h3>
+                  <p className="font-body text-[11px] text-[#3B0B1F]/70">
+                    Browse 6 color palettes &amp; 8 handcrafted luxury frame styles.
+                  </p>
+                </div>
+              </div>
+
+              {/* Sub-Tab Navigation Switcher (Sticky at top of builder) */}
+              <div className="grid grid-cols-2 p-1 bg-[#FAF0F3] border border-[#C8A84B]/40 rounded-2xl gap-1 shadow-inner">
+                <button
+                  type="button"
+                  onClick={() => setStep1Tab('palettes')}
+                  className={`py-2 px-3 rounded-xl font-body text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    step1Tab === 'palettes'
+                      ? 'bg-[#3B0B1F] text-[#FAF0F3] shadow-md border border-[#C8A84B]/50 font-bold'
+                      : 'text-[#3B0B1F] hover:bg-white/60'
+                  }`}
+                >
+                  <Palette className="w-3.5 h-3.5 text-[#C8A84B]" />
+                  <span>Color Themes (6)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setStep1Tab('frames')}
+                  className={`py-2 px-3 rounded-xl font-body text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    step1Tab === 'frames'
+                      ? 'bg-[#3B0B1F] text-[#FAF0F3] shadow-md border border-[#C8A84B]/50 font-bold'
+                      : 'text-[#3B0B1F] hover:bg-white/60'
+                  }`}
+                >
+                  <Layers className="w-3.5 h-3.5 text-[#C8A84B]" />
+                  <span>Frame Styles (8)</span>
+                </button>
+              </div>
+
+              {/* Sticky Category Filter Chips when Frame Styles tab is active */}
+              {step1Tab === 'frames' && (
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none text-xs">
+                  {['All', 'Luxury', 'Floral', 'Minimalist', 'Classic', 'Romantic', 'Contemporary', 'Heritage', 'Celestial'].map((cat) => {
+                    const isCatActive = selectedFrameCategory === cat;
+                    return (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => setSelectedFrameCategory(cat)}
+                        className={`px-2.5 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                          isCatActive
+                            ? 'bg-[#C8A84B] text-[#3B0B1F] shadow-sm font-bold'
+                            : 'bg-white border border-gray-200 text-[#3B0B1F]/70 hover:border-[#C8A84B]'
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
-            <div className="space-y-3">
-              {Object.values(THEME_PRESETS).map((t) => {
-                const isSelected = config.themeId === t.id;
-                return (
-                  <div
-                    key={t.id}
-                    onClick={() => handleTextChange('themeId', t.id as ThemeId)}
-                    className={`p-4 rounded-2xl border-2 transition-all cursor-pointer ${
-                      isSelected
-                        ? 'border-[#C8A84B] bg-[#FDF0F3] shadow-md'
-                        : 'border-gray-200 bg-white hover:border-[#D4849A]/50'
-                    }`}
+            {/* TAB 1: COLOR PALETTES */}
+            {step1Tab === 'palettes' && (
+              <div className="space-y-3 animate-in fade-in duration-200 pt-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-[#A87B1B] uppercase tracking-wider">
+                    Select Visual Color Palette
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setStep1Tab('frames')}
+                    className="text-[11px] text-[#3B0B1F] hover:text-[#A87B1B] font-semibold underline cursor-pointer"
                   >
-                    <div className="flex items-center justify-between mb-1">
-                      <h4 className="font-serif-heading text-sm font-semibold text-[#3B0B1F] flex items-center gap-2">
-                        {t.name}
-                        {isSelected && <Check className="w-4 h-4 text-[#C8A84B]" />}
-                      </h4>
-                      <span className="font-body text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider bg-[#3B0B1F] text-[#C8A84B]">
-                        {t.themeStyle}
-                      </span>
-                    </div>
+                    Customize Frame &rarr;
+                  </button>
+                </div>
 
-                    <p className="font-body text-[11px] text-[#3B0B1F]/70 mb-3">{t.description}</p>
+                {Object.values(THEME_PRESETS).map((t) => {
+                  const isSelected = config.themeId === t.id;
+                  return (
+                    <div
+                      key={t.id}
+                      onClick={() => handleTextChange('themeId', t.id as ThemeId)}
+                      className={`p-4 rounded-2xl border-2 transition-all cursor-pointer ${
+                        isSelected
+                          ? 'border-[#C8A84B] bg-[#FDF0F3] shadow-md ring-2 ring-[#C8A84B]/20'
+                          : 'border-gray-200 bg-white hover:border-[#D4849A]/50'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <h4 className="font-serif-heading text-sm font-semibold text-[#3B0B1F] flex items-center gap-2">
+                          {t.name}
+                          {isSelected && <Check className="w-4 h-4 text-[#C8A84B]" />}
+                        </h4>
+                        <span className="font-body text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider bg-[#3B0B1F] text-[#C8A84B]">
+                          {t.themeStyle}
+                        </span>
+                      </div>
 
-                    {/* Color Swatch Strips */}
-                    <div className="flex items-center gap-2">
-                      <div
-                        className="w-6 h-6 rounded-full border border-black/10 shadow-inner"
-                        style={{ backgroundColor: t.colors.primary }}
-                        title="Primary Color"
-                      />
-                      <div
-                        className="w-6 h-6 rounded-full border border-black/10 shadow-inner"
-                        style={{ backgroundColor: t.colors.blush }}
-                        title="Accent Color"
-                      />
-                      <div
-                        className="w-6 h-6 rounded-full border border-black/10 shadow-inner"
-                        style={{ backgroundColor: t.colors.gold }}
-                        title="Gold Accent"
-                      />
-                      <div
-                        className="w-6 h-6 rounded-full border border-black/10 shadow-inner"
-                        style={{ backgroundColor: t.colors.blushPale }}
-                        title="Background Tint"
-                      />
+                      <p className="font-body text-[11px] text-[#3B0B1F]/70 mb-3">{t.description}</p>
+
+                      {/* Color Swatch Strips */}
+                      <div className="flex items-center gap-2">
+                        <div
+                          className="w-6 h-6 rounded-full border border-black/10 shadow-inner"
+                          style={{ backgroundColor: t.colors.primary }}
+                          title="Primary Color"
+                        />
+                        <div
+                          className="w-6 h-6 rounded-full border border-black/10 shadow-inner"
+                          style={{ backgroundColor: t.colors.blush }}
+                          title="Accent Color"
+                        />
+                        <div
+                          className="w-6 h-6 rounded-full border border-black/10 shadow-inner"
+                          style={{ backgroundColor: t.colors.gold }}
+                          title="Gold Accent"
+                        />
+                        <div
+                          className="w-6 h-6 rounded-full border border-black/10 shadow-inner"
+                          style={{ backgroundColor: t.colors.blushPale }}
+                          title="Background Tint"
+                        />
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* TAB 2: FRAME & BORDER STYLES */}
+            {step1Tab === 'frames' && (
+              <div className="space-y-3 animate-in fade-in duration-200 pt-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-[#A87B1B] uppercase tracking-wider">
+                    Select Ornamental Frame Style ({FRAME_STYLE_OPTIONS.filter((f) => selectedFrameCategory === 'All' || f.category === selectedFrameCategory).length})
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setStep1Tab('palettes')}
+                    className="text-[11px] text-[#3B0B1F] hover:text-[#A87B1B] font-semibold underline cursor-pointer"
+                  >
+                    &larr; Color Palettes
+                  </button>
+                </div>
+
+                {/* Frame Style Options List */}
+                <div className="space-y-3">
+                  {FRAME_STYLE_OPTIONS.filter((f) => selectedFrameCategory === 'All' || f.category === selectedFrameCategory).map((frame) => {
+                    const currentEffectiveFrame: FrameStyleId =
+                      config.frameStyle ||
+                      (config.themeId === 'emerald'
+                        ? 'botanical-floral'
+                        : config.themeId === 'midnight'
+                        ? 'celestial-sparkle'
+                        : config.themeId === 'goldluxury'
+                        ? 'contemporary-geo'
+                        : config.themeId === 'classicivory'
+                        ? 'classic-arch'
+                        : config.themeId === 'rosegarden'
+                        ? 'romantic-lace'
+                        : 'royal-luxury');
+
+                    const isSelected = currentEffectiveFrame === frame.id;
+
+                    return (
+                      <div
+                        key={frame.id}
+                        onClick={() => handleTextChange('frameStyle', frame.id as FrameStyleId)}
+                        className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer flex items-start gap-3.5 ${
+                          isSelected
+                            ? 'border-[#C8A84B] bg-[#FDF0F3] shadow-md ring-2 ring-[#C8A84B]/25'
+                            : 'border-gray-200 bg-white hover:border-[#D4849A]/50 hover:shadow-sm'
+                        }`}
+                      >
+                        {/* Mini Vector Frame Artwork Preview Box */}
+                        <div className={`w-16 h-16 rounded-xl border p-1 shrink-0 flex items-center justify-center overflow-hidden transition-colors ${
+                          isSelected
+                            ? 'bg-gradient-to-br from-[#FAF4F6] to-[#F6E8EE] border-[#C8A84B] shadow-inner'
+                            : 'bg-[#FAF8F5] border-gray-200'
+                        }`}>
+                          <div
+                            className="w-full h-full"
+                            dangerouslySetInnerHTML={{ __html: frame.previewSvg }}
+                          />
+                        </div>
+
+                        {/* Frame Details */}
+                        <div className="flex-1 min-w-0 space-y-1">
+                          <div className="flex items-center justify-between gap-1.5">
+                            <h4 className="font-serif-heading text-sm font-semibold text-[#3B0B1F] flex items-center gap-1.5 truncate">
+                              <span>{frame.name}</span>
+                              {isSelected && <Check className="w-4 h-4 text-[#C8A84B] shrink-0" />}
+                            </h4>
+                            <span className="font-body text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider bg-[#3B0B1F] text-[#C8A84B] shrink-0">
+                              {frame.tag}
+                            </span>
+                          </div>
+
+                          <p className="font-body text-[11px] text-[#3B0B1F]/75 leading-snug">
+                            {frame.description}
+                          </p>
+
+                          <div className="pt-0.5 flex items-center gap-2">
+                            <span className="text-[10px] text-[#A87B1B] font-semibold flex items-center gap-1">
+                              <Sparkles className="w-3 h-3 text-[#C8A84B]" />
+                              {frame.category} Style
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         )}
 

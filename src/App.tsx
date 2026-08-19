@@ -86,9 +86,9 @@ export default function App() {
 
   // Render Wedding Invitation Builder Page
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col font-body selection:bg-[#D4849A] selection:text-white">
+    <div className="h-screen flex flex-col bg-gray-100 font-body selection:bg-[#D4849A] selection:text-white overflow-hidden">
       {/* Top Application Bar (Sticky Banner) */}
-      <header className="sticky top-0 z-40 bg-[#3B0B1F] text-[#FDF0F3] px-4 py-2.5 flex flex-wrap items-center justify-between border-b border-[#C8A84B]/40 shadow-md gap-2">
+      <header className="shrink-0 z-40 bg-[#3B0B1F] text-[#FDF0F3] px-4 py-2.5 flex flex-wrap items-center justify-between border-b border-[#C8A84B]/40 shadow-md gap-2">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setCurrentPage('landing')}
@@ -115,7 +115,7 @@ export default function App() {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Mode switch: Split Builder vs Full Guest Preview */}
+          {/* Mode switch: Split/Stacked Builder vs Full Invitation Page */}
           <div className="flex items-center bg-[#2D0817] p-1 rounded-full border border-[#C8A84B]/30 text-xs font-body">
             <button
               onClick={() => setActiveViewMode('split')}
@@ -123,7 +123,7 @@ export default function App() {
                 activeViewMode === 'split' ? 'bg-[#C8A84B] text-[#3B0B1F] font-bold shadow-sm' : 'text-[#FDF0F3]/70 hover:text-white'
               }`}
             >
-              Builder Mode
+              Builder &amp; Preview
             </button>
             <button
               onClick={() => setActiveViewMode('guest')}
@@ -146,86 +146,141 @@ export default function App() {
         </div>
       </header>
 
-      {/* Main Workspace */}
-      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
-        {/* Left Sidebar Builder Controls (visible in split mode) */}
+      {/* Main Workspace (Stacked on Mobile/Tablet, Side-by-Side on Desktop) */}
+      <div className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden relative h-[calc(100vh-53px)]">
+        {/* Builder Controls: Top on Mobile/Tablet, Left Sidebar on Desktop */}
         {activeViewMode === 'split' && (
-          <WeddingBuilder
-            config={config}
-            onChangeConfig={setConfig}
-            onOpenOrderModal={() => setIsOrderModalOpen(true)}
-            deviceMode={deviceMode}
-            onToggleDeviceMode={setDeviceMode}
-            projectId={currentProjectId}
-          />
+          <div
+            id="wedding-builder-panel"
+            className="w-full lg:w-[460px] xl:w-[500px] lg:h-full shrink-0 flex flex-col"
+          >
+            <WeddingBuilder
+              config={config}
+              onChangeConfig={setConfig}
+              onOpenOrderModal={() => setIsOrderModalOpen(true)}
+              deviceMode={deviceMode}
+              onToggleDeviceMode={setDeviceMode}
+              projectId={currentProjectId}
+            />
+          </div>
         )}
 
-        {/* Right Live Interactive Preview */}
-        <div className="flex-1 bg-gray-200/80 overflow-y-auto flex flex-col items-center p-2 sm:p-6 transition-all">
-          <div
-            className={`transition-all duration-300 w-full shadow-2xl rounded-2xl overflow-hidden my-auto ${
-              deviceMode === 'mobile' && activeViewMode === 'split'
-                ? 'max-w-[395px] min-h-[750px] border-[12px] border-gray-900 rounded-[40px] my-6'
-                : 'max-w-5xl'
-            }`}
-            style={{ backgroundColor: colors.blushPale }}
-          >
-            {/* Live Website Preview Container */}
-            <div className="min-h-screen text-[#3B0B1F] font-body relative" style={{ backgroundColor: colors.blushPale }}>
-              {/* Optional Splash Screen trigger test */}
-              {showSplash && (
-                <SplashScreen config={config} onOpenInvitation={handleOpenInvitation} />
-              )}
+        {/* Live Interactive Preview: Directly under Builder on Mobile/Tablet, Right Panel on Desktop */}
+        <div
+          id="live-invitation-preview"
+          className={`w-full min-w-0 bg-[#EAE5DF] flex flex-col items-center p-2 sm:p-6 pb-24 transition-all ${
+            activeViewMode === 'guest'
+              ? 'flex-1 h-full overflow-y-auto overscroll-contain'
+              : 'lg:flex-1 lg:h-full lg:overflow-y-auto lg:overscroll-contain'
+          }`}
+        >
+            {/* Preview Navigation & Quick Anchor Bar */}
+            <div className="w-full max-w-5xl flex flex-wrap items-center justify-between gap-2 px-3 py-2 mb-3 bg-white/80 backdrop-blur-md rounded-xl border border-[#C8A84B]/30 shadow-xs text-xs text-[#3B0B1F] font-body shrink-0 sticky top-0 z-30">
+              <div className="flex items-center gap-2">
+                <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="font-serif-heading font-semibold text-sm text-[#3B0B1F]">
+                  Live Invitation Page
+                </span>
+                <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-[#FAF0F3] text-[#B85B75] border border-[#C8A84B]/30 hidden sm:inline">
+                  {deviceMode === 'mobile' ? 'Mobile Width' : 'Responsive Full Width'}
+                </span>
+              </div>
 
-              {/* Floating Music Control */}
-              {!showSplash && <MusicPlayer config={config} />}
-
-              <HeroSection config={config} />
-
-              <DateCard config={config} onOpenRSVP={() => setIsRSVPOpen(true)} />
-
-              <DetailsSection config={config} />
-
-              <StoryQuoteSection config={config} />
-
-              <TimelineSection config={config} />
-
-              <LightboxGallery config={config} />
-
-              {/* RSVP Banner */}
-              <section
-                className="py-12 text-center px-4 my-8 transition-colors duration-500"
-                style={{
-                  backgroundColor: colors.primary,
-                  color: colors.blushPale
-                }}
-              >
-                <div className="max-w-2xl mx-auto space-y-4">
-                  <h3 className="font-serif-heading text-2xl sm:text-3xl font-normal" style={{ color: colors.gold }}>
-                    Will You Join Our Celebration?
-                  </h3>
-                  <p className="font-body text-xs sm:text-sm opacity-80">
-                    Please let us know your attendance and meal preferences by {config.rsvpDeadlineEn}.
-                  </p>
+              {/* Quick Jump Section Links */}
+              <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
+                {[
+                  { label: 'Top', id: 'hero-section' },
+                  { label: 'Date', id: 'date-card-section' },
+                  { label: 'Details', id: 'details-section' },
+                  { label: 'Story', id: 'story-quote-section' },
+                  { label: 'Timeline', id: 'timeline-section' },
+                  { label: 'Gallery', id: 'gallery-section' },
+                  { label: 'RSVP', id: 'rsvp-banner-section' },
+                  { label: 'Footer', id: 'botanical-footer' },
+                ].map((item) => (
                   <button
-                    onClick={() => setIsRSVPOpen(true)}
-                    id="banner-rsvp-btn"
-                    className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-body text-xs font-semibold uppercase tracking-wider shadow-xl hover:scale-105 transition-all cursor-pointer"
-                    style={{
-                      backgroundColor: colors.gold,
-                      color: colors.primary
+                    key={item.id}
+                    type="button"
+                    onClick={() => {
+                      const el = document.getElementById(item.id);
+                      if (el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }
                     }}
+                    className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-[#FAF0F3] hover:bg-[#3B0B1F] hover:text-[#FAF0F3] border border-[#C8A84B]/40 transition-colors cursor-pointer shrink-0"
                   >
-                    <span>Respond to Invitation</span>
+                    {item.label}
                   </button>
-                </div>
-              </section>
+                ))}
+              </div>
+            </div>
 
-              <BotanicalFooter config={config} />
+            {/* Live Interactive Page Card Container */}
+            <div
+              className={`transition-all duration-300 w-full shadow-2xl rounded-2xl overflow-visible mb-16 ${
+                deviceMode === 'mobile' && activeViewMode === 'split'
+                  ? 'max-w-[395px] border-[10px] border-gray-900 rounded-[36px] shadow-2xl my-2'
+                  : 'max-w-5xl my-0'
+              }`}
+              style={{ backgroundColor: colors.blushPale }}
+            >
+              {/* Live Website Preview Container */}
+              <div className="w-full min-h-screen text-[#3B0B1F] font-body relative rounded-2xl overflow-hidden" style={{ backgroundColor: colors.blushPale }}>
+                {/* Optional Splash Screen trigger test */}
+                {showSplash && (
+                  <SplashScreen config={config} onOpenInvitation={handleOpenInvitation} />
+                )}
+
+                {/* Floating Music Control */}
+                {!showSplash && <MusicPlayer config={config} />}
+
+                <HeroSection config={config} />
+
+                <DateCard config={config} onOpenRSVP={() => setIsRSVPOpen(true)} />
+
+                <DetailsSection config={config} />
+
+                <StoryQuoteSection config={config} />
+
+                <TimelineSection config={config} />
+
+                <LightboxGallery config={config} />
+
+                {/* RSVP Banner */}
+                <section
+                  id="rsvp-banner-section"
+                  className="py-12 text-center px-4 my-8 transition-colors duration-500"
+                  style={{
+                    backgroundColor: colors.primary,
+                    color: colors.blushPale
+                  }}
+                >
+                  <div className="max-w-2xl mx-auto space-y-4">
+                    <h3 className="font-serif-heading text-2xl sm:text-3xl font-normal" style={{ color: colors.gold }}>
+                      Will You Join Our Celebration?
+                    </h3>
+                    <p className="font-body text-xs sm:text-sm opacity-80">
+                      Please let us know your attendance and meal preferences by {config.rsvpDeadlineEn}.
+                    </p>
+                    <button
+                      onClick={() => setIsRSVPOpen(true)}
+                      id="banner-rsvp-btn"
+                      className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-body text-xs font-semibold uppercase tracking-wider shadow-xl hover:scale-105 transition-all cursor-pointer"
+                      style={{
+                        backgroundColor: colors.gold,
+                        color: colors.primary
+                      }}
+                    >
+                      <span>Respond to Invitation</span>
+                    </button>
+                  </div>
+                </section>
+
+                <BotanicalFooter config={config} />
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
       {/* RSVP Modal Dialog */}
       <RSVPModal config={config} projectId={currentProjectId} isOpen={isRSVPOpen} onClose={() => setIsRSVPOpen(false)} />

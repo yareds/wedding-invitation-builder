@@ -31,6 +31,7 @@ import { THEME_PRESETS, ThemePreset, DEFAULT_WEDDING_CONFIG } from '../utils/the
 import { ThemeId, WeddingConfig } from '../types';
 import { StudioHeroBanner } from './StudioHeroBanner';
 import { HeroSection } from './HeroSection';
+import { ThemeSelectionShowcase } from './ThemeSelectionShowcase';
 import { WordReveal, GentleFadeUp, FloatingSparkles } from './AnimatedHeroText';
 
 interface LandingPageProps {
@@ -522,76 +523,14 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
         </div>
       </section>
 
-      {/* 5. SHOWCASE / FINISHED TEMPLATES SECTION */}
-      <section id="templates" className="py-20 sm:py-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center space-y-4 max-w-3xl mx-auto mb-16">
-          <span className="text-xs font-bold text-[#C8A84B] uppercase tracking-widest block">
-            Exquisite Design Styles
-          </span>
-          <h2 className="font-serif-heading text-3xl sm:text-4xl text-[#3B0B1F] font-normal">
-            Choose Your Favorite Theme Preset
-          </h2>
-          <p className="text-xs sm:text-sm text-[#3B0B1F]/70 font-body leading-relaxed">
-            Every template is fully customizable with your photos, background music, church details, and event schedules.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {templatesList.map((tpl) => (
-            <div
-              key={tpl.id}
-              className="bg-white rounded-2xl overflow-hidden border border-[#C8A84B]/30 shadow-md hover:shadow-2xl transition-all duration-300 flex flex-col justify-between group"
-            >
-              <div>
-                <div className="relative h-60 overflow-hidden cursor-pointer" onClick={() => setSelectedDemoTheme(THEME_PRESETS[tpl.id])}>
-                  <img
-                    src={tpl.previewImg}
-                    alt={tpl.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                  <div className={`absolute inset-0 bg-gradient-to-t ${tpl.bgGradient} opacity-60`} />
-                  <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
-                    {tpl.tags.map((tag, tIdx) => (
-                      <span key={tIdx} className="px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-sm text-[#3B0B1F] text-[10px] font-bold uppercase tracking-wider shadow-sm">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white font-serif-heading">
-                    <span className="text-lg font-bold">{tpl.name}</span>
-                    <span className="text-xs opacity-90">{tpl.style}</span>
-                  </div>
-                </div>
-
-                <div className="p-6 space-y-3">
-                  <p className="text-xs text-gray-600 font-body leading-relaxed">
-                    {tpl.description}
-                  </p>
-                </div>
-              </div>
-
-              <div className="p-6 pt-0 flex items-center justify-between gap-3">
-                <button
-                  type="button"
-                  onClick={() => setSelectedDemoTheme(THEME_PRESETS[tpl.id])}
-                  className="flex-1 py-2.5 px-3 rounded-xl border border-[#C8A84B]/50 hover:bg-[#FAF0F3] text-[#3B0B1F] text-xs font-semibold transition-all cursor-pointer flex items-center justify-center gap-1.5"
-                >
-                  <Eye className="w-3.5 h-3.5 text-[#A87B1B]" />
-                  <span>Preview</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => onStartBuilding(tpl.id)}
-                  className="flex-1 py-2.5 px-3 rounded-xl bg-[#4A0E17] text-[#FAF0F3] hover:bg-[#3B0B1F] text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-md"
-                >
-                  <span>Select &amp; Build</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+      {/* 5. SHOWCASE / FINISHED TEMPLATES SECTION (Matching Reference Screenshot) */}
+      <section id="templates" className="py-12 sm:py-20 bg-gradient-to-b from-[#FAF4F6] via-[#FFF8FA] to-[#FAF0F3] relative overflow-hidden border-t border-[#C8A84B]/30">
+        <ThemeSelectionShowcase
+          selectedThemeId="bordeaux"
+          onSelectTheme={(themeId) => onStartBuilding(themeId)}
+          onPreviewTheme={(preset) => setSelectedDemoTheme(preset)}
+          showFullPageDecorations={true}
+        />
       </section>
 
       {/* 6. PRICING SECTION */}

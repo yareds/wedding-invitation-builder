@@ -25,7 +25,7 @@ export const BotanicalFooter: React.FC<BotanicalFooterProps> = ({ config }) => {
       }}
     >
       {/* Top SVG Vine-and-Flower Band */}
-      <BotanicalFrame position="banner-top" themeId={config.themeId} colorMode="gold" className="-mt-8 mb-4" />
+      <BotanicalFrame position="banner-top" themeId={config.themeId} frameStyle={config.frameStyle} colorMode="gold" className="-mt-8 mb-4" />
 
       <div className="max-w-2xl mx-auto relative z-10 space-y-4 my-4">
         {/* Monogram Circle */}
@@ -55,7 +55,7 @@ export const BotanicalFooter: React.FC<BotanicalFooterProps> = ({ config }) => {
       </div>
 
       {/* Bottom SVG Vine-and-Flower Band */}
-      <BotanicalFrame position="banner-bottom" themeId={config.themeId} colorMode="gold" className="mt-8 -mb-12" />
+      <BotanicalFrame position="banner-bottom" themeId={config.themeId} frameStyle={config.frameStyle} colorMode="gold" className="mt-8 -mb-12" />
     </footer>
   );
 };

@@ -25,6 +25,16 @@ export interface GalleryPhoto {
 
 export type ThemeId = 'bordeaux' | 'emerald' | 'midnight' | 'rosegarden' | 'goldluxury' | 'classicivory';
 
+export type FrameStyleId =
+  | 'botanical-floral'
+  | 'royal-luxury'
+  | 'modern-minimalist'
+  | 'classic-arch'
+  | 'romantic-lace'
+  | 'contemporary-geo'
+  | 'habesha-heritage'
+  | 'celestial-sparkle';
+
 export interface ThemeColors {
   primary: string;
   mid: string;
@@ -42,6 +52,7 @@ export interface ThemeColors {
 
 export interface WeddingConfig {
   themeId: ThemeId;
+  frameStyle?: FrameStyleId;
   groomEth: string;
   groomEn: string;
   brideEth: string;

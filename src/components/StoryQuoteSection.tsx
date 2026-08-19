@@ -24,10 +24,10 @@ export const StoryQuoteSection: React.FC<StoryQuoteSectionProps> = ({ config }) 
       }}
     >
       {/* Corner Botanical Frame Decorations */}
-      <BotanicalFrame position="top-left" themeId={config.themeId} className="absolute top-2 left-2" colorMode="gold" />
-      <BotanicalFrame position="top-right" themeId={config.themeId} className="absolute top-2 right-2" colorMode="gold" />
-      <BotanicalFrame position="bottom-left" themeId={config.themeId} className="absolute bottom-2 left-2" colorMode="gold" />
-      <BotanicalFrame position="bottom-right" themeId={config.themeId} className="absolute bottom-2 right-2" colorMode="gold" />
+      <BotanicalFrame position="top-left" themeId={config.themeId} frameStyle={config.frameStyle} className="absolute top-2 left-2" colorMode="gold" />
+      <BotanicalFrame position="top-right" themeId={config.themeId} frameStyle={config.frameStyle} className="absolute top-2 right-2" colorMode="gold" />
+      <BotanicalFrame position="bottom-left" themeId={config.themeId} frameStyle={config.frameStyle} className="absolute bottom-2 left-2" colorMode="gold" />
+      <BotanicalFrame position="bottom-right" themeId={config.themeId} frameStyle={config.frameStyle} className="absolute bottom-2 right-2" colorMode="gold" />
 
       <div className="max-w-3xl mx-auto text-center relative z-10 px-4">
         {/* Oversized Opening Quotation Mark */}
