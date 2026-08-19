@@ -542,45 +542,56 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
                       <div
                         key={frame.id}
                         onClick={() => handleTextChange('frameStyle', frame.id as FrameStyleId)}
-                        className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer flex items-start gap-3.5 ${
+                        className={`group relative p-3.5 sm:p-4 rounded-2xl border-2 transition-all cursor-pointer flex flex-col gap-3 ${
                           isSelected
                             ? 'border-[#C8A84B] bg-[#FDF0F3] shadow-md ring-2 ring-[#C8A84B]/25'
                             : 'border-gray-200 bg-white hover:border-[#D4849A]/50 hover:shadow-sm'
                         }`}
                       >
-                        {/* Mini Vector Frame Artwork Preview Box */}
-                        <div className={`w-16 h-16 rounded-xl border p-1 shrink-0 flex items-center justify-center overflow-hidden transition-colors ${
+                        {/* Large Vector Frame Artwork Preview Box */}
+                        <div className={`relative w-full h-32 sm:h-36 rounded-xl border p-2 flex items-center justify-center overflow-hidden transition-colors ${
                           isSelected
                             ? 'bg-gradient-to-br from-[#FAF4F6] to-[#F6E8EE] border-[#C8A84B] shadow-inner'
-                            : 'bg-[#FAF8F5] border-gray-200'
+                            : 'bg-[#FAF8F5] border-gray-200 group-hover:bg-[#FFFDFB]'
                         }`}>
                           <div
-                            className="w-full h-full"
+                            className="w-full h-full max-w-[220px] mx-auto flex items-center justify-center"
                             dangerouslySetInnerHTML={{ __html: frame.previewSvg }}
                           />
+
+                          {/* Gold Checkmark Badge in Top-Right Corner when selected */}
+                          {isSelected && (
+                            <div className="absolute top-2.5 right-2.5 w-6 h-6 rounded-full bg-[#3B0B1F] border border-[#C8A84B] flex items-center justify-center shadow-md animate-in fade-in zoom-in-75 duration-200">
+                              <Check className="w-3.5 h-3.5 text-[#C8A84B]" />
+                            </div>
+                          )}
                         </div>
 
-                        {/* Frame Details */}
-                        <div className="flex-1 min-w-0 space-y-1">
-                          <div className="flex items-center justify-between gap-1.5">
-                            <h4 className="font-serif-heading text-sm font-semibold text-[#3B0B1F] flex items-center gap-1.5 truncate">
+                        {/* Frame Details below preview */}
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between gap-2">
+                            <h4 className="font-serif-heading text-sm sm:text-base font-semibold text-[#3B0B1F] flex items-center gap-1.5 truncate">
                               <span>{frame.name}</span>
-                              {isSelected && <Check className="w-4 h-4 text-[#C8A84B] shrink-0" />}
                             </h4>
                             <span className="font-body text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider bg-[#3B0B1F] text-[#C8A84B] shrink-0">
                               {frame.tag}
                             </span>
                           </div>
 
-                          <p className="font-body text-[11px] text-[#3B0B1F]/75 leading-snug">
+                          <p className="font-body text-xs text-[#3B0B1F]/75 leading-relaxed">
                             {frame.description}
                           </p>
 
-                          <div className="pt-0.5 flex items-center gap-2">
-                            <span className="text-[10px] text-[#A87B1B] font-semibold flex items-center gap-1">
+                          <div className="pt-1 flex items-center justify-between text-[11px]">
+                            <span className="text-[#A87B1B] font-semibold flex items-center gap-1">
                               <Sparkles className="w-3 h-3 text-[#C8A84B]" />
                               {frame.category} Style
                             </span>
+                            {isSelected && (
+                              <span className="text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#C8A84B]/20 text-[#3B0B1F] border border-[#C8A84B]/40">
+                                Selected Frame
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>
