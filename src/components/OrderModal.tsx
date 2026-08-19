@@ -295,7 +295,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
 • Reception Venue: ${reception}
 • Contact Phone: ${contactPhone}
 • RSVP Deadline: ${config.rsvpDeadlineEn}
-• Package Price: 30,000 ETB
+• Package Price: 25,000 ETB
 ----------------------------------
 Order details submitted for online hosting.
   `.trim();
@@ -571,7 +571,7 @@ Order details submitted for online hosting.
             Payment Information (Bank Transfer &amp; Telebirr)
           </h3>
           <p className="font-body text-xs text-[#5C3240] mb-3 leading-relaxed">
-            Please transfer the 30,000 ETB fee to any of our official accounts below:
+            Please transfer the 25,000 ETB fee to any of our official accounts below:
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

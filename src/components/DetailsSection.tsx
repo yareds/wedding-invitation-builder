@@ -91,7 +91,7 @@ export const DetailsSection: React.FC<DetailsSectionProps> = ({ config }) => {
                 <span className="font-body text-xs opacity-70" style={{ color: colors.primary }}>Reception &amp; Dinner</span>
               </div>
               <h3 className="font-serif-heading text-xl sm:text-2xl font-normal mb-2" style={{ color: colors.primary }}>
-                {config.receptionEth || 'ሼራተን አዲስ ላግዠሪ ሆቴል (ግራንድ ቦልሩም)'}
+                {config.receptionEth || 'ሼራተን አዲስ ሆቴል (ግራንድ ቦልሩም)'}
               </h3>
               {config.receptionEn ? (
                 <p className="font-body text-sm font-semibold" style={{ color: colors.primary }}>

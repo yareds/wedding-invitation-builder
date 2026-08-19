@@ -33,7 +33,7 @@ export const StudioHeroBanner: React.FC<StudioHeroBannerProps> = ({
       <div className="absolute -inset-4 bg-gradient-to-r from-[#C8A84B]/25 via-[#B85B75]/20 to-[#C8A84B]/25 rounded-3xl blur-2xl opacity-80 pointer-events-none" />
 
       {/* Main Luxury Frame Card with Website-Themed Warm Blush/Ivory Gradient */}
-      <div className="relative bg-gradient-to-b from-[#FAF4F6] via-[#F6E9EF] to-[#EEDAE3] rounded-3xl border-2 border-[#C8A84B]/60 shadow-2xl pt-4 sm:pt-6 lg:pt-8 pb-6 sm:pb-9 lg:pb-12 px-5 sm:px-8 lg:px-12 overflow-hidden">
+      <div className="relative bg-gradient-to-b from-[#FAF4F6] via-[#F6E9EF] to-[#EEDAE3] rounded-3xl border-2 border-[#C8A84B]/60 shadow-2xl pt-6 sm:pt-8 lg:pt-10 pb-6 sm:pb-9 lg:pb-12 px-4 sm:px-8 lg:px-12 overflow-hidden">
         
         {/* Subtle Traditional Watermark / Grid */}
         <div className="absolute inset-0 bg-[radial-gradient(#C8A84B_1px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none" />
@@ -47,8 +47,8 @@ export const StudioHeroBanner: React.FC<StudioHeroBannerProps> = ({
         {/* Inner Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10">
           
-          {/* LEFT COLUMN: Majestic Display Typography shifted significantly upward */}
-          <div className="lg:col-span-6 text-center lg:text-left space-y-2 sm:space-y-3 relative overflow-hidden p-2 -mt-8 sm:-mt-12 lg:-mt-20 xl:-mt-22">
+          {/* LEFT COLUMN: Majestic Display Typography with clean responsive framing */}
+          <div className="lg:col-span-6 text-center lg:text-left space-y-2 sm:space-y-3 relative p-2 pt-2 sm:pt-4 lg:pt-0 lg:-mt-4">
             
             {/* DYNAMIC FLASHING LIGHT AURA & SWEEPING LIGHT BEAMS BEHIND HEADLINES */}
             <div className="absolute -top-10 -left-10 w-96 h-96 bg-gradient-to-tr from-[#C8A84B]/40 via-[#FAF0C5]/40 to-[#B85B75]/35 rounded-full blur-3xl pointer-events-none animate-flash-aura" />
@@ -68,21 +68,21 @@ export const StudioHeroBanner: React.FC<StudioHeroBannerProps> = ({
             >
               {/* Line 1: DESIGN with Cinzel Decorative */}
               <div className="flex items-baseline justify-center lg:justify-start">
-                <h1 className="font-cinzel font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl tracking-wider text-dynamic-headline-gold leading-[1.05] uppercase drop-shadow-sm">
+                <h1 className="font-cinzel font-bold text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-7xl tracking-wider text-dynamic-headline-gold leading-[1.05] uppercase drop-shadow-sm">
                   DESIGN
                 </h1>
               </div>
 
               {/* Line 2: Your with Geraldine Calligraphic Script */}
               <div className="flex items-baseline justify-center lg:justify-start pl-2 sm:pl-5 -my-1 sm:-my-2">
-                <span className="font-geraldine font-normal text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl tracking-wide text-[#4A0E17] leading-[1.1] drop-shadow-sm hover:scale-105 transition-transform duration-300 select-none">
+                <span className="font-geraldine font-normal text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-9xl tracking-wide text-[#4A0E17] leading-[1.1] drop-shadow-sm hover:scale-105 transition-transform duration-300 select-none">
                   Your
                 </span>
               </div>
 
               {/* Line 3: DREAM with Cinzel Decorative */}
               <div className="flex items-baseline justify-center lg:justify-start">
-                <span className="font-cinzel font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl tracking-wider text-dynamic-headline-wine leading-[1.05] uppercase drop-shadow-sm">
+                <span className="font-cinzel font-bold text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-8xl tracking-wider text-dynamic-headline-wine leading-[1.05] uppercase drop-shadow-sm">
                   DREAM
                 </span>
               </div>

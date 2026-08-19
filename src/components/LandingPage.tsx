@@ -271,7 +271,7 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
       </header>
 
       {/* 2. HERO SECTION */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#FAF4F6] via-[#F6E8EE] to-[#EED9E2] text-[#3B0B1F] pt-8 pb-20 lg:pt-12 lg:pb-28 border-b border-[#C8A84B]/30">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#FAF4F6] via-[#F6E8EE] to-[#EED9E2] text-[#3B0B1F] pt-4 sm:pt-6 lg:pt-10 pb-16 sm:pb-20 lg:pb-28 border-b border-[#C8A84B]/30">
         {/* Luxury Background Decor Patterns */}
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#C8A84B_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
         <div className="absolute top-1/4 -left-20 w-80 h-80 bg-[#C8A84B]/15 rounded-full blur-3xl pointer-events-none" />
@@ -621,7 +621,7 @@ export function LandingPage({ onStartBuilding, onOpenAdmin }: LandingPageProps) 
                 </span>
                 <div className="flex items-center justify-center gap-1 pt-2">
                   <span className="font-serif-heading text-4xl sm:text-5xl font-bold text-[#3B0B1F]">
-                    30,000
+                    25,000
                   </span>
                   <span className="font-body text-base font-bold text-[#A87B1B]">
                     ETB (Birr)
