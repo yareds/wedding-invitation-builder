@@ -28,8 +28,8 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
   const [selectedThemeCategory, setSelectedThemeCategory] = useState<string>('All');
 
   const steps = [
-    { id: 1, title: 'Color & Theme', icon: Palette },
-    { id: 2, title: 'Hero & Audio', icon: Music },
+    { id: 1, title: 'Picture & Music', icon: Music },
+    { id: 2, title: 'Color & Theme', icon: Palette },
     { id: 3, title: 'Couple & Date', icon: Heart },
     { id: 4, title: 'Venues & Schedules', icon: MapPin },
     { id: 5, title: 'Story & Gallery', icon: ImageIcon }
@@ -366,8 +366,8 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
 
       {/* Builder Step Form Body - Natural Flow on Mobile/Tablet, Independently Scrollable on Desktop */}
       <div className="p-4 sm:p-5 space-y-6 lg:flex-1 lg:overflow-y-auto lg:overscroll-contain">
-        {/* STEP 1: COLOR PALETTE & VISUAL THEME */}
-        {activeStep === 1 && (
+        {/* STEP 2: COLOR PALETTE & VISUAL THEME */}
+        {activeStep === 2 && (
           <div className="space-y-5">
             {/* Sticky Sub-Tab Menu & Category Navigation for Color & Frame Styling */}
             <div className="sticky -top-4 sm:-top-5 z-20 bg-white/95 backdrop-blur-md pt-1 pb-3 -mx-4 sm:-mx-5 px-4 sm:px-5 border-b border-[#C8A84B]/30 shadow-xs space-y-2.5">
@@ -681,15 +681,15 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
           </div>
         )}
 
-        {/* STEP 2: HERO IMAGE & BACKGROUND MUSIC */}
-        {activeStep === 2 && (
+        {/* STEP 1: PICTURE & MUSIC */}
+        {activeStep === 1 && (
           <div className="space-y-5">
             <div>
               <h3 className="font-serif-heading text-lg font-normal text-[#3B0B1F]">
-                Hero Background &amp; Music
+                Picture &amp; Music
               </h3>
               <p className="font-body text-xs text-[#3B0B1F]/70">
-                Upload your custom couple photo for the main hero section and custom audio soundtrack.
+                Upload your custom couple photo for the main hero section and customize background music.
               </p>
             </div>
 
