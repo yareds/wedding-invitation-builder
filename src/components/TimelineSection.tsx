@@ -13,16 +13,34 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({ config }) => {
 
   const scheduleList = config.schedule && config.schedule.length > 0 ? config.schedule : [
     {
-      time: '02:00 PM',
-      title: 'Holy Matrimony Ceremony',
-      location: 'Sacred Cathedral',
-      description: 'Nuptial mass, exchange of vows, and sacred musical performance.'
+      time: '7:00 – 8:00',
+      title: 'አጃቢዎች በሙሽራው ቤት ይገኛሉ',
+      location: "Groom's Residence / የሙሽራው ቤት",
+      description: "Groomsmen Gather at Groom's Home"
     },
     {
-      time: '05:00 PM',
-      title: 'Grand Reception & Cocktail',
-      location: 'Estate Grounds',
-      description: 'Artisanal toast, traditional dinner, and live music.'
+      time: '9:00 – 9:30',
+      title: 'ጉዞ ወደ ሙሽሪት ቤት (አድራሻ)',
+      location: "Bride's Residence / የሙሽሪት ቤት",
+      description: "Travel to Bride's Home"
+    },
+    {
+      time: '10:30 – 12:00',
+      title: 'የቃልኪዳን ስነስርዓት (ቅድስት ሥላሴ ካቴድራል)',
+      location: 'ቅድስት ሥላሴ ካቴድራል (Holy Trinity Cathedral, Addis Ababa)',
+      description: 'Vows & Worship Program'
+    },
+    {
+      time: '1:00 – 2:30',
+      title: 'የምሳ ፕሮግራም ግዮን ሆቴል',
+      location: 'ግዮን ሆቴል (Ghion Hotel, Addis Ababa)',
+      description: 'Lunch Reception at Ghion Hotel'
+    },
+    {
+      time: '2:30 – 6:00',
+      title: 'የኬክ ቆረሳ፣ ጭፈራ እና ፎቶ ፕሮግራም ግዮን ሆቴል',
+      location: 'ግዮን ሆቴል (Ghion Hotel, Addis Ababa)',
+      description: 'Cake, Music & Photography'
     }
   ];
 

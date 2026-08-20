@@ -138,16 +138,34 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
 
   const scheduleList = config.schedule && config.schedule.length > 0 ? config.schedule : [
     {
-      time: '02:00 PM',
-      title: 'Holy Matrimony Ceremony',
-      location: 'Sacred Cathedral',
-      description: 'Nuptial mass, exchange of vows, and sacred musical performance.'
+      time: '7:00 – 8:00',
+      title: 'አጃቢዎች በሙሽራው ቤት ይገኛሉ',
+      location: "Groom's Residence / የሙሽራው ቤት",
+      description: "Groomsmen Gather at Groom's Home"
     },
     {
-      time: '05:00 PM',
-      title: 'Grand Reception & Cocktail',
-      location: 'Estate Grounds',
-      description: 'Artisanal toast, traditional dinner, and live music.'
+      time: '9:00 – 9:30',
+      title: 'ጉዞ ወደ ሙሽሪት ቤት (አድራሻ)',
+      location: "Bride's Residence / የሙሽሪት ቤት",
+      description: "Travel to Bride's Home"
+    },
+    {
+      time: '10:30 – 12:00',
+      title: 'የቃልኪዳን ስነስርዓት (ቅድስት ሥላሴ ካቴድራል)',
+      location: 'ቅድስት ሥላሴ ካቴድራል (Holy Trinity Cathedral, Addis Ababa)',
+      description: 'Vows & Worship Program'
+    },
+    {
+      time: '1:00 – 2:30',
+      title: 'የምሳ ፕሮግራም ግዮን ሆቴል',
+      location: 'ግዮን ሆቴል (Ghion Hotel, Addis Ababa)',
+      description: 'Lunch Reception at Ghion Hotel'
+    },
+    {
+      time: '2:30 – 6:00',
+      title: 'የኬክ ቆረሳ፣ ጭፈራ እና ፎቶ ፕሮግራም ግዮን ሆቴል',
+      location: 'ግዮን ሆቴል (Ghion Hotel, Addis Ababa)',
+      description: 'Cake, Music & Photography'
     }
   ];
 
@@ -435,12 +453,10 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
             </div>
             <div>
               <div class="flex items-center gap-2 mb-1">
-                <span class="font-body text-[11px] uppercase tracking-widest font-semibold" style="color: ${colors.blush}">${config.timeDisplay || '02:00 PM'}</span>
-                <span style="color: ${colors.blush}">•</span>
-                <span class="font-body text-xs opacity-70" style="color: ${colors.primary}">Sacred Matrimony</span>
+                <span class="font-body text-[11px] uppercase tracking-widest font-semibold" style="color: ${colors.blush}">Sacred Matrimony . የቃልኪዳን ስነስርዓት</span>
               </div>
-              <h3 class="font-serif-heading text-xl sm:text-2xl font-normal mb-2" style="color: ${colors.primary}">${config.churchEth || 'ካቴድራል ኦፍ ዘ ብለስድ ሳክራመንት'}</h3>
-              ${config.churchEn ? `<p class="font-body text-sm font-semibold mb-2" style="color: ${colors.primary}">${config.churchEn}</p>` : ''}
+              <h3 class="font-serif-heading text-xl sm:text-2xl font-normal mb-2" style="color: ${colors.primary}">${config.churchEth || 'ቅድስት ሥላሴ ካቴድራል፤ አዲስ አበባ'}</h3>
+              <p class="font-body text-sm font-semibold mb-2" style="color: ${colors.primary}">${config.churchEn || 'Holy Trinity Cathedral, Addis Ababa'}</p>
               <p class="font-quote italic text-xs" style="color: ${colors.blush}">Organ prelude begins 30 minutes prior. Doors close promptly for the processional.</p>
             </div>
           </div>
@@ -454,13 +470,11 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
             </div>
             <div>
               <div class="flex items-center gap-2 mb-1">
-                <span class="font-body text-[11px] uppercase tracking-widest font-semibold" style="color: ${colors.blush}">Grand Celebration</span>
-                <span style="color: ${colors.blush}">•</span>
-                <span class="font-body text-xs opacity-70" style="color: ${colors.primary}">Reception &amp; Dinner</span>
+                <span class="font-body text-[11px] uppercase tracking-widest font-semibold" style="color: ${colors.blush}">Reception &amp; Dinner . የምሳ/እራት ግብዣ ቦታ</span>
               </div>
-              <h3 class="font-serif-heading text-xl sm:text-2xl font-normal mb-2" style="color: ${colors.primary}">${config.receptionEth || 'ሴንት ሄሌና ቪንያርድ ኤስቴት'}</h3>
-              ${config.receptionEn ? `<p class="font-body text-sm font-semibold mb-2" style="color: ${colors.primary}">${config.receptionEn}</p>` : ''}
-              <p class="font-quote italic text-xs" style="color: ${colors.blush}">Cocktails, traditional toast, multi-course banquet dinner, and live orchestra dancing.</p>
+              <h3 class="font-serif-heading text-xl sm:text-2xl font-normal mb-2" style="color: ${colors.primary}">${config.receptionEth || 'ግዮን ሆቴል (ግራንድ ሆል)፤ አዲስ አበባ'}</h3>
+              <p class="font-body text-sm font-semibold mb-2" style="color: ${colors.primary}">${config.receptionEn || 'Ghion Hotel Grand Hall, Addis Ababa'}</p>
+              <p class="font-quote italic text-xs" style="color: ${colors.blush}">Cocktails, traditional toast, lunch & dinner banquet, and live music celebration.</p>
             </div>
           </div>
         </div>

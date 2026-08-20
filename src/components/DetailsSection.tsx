@@ -46,26 +46,20 @@ export const DetailsSection: React.FC<DetailsSectionProps> = ({ config }) => {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="font-body text-[11px] uppercase tracking-widest font-semibold" style={{ color: colors.blush }}>
-                  Sacred Matrimony
+                  Sacred Matrimony . የቃልኪዳን ስነስርዓት
                 </span>
               </div>
               <h3 className="font-serif-heading text-xl sm:text-2xl font-normal mb-2" style={{ color: colors.primary }}>
                 {config.churchEth || 'ቅድስት ሥላሴ ካቴድራል፤ አዲስ አበባ'}
               </h3>
-              {config.churchEn ? (
-                <p className="font-body text-sm font-semibold" style={{ color: colors.primary }}>
-                  {config.churchEn}
-                </p>
-              ) : (
-                <p className="font-body text-sm font-semibold" style={{ color: colors.primary }}>
-                  Holy Trinity Cathedral (Kidist Selassie), Addis Ababa
-                </p>
-              )}
+              <p className="font-body text-sm font-semibold" style={{ color: colors.primary }}>
+                {config.churchEn || 'Holy Trinity Cathedral, Addis Ababa'}
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Card 2: Vineyard Reception */}
+        {/* Card 2: Reception & Dinner */}
         <div
           className="bg-white rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-xl transition-all border-l-4 flex flex-col md:flex-row md:items-center justify-between gap-6 group"
           style={{ borderLeftColor: colors.primary }}
@@ -85,23 +79,15 @@ export const DetailsSection: React.FC<DetailsSectionProps> = ({ config }) => {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="font-body text-[11px] uppercase tracking-widest font-semibold" style={{ color: colors.blush }}>
-                  Grand Celebration
+                  Reception &amp; Dinner . የምሳ/እራት ግብዣ ቦታ
                 </span>
-                <span style={{ color: colors.blush }}>•</span>
-                <span className="font-body text-xs opacity-70" style={{ color: colors.primary }}>Reception &amp; Dinner</span>
               </div>
               <h3 className="font-serif-heading text-xl sm:text-2xl font-normal mb-2" style={{ color: colors.primary }}>
-                {config.receptionEth || 'ሼራተን አዲስ ሆቴል (ግራንድ ቦልሩም)'}
+                {config.receptionEth || 'ግዮን ሆቴል (ግራንድ ሆል)፤ አዲስ አበባ'}
               </h3>
-              {config.receptionEn ? (
-                <p className="font-body text-sm font-semibold" style={{ color: colors.primary }}>
-                  {config.receptionEn}
-                </p>
-              ) : (
-                <p className="font-body text-sm font-semibold" style={{ color: colors.primary }}>
-                  Sheraton Addis Luxury Collection Grand Ballroom, Addis Ababa
-                </p>
-              )}
+              <p className="font-body text-sm font-semibold" style={{ color: colors.primary }}>
+                {config.receptionEn || 'Ghion Hotel Grand Hall, Addis Ababa'}
+              </p>
             </div>
           </div>
         </div>

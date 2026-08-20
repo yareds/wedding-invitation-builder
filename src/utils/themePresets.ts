@@ -424,10 +424,10 @@ export const DEFAULT_WEDDING_CONFIG: WeddingConfig = {
   timeDisplay: 'ከቀኑ 7:30 (01:30 PM EAT)',
   countdownDate: '2026-05-09T13:30:00',
   dressCode: 'Traditional Habesha Attire / Black-Tie Formal (የባህል ልብስ ወይም ፎርማል)',
-  churchEth: '',
-  churchEn: '',
-  receptionEth: '',
-  receptionEn: '',
+  churchEth: 'ቅድስት ሥላሴ ካቴድራል፤ አዲስ አበባ',
+  churchEn: 'Holy Trinity Cathedral, Addis Ababa',
+  receptionEth: 'ግዮን ሆቴል (ግራንድ ሆል)፤ አዲስ አበባ',
+  receptionEn: 'Ghion Hotel Grand Hall, Addis Ababa',
   scripture: '“ስለዚህ ሰው አባቱንና እናቱን ይተዋል፥ ከሚስቱም ጋር ይተባበራል፥ ሁለቱም አንድ ሥጋ ይሆናሉ።”',
   scriptureRef: 'የማቴዎስ ወንጌል 19፥6',
   storyText: 'በእምነት እና በፍቅር የተሳሰረ ጉዟችን ዛሬ በአንድነት አምሮ ደምቋል። From our first meeting in Addis Ababa to this blessed covenant, our journey has been filled with faith, shared laughter, and unconditional love.',
@@ -454,22 +454,34 @@ export const DEFAULT_WEDDING_CONFIG: WeddingConfig = {
   ],
   schedule: [
     {
-      time: '01:30 PM',
-      title: 'የተቀደሰ የጋብቻ ሥነ-ሥርዓት (Holy Matrimony)',
+      time: '7:00 – 8:00',
+      title: 'አጃቢዎች በሙሽራው ቤት ይገኛሉ',
+      location: "Groom's Residence / የሙሽራው ቤት",
+      description: "Groomsmen Gather at Groom's Home"
+    },
+    {
+      time: '9:00 – 9:30',
+      title: 'ጉዞ ወደ ሙሽሪት ቤት (አድራሻ)',
+      location: "Bride's Residence / የሙሽሪት ቤት",
+      description: "Travel to Bride's Home"
+    },
+    {
+      time: '10:30 – 12:00',
+      title: 'የቃልኪዳን ስነስርዓት (ቅድስት ሥላሴ ካቴድራል)',
       location: 'ቅድስት ሥላሴ ካቴድራል (Holy Trinity Cathedral, Addis Ababa)',
-      description: 'የኪዳን ጸሎት፣ የጋብቻ ቀለበት ማሰር እና የቅዳሴ ቡራኬ ሥነ-ሥርዓት።'
+      description: 'Vows & Worship Program'
     },
     {
-      time: '04:30 PM',
-      title: 'የሰርግ ድግስ እና አቀባበል (Grand Reception & Dinner)',
-      location: 'ሼራተን አዲስ ግራንድ ቦልሩም (Sheraton Addis Grand Ballroom)',
-      description: 'የክብር ሻምፓኝ፣ የባህል ድግስ፣ የሠርግ ኬክ መቁረጥ እና የሙዚቃ ድግስ።'
+      time: '1:00 – 2:30',
+      title: 'የምሳ ፕሮግራም ግዮን ሆቴል',
+      location: 'ግዮን ሆቴል (Ghion Hotel, Addis Ababa)',
+      description: 'Lunch Reception at Ghion Hotel'
     },
     {
-      time: '08:00 PM',
-      title: 'የእስክስታ እና ዳንስ ጭፈራ (Cultural Eskista & Dance)',
-      location: 'ሼራተን አዲስ (Sheraton Addis)',
-      description: 'ከቤተሰብ እና ከወዳጅ ዘመድ ጋር የደመቀ ባህላዊ ጭፈራ እና የመልስ ድግስ።'
+      time: '2:30 – 6:00',
+      title: 'የኬክ ቆረሳ፣ ጭፈራ እና ፎቶ ፕሮግራም ግዮን ሆቴል',
+      location: 'ግዮን ሆቴል (Ghion Hotel, Addis Ababa)',
+      description: 'Cake, Music & Photography'
     }
   ],
   bankDetails: [
@@ -501,8 +513,8 @@ export const SAMPLE_WEDDING_CONFIG: WeddingConfig = {
   dateEC: 'ግንቦት 01, 2018 ዓ.ም',
   churchEth: 'ቅድስት ሥላሴ ካቴድራል፤ አዲስ አበባ',
   churchEn: 'Holy Trinity Cathedral, Addis Ababa',
-  receptionEth: 'ሼራተን አዲስ ላግዠሪ ሆቴል (ግራንድ ቦልሩም)',
-  receptionEn: 'Sheraton Addis Luxury Collection Grand Ballroom, Addis Ababa',
+  receptionEth: 'ግዮን ሆቴል (ግራንድ ሆል)፤ አዲስ አበባ',
+  receptionEn: 'Ghion Hotel Grand Hall, Addis Ababa',
   phone1: '+251 91 123 4567',
   phone2: '+251 92 234 5678'
 };

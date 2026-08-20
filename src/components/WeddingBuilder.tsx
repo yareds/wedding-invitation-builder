@@ -31,7 +31,7 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
     { id: 1, title: 'Color & Theme', icon: Palette },
     { id: 2, title: 'Hero & Audio', icon: Music },
     { id: 3, title: 'Couple & Date', icon: Heart },
-    { id: 4, title: 'Venues & RSVP', icon: MapPin },
+    { id: 4, title: 'Venues & Schedules', icon: MapPin },
     { id: 5, title: 'Story & Gallery', icon: ImageIcon }
   ];
 
@@ -991,13 +991,13 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
             {/* Ceremony Details */}
             <div className="space-y-2 p-3 bg-[#FDF0F3]/50 rounded-2xl border border-[#D4849A]/30">
               <h4 className="font-serif-heading text-xs font-bold text-[#3B0B1F] uppercase tracking-wider">
-                1. Holy Matrimony Ceremony
+                1. Sacred Matrimony . የቃልኪዳን ስነስርዓት
               </h4>
               <input
                 type="text"
                 value={config.churchEn}
                 onChange={(e) => handleTextChange('churchEn', e.target.value)}
-                placeholder="e.g. Holy Trinity Cathedral (Kidist Selassie), Addis Ababa"
+                placeholder="e.g. Holy Trinity Cathedral, Addis Ababa"
                 className="w-full px-3 py-1.5 rounded-lg border text-xs bg-white text-[#3B0B1F]"
               />
               <input
@@ -1012,20 +1012,20 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
             {/* Reception Details */}
             <div className="space-y-2 p-3 bg-[#FDF0F3]/50 rounded-2xl border border-[#D4849A]/30">
               <h4 className="font-serif-heading text-xs font-bold text-[#3B0B1F] uppercase tracking-wider">
-                2. Grand Reception &amp; Dinner
+                2. Reception &amp; Dinner . የምሳ/እራት ግብዣ ቦታ
               </h4>
               <input
                 type="text"
                 value={config.receptionEn}
                 onChange={(e) => handleTextChange('receptionEn', e.target.value)}
-                placeholder="e.g. Sheraton Addis Luxury Collection Grand Ballroom"
+                placeholder="e.g. Ghion Hotel Grand Hall, Addis Ababa"
                 className="w-full px-3 py-1.5 rounded-lg border text-xs bg-white text-[#3B0B1F]"
               />
               <input
                 type="text"
                 value={config.receptionEth}
                 onChange={(e) => handleTextChange('receptionEth', e.target.value)}
-                placeholder="e.g. ሼራተን አዲስ ላግዠሪ ሆቴል (ግራንድ ቦልሩም)"
+                placeholder="e.g. ግዮን ሆቴል (ግራንድ ሆል)፤ አዲስ አበባ"
                 className="w-full px-3 py-1.5 rounded-lg border text-xs bg-white text-[#3B0B1F]"
               />
             </div>
