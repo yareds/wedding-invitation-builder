@@ -12,136 +12,90 @@ export interface FrameStyleOption {
 export const FRAME_STYLE_OPTIONS: FrameStyleOption[] = [
   {
     id: 'royal-luxury',
-    name: 'Royal Baroque Filigree',
+    name: 'Modern Imperial Luxury',
     category: 'Luxury',
-    tag: 'Royal & Ornate',
-    description: 'Majestic imperial acanthus leaves, swirling baroque scrollwork, and regal crown crests.',
+    tag: 'Bold & Regal',
+    description: 'Clean architectural double framing with bold geometric corner brackets and a minimal crown crest.',
     previewSvg: `
       <svg viewBox="0 0 100 100" fill="none" class="w-full h-full">
         <defs>
           <linearGradient id="g-royal-gold" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#FBF2D5" />
-            <stop offset="35%" stop-color="#D4AF37" />
-            <stop offset="70%" stop-color="#A87B1B" />
-            <stop offset="100%" stop-color="#F3DA8C" />
-          </linearGradient>
-          <linearGradient id="g-royal-accent" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#D4AF37" />
-            <stop offset="100%" stop-color="#5A0A21" />
+            <stop offset="0%" stop-color="#FFF3D4" />
+            <stop offset="40%" stop-color="#D4AF37" />
+            <stop offset="85%" stop-color="#996D14" />
+            <stop offset="100%" stop-color="#F2D785" />
           </linearGradient>
           <filter id="shadow-royal" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#5A0A21" flood-opacity="0.3" />
+            <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#4A0A1A" flood-opacity="0.25" />
           </filter>
         </defs>
 
-        <!-- Outer Double Frame Borders -->
-        <rect x="7" y="7" width="86" height="86" rx="6" stroke="url(#g-royal-gold)" stroke-width="3" filter="url(#shadow-royal)" />
-        <rect x="13" y="13" width="74" height="74" rx="3" stroke="url(#g-royal-gold)" stroke-width="1.8" stroke-opacity="0.9" />
+        <!-- Bold Minimal Outer Frame -->
+        <rect x="12" y="12" width="76" height="76" rx="2" stroke="url(#g-royal-gold)" stroke-width="2.5" filter="url(#shadow-royal)" />
+        <rect x="18" y="18" width="64" height="64" rx="1" stroke="url(#g-royal-gold)" stroke-width="1" stroke-opacity="0.7" />
 
-        <!-- Top-Left Baroque Corner Flourish -->
-        <path d="M 7 32 C 7 16, 16 7, 32 7" stroke="url(#g-royal-gold)" stroke-width="3" stroke-linecap="round" />
-        <path d="M 13 13 C 20 22, 28 18, 30 13 C 30 26, 20 30, 13 30 Z" fill="url(#g-royal-gold)" fill-opacity="0.45" stroke="url(#g-royal-gold)" stroke-width="1.5" />
-        <circle cx="21" cy="21" r="3.2" fill="url(#g-royal-gold)" />
-        <circle cx="21" cy="21" r="1.2" fill="#FAF4F6" />
+        <!-- Bold Geometric L-Bracket Corners -->
+        <path d="M 8 28 L 8 8 L 28 8" stroke="url(#g-royal-gold)" stroke-width="3.5" stroke-linecap="square" filter="url(#shadow-royal)" />
+        <path d="M 92 28 L 92 8 L 72 8" stroke="url(#g-royal-gold)" stroke-width="3.5" stroke-linecap="square" filter="url(#shadow-royal)" />
+        <path d="M 8 72 L 8 92 L 28 92" stroke="url(#g-royal-gold)" stroke-width="3.5" stroke-linecap="square" filter="url(#shadow-royal)" />
+        <path d="M 92 72 L 92 92 L 72 92" stroke="url(#g-royal-gold)" stroke-width="3.5" stroke-linecap="square" filter="url(#shadow-royal)" />
 
-        <!-- Top-Right Baroque Corner Flourish -->
-        <path d="M 93 32 C 93 16, 84 7, 68 7" stroke="url(#g-royal-gold)" stroke-width="3" stroke-linecap="round" />
-        <path d="M 87 13 C 80 22, 72 18, 70 13 C 70 26, 80 30, 87 30 Z" fill="url(#g-royal-gold)" fill-opacity="0.45" stroke="url(#g-royal-gold)" stroke-width="1.5" />
-        <circle cx="79" cy="21" r="3.2" fill="url(#g-royal-gold)" />
-        <circle cx="79" cy="21" r="1.2" fill="#FAF4F6" />
-
-        <!-- Bottom-Left Baroque Corner Flourish -->
-        <path d="M 7 68 C 7 84, 16 93, 32 93" stroke="url(#g-royal-gold)" stroke-width="3" stroke-linecap="round" />
-        <path d="M 13 87 C 20 78, 28 82, 30 87 C 30 74, 20 70, 13 70 Z" fill="url(#g-royal-gold)" fill-opacity="0.45" stroke="url(#g-royal-gold)" stroke-width="1.5" />
-        <circle cx="21" cy="79" r="3.2" fill="url(#g-royal-gold)" />
-        <circle cx="21" cy="79" r="1.2" fill="#FAF4F6" />
-
-        <!-- Bottom-Right Baroque Corner Flourish -->
-        <path d="M 93 68 C 93 84, 84 93, 68 93" stroke="url(#g-royal-gold)" stroke-width="3" stroke-linecap="round" />
-        <path d="M 87 87 C 80 78, 72 82, 70 87 C 70 74, 80 70, 87 70 Z" fill="url(#g-royal-gold)" fill-opacity="0.45" stroke="url(#g-royal-gold)" stroke-width="1.5" />
-        <circle cx="79" cy="79" r="3.2" fill="url(#g-royal-gold)" />
-        <circle cx="79" cy="79" r="1.2" fill="#FAF4F6" />
-
-        <!-- Top Crown Medallion -->
-        <g transform="translate(50, 7)" filter="url(#shadow-royal)">
-          <path d="M -10 0 L -6 -6 L 0 -2 L 6 -6 L 10 0 L 0 6 Z" fill="url(#g-royal-gold)" stroke="url(#g-royal-accent)" stroke-width="1" />
-          <circle cx="0" cy="0" r="1.8" fill="#FAF4F6" />
+        <!-- Confident Minimal Apex Crown Emblem -->
+        <g transform="translate(50, 12)" filter="url(#shadow-royal)">
+          <polygon points="0,-7 8,2 0,0 -8,2" fill="url(#g-royal-gold)" />
+          <circle cx="0" cy="-2" r="1.5" fill="#FAF4F6" />
         </g>
 
-        <!-- Bottom Royal Seal Medallion -->
-        <g transform="translate(50, 93)" filter="url(#shadow-royal)">
-          <path d="M -8 0 L 0 -5 L 8 0 L 0 5 Z" fill="url(#g-royal-gold)" />
-          <circle cx="0" cy="0" r="1.5" fill="#5A0A21" />
-        </g>
+        <!-- Base Minimal Notch -->
+        <polygon points="46,88 50,84 54,88" fill="url(#g-royal-gold)" />
       </svg>
     `
   },
   {
     id: 'botanical-floral',
-    name: 'Lush Botanical Garden',
+    name: 'Contemporary Botanical',
     category: 'Floral',
-    tag: 'Organic & Floral',
-    description: 'Handcrafted blooming rose bouquets, flowing ivy vines, and delicate garden leaves.',
+    tag: 'Modern Foliage',
+    description: 'A single confident botanical line sprig with clean curving stems and sleek modern leaf silhouettes.',
     previewSvg: `
       <svg viewBox="0 0 100 100" fill="none" class="w-full h-full">
         <defs>
           <linearGradient id="g-floral-gold" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#FBF2D5" />
-            <stop offset="40%" stop-color="#D4AF37" />
+            <stop offset="0%" stop-color="#FFF3D4" />
+            <stop offset="50%" stop-color="#D4AF37" />
             <stop offset="100%" stop-color="#9B7825" />
           </linearGradient>
-          <linearGradient id="g-floral-rose" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#FAD2D8" />
-            <stop offset="50%" stop-color="#D4849A" />
-            <stop offset="100%" stop-color="#8C1D40" />
-          </linearGradient>
           <linearGradient id="g-floral-leaf" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#74C69D" />
+            <stop offset="0%" stop-color="#84D8A7" />
             <stop offset="100%" stop-color="#1B4332" />
           </linearGradient>
           <filter id="shadow-floral" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#1B4332" flood-opacity="0.25" />
+            <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#1B4332" flood-opacity="0.2" />
           </filter>
         </defs>
 
-        <!-- Sweeping Botanical Vine Borders -->
-        <path d="M 10 90 C 10 32, 32 10, 90 10" stroke="url(#g-floral-gold)" stroke-width="3.5" stroke-linecap="round" filter="url(#shadow-floral)" />
-        <path d="M 17 90 C 17 40, 40 17, 90 17" stroke="url(#g-floral-gold)" stroke-width="2" stroke-linecap="round" />
+        <!-- Clean Asymmetric Frame with Botanical Breakaway -->
+        <path d="M 40 12 L 88 12 L 88 88 L 12 88 L 12 40" stroke="url(#g-floral-gold)" stroke-width="2.5" stroke-linecap="round" filter="url(#shadow-floral)" />
 
-        <!-- Top-Left Blooming Rose & Foliage Bouquet -->
-        <g transform="translate(28, 28)" filter="url(#shadow-floral)">
-          <!-- Outer Rose Petals -->
-          <circle cx="0" cy="0" r="6.5" fill="url(#g-floral-rose)" />
-          <circle cx="-4" cy="-3" r="4.5" fill="url(#g-floral-rose)" fill-opacity="0.9" />
-          <circle cx="4" cy="3" r="4.5" fill="url(#g-floral-rose)" fill-opacity="0.9" />
-          <circle cx="-3" cy="4" r="4.2" fill="url(#g-floral-rose)" fill-opacity="0.95" />
-          <circle cx="3" cy="-4" r="4.2" fill="url(#g-floral-rose)" fill-opacity="0.95" />
-          <!-- Gold Core Pistil -->
-          <circle cx="0" cy="0" r="3" fill="url(#g-floral-gold)" />
-          <circle cx="0" cy="0" r="1.2" fill="#FFFFFF" />
-        </g>
+        <!-- Confident, Single Botanical Sprig Branch -->
+        <path d="M 8 46 Q 16 16, 46 8" stroke="url(#g-floral-gold)" stroke-width="3" stroke-linecap="round" filter="url(#shadow-floral)" />
+        
+        <!-- Large Modern Leaf Silhouettes -->
+        <path d="M 18 32 C 14 20, 24 16, 30 24 C 28 32, 22 34, 18 32 Z" fill="url(#g-floral-leaf)" filter="url(#shadow-floral)" />
+        <path d="M 32 18 C 20 14, 16 24, 24 30 C 32 28, 34 22, 32 18 Z" fill="url(#g-floral-leaf)" filter="url(#shadow-floral)" />
+        <path d="M 38 12 C 40 4, 48 6, 46 14 C 44 18, 38 16, 38 12 Z" fill="url(#g-floral-gold)" />
 
-        <!-- Sprouting Leaf Sprigs Along Vines -->
-        <path d="M 14 58 C 5 47, 10 38, 20 48 C 20 48, 24 55, 14 58 Z" fill="url(#g-floral-leaf)" stroke="url(#g-floral-gold)" stroke-width="1.2" />
-        <path d="M 58 14 C 47 5, 38 10, 48 20 C 48 20, 55 24, 58 14 Z" fill="url(#g-floral-leaf)" stroke="url(#g-floral-gold)" stroke-width="1.2" />
-        <path d="M 22 75 C 14 66, 18 57, 27 67 Z" fill="url(#g-floral-gold)" />
-        <path d="M 75 22 C 66 14, 57 18, 67 27 Z" fill="url(#g-floral-gold)" />
-
-        <!-- Bottom-Right Complementary Floral Accent -->
-        <g transform="translate(80, 80)">
-          <circle cx="0" cy="0" r="4" fill="url(#g-floral-rose)" />
-          <circle cx="0" cy="0" r="1.8" fill="url(#g-floral-gold)" />
-          <path d="M -5 0 C -10 -4, -4 -10, 0 -5 Z" fill="url(#g-floral-leaf)" />
-        </g>
+        <!-- Minimalist Corner Accent at Bottom-Right -->
+        <circle cx="80" cy="80" r="3" fill="url(#g-floral-gold)" />
       </svg>
     `
   },
   {
     id: 'modern-minimalist',
-    name: 'Modern Minimalist Hairline',
+    name: 'Architectural Minimalist',
     category: 'Minimalist',
-    tag: 'Sleek & Contemporary',
-    description: 'Architectural double hairlines with precision floating corner notches and fine diamond points.',
+    tag: 'Sleek & Editorial',
+    description: 'Sculptural floating axis lines, clean corner notches, and minimal asymmetric point marks.',
     previewSvg: `
       <svg viewBox="0 0 100 100" fill="none" class="w-full h-full">
         <defs>
@@ -155,44 +109,32 @@ export const FRAME_STYLE_OPTIONS: FrameStyleOption[] = [
           </filter>
         </defs>
 
-        <!-- Bold Architectural Outer Floating Bars -->
-        <line x1="24" y1="10" x2="76" y2="10" stroke="url(#g-mini-gold)" stroke-width="3" stroke-linecap="round" filter="url(#shadow-mini)" />
-        <line x1="24" y1="90" x2="76" y2="90" stroke="url(#g-mini-gold)" stroke-width="3" stroke-linecap="round" filter="url(#shadow-mini)" />
-        <line x1="10" y1="24" x2="10" y2="76" stroke="url(#g-mini-gold)" stroke-width="3" stroke-linecap="round" filter="url(#shadow-mini)" />
-        <line x1="90" y1="24" x2="90" y2="76" stroke="url(#g-mini-gold)" stroke-width="3" stroke-linecap="round" filter="url(#shadow-mini)" />
+        <!-- Confident Asymmetric Diagonal Floating Bars -->
+        <path d="M 10 38 L 10 10 L 38 10" stroke="url(#g-mini-gold)" stroke-width="3.5" stroke-linecap="square" filter="url(#shadow-mini)" />
+        <path d="M 90 62 L 90 90 L 62 90" stroke="url(#g-mini-gold)" stroke-width="3.5" stroke-linecap="square" filter="url(#shadow-mini)" />
 
-        <!-- Inner Solid Precision Border -->
-        <rect x="17" y="17" width="66" height="66" rx="3" stroke="url(#g-mini-gold)" stroke-width="2" stroke-opacity="0.9" />
+        <!-- Minimal Hairline Axis Sub-lines -->
+        <line x1="16" y1="20" x2="84" y2="20" stroke="url(#g-mini-gold)" stroke-width="1" stroke-opacity="0.6" />
+        <line x1="20" y1="16" x2="20" y2="84" stroke="url(#g-mini-gold)" stroke-width="1" stroke-opacity="0.6" />
+        <line x1="16" y1="80" x2="84" y2="80" stroke="url(#g-mini-gold)" stroke-width="1" stroke-opacity="0.6" />
+        <line x1="80" y1="16" x2="80" y2="84" stroke="url(#g-mini-gold)" stroke-width="1" stroke-opacity="0.6" />
 
-        <!-- 4 Precision Corner Diamond Studs with Gold Gradient -->
-        <g filter="url(#shadow-mini)">
-          <polygon points="10,4 16,10 10,16 4,10" fill="url(#g-mini-gold)" stroke="#FFFFFF" stroke-width="1" />
-          <circle cx="10" cy="10" r="1.5" fill="#3B0B1F" />
-
-          <polygon points="90,4 96,10 90,16 84,10" fill="url(#g-mini-gold)" stroke="#FFFFFF" stroke-width="1" />
-          <circle cx="90" cy="10" r="1.5" fill="#3B0B1F" />
-
-          <polygon points="10,84 16,90 10,96 4,90" fill="url(#g-mini-gold)" stroke="#FFFFFF" stroke-width="1" />
-          <circle cx="10" cy="90" r="1.5" fill="#3B0B1F" />
-
-          <polygon points="90,84 96,90 90,96 84,90" fill="url(#g-mini-gold)" stroke="#FFFFFF" stroke-width="1" />
-          <circle cx="90" cy="90" r="1.5" fill="#3B0B1F" />
+        <!-- Single Bold Architectural Diamond Pin -->
+        <g transform="translate(10, 10)" filter="url(#shadow-mini)">
+          <rect x="-3" y="-3" width="6" height="6" fill="url(#g-mini-gold)" transform="rotate(45)" />
         </g>
-
-        <!-- Subtle Notch Accent Pins -->
-        <circle cx="50" cy="17" r="2.2" fill="url(#g-mini-gold)" />
-        <circle cx="50" cy="83" r="2.2" fill="url(#g-mini-gold)" />
-        <circle cx="17" cy="50" r="2.2" fill="url(#g-mini-gold)" />
-        <circle cx="83" cy="50" r="2.2" fill="url(#g-mini-gold)" />
+        <g transform="translate(90, 90)" filter="url(#shadow-mini)">
+          <rect x="-3" y="-3" width="6" height="6" fill="url(#g-mini-gold)" transform="rotate(45)" />
+        </g>
       </svg>
     `
   },
   {
     id: 'classic-arch',
-    name: 'Classic Roman Arch',
+    name: 'Modern Cathedral Arch',
     category: 'Classic',
-    tag: 'Neoclassical & Grand',
-    description: 'Timeless Roman cathedral curves, fluted borders, and symmetrical laurel crest arches.',
+    tag: 'Monumental & Refined',
+    description: 'Clean continuous cathedral arch silhouette with a confident keystone accent and minimalist base line.',
     previewSvg: `
       <svg viewBox="0 0 100 100" fill="none" class="w-full h-full">
         <defs>
@@ -201,53 +143,37 @@ export const FRAME_STYLE_OPTIONS: FrameStyleOption[] = [
             <stop offset="45%" stop-color="#D4AF37" />
             <stop offset="100%" stop-color="#996D14" />
           </linearGradient>
-          <linearGradient id="g-arch-cream" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#FAF0F3" />
-            <stop offset="100%" stop-color="#F0D9E0" />
-          </linearGradient>
           <filter id="shadow-arch" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#4A0A1A" flood-opacity="0.3" />
+            <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#4A0A1A" flood-opacity="0.25" />
           </filter>
         </defs>
 
-        <!-- Grand Roman Cathedral Outer Arch Structure -->
-        <path d="M 14 90 L 14 44 C 14 18, 86 18, 86 44 L 86 90" stroke="url(#g-arch-gold)" stroke-width="3.5" stroke-linecap="round" filter="url(#shadow-arch)" />
-        <!-- Inner Concentric Archway -->
-        <path d="M 21 90 L 21 46 C 21 26, 79 26, 79 46 L 79 90" stroke="url(#g-arch-gold)" stroke-width="2" stroke-linecap="round" />
+        <!-- Bold Continuous Monumental Arch -->
+        <path d="M 16 88 L 16 46 A 34 34 0 0 1 84 46 L 84 88" stroke="url(#g-arch-gold)" stroke-width="3.5" stroke-linecap="round" filter="url(#shadow-arch)" />
+        <!-- Inner Fine Arch -->
+        <path d="M 24 88 L 24 48 A 26 26 0 0 1 76 48 L 76 88" stroke="url(#g-arch-gold)" stroke-width="1.2" stroke-opacity="0.75" />
 
-        <!-- Archway Base Plinth Railing -->
-        <rect x="8" y="87" width="84" height="6" rx="2" fill="url(#g-arch-gold)" filter="url(#shadow-arch)" />
+        <!-- Confident Keystone Emblem at Peak -->
+        <polygon points="46,10 54,10 52,18 48,18" fill="url(#g-arch-gold)" filter="url(#shadow-arch)" />
 
-        <!-- Architectural Keystone Medallion at Apex -->
-        <g transform="translate(50, 14)" filter="url(#shadow-arch)">
-          <path d="M -8 -2 L -10 9 L 10 9 L 8 -2 Z" fill="url(#g-arch-gold)" stroke="#FFFFFF" stroke-width="0.8" />
-          <circle cx="0" cy="4" r="2.2" fill="#5A0A21" />
-        </g>
-
-        <!-- Classical Column Capitals -->
-        <rect x="9" y="42" width="10" height="5" rx="1.5" fill="url(#g-arch-gold)" />
-        <rect x="81" y="42" width="10" height="5" rx="1.5" fill="url(#g-arch-gold)" />
-
-        <!-- Symmetrical Classical Dots / Pearls -->
-        <circle cx="14" cy="65" r="2.5" fill="url(#g-arch-gold)" />
-        <circle cx="86" cy="65" r="2.5" fill="url(#g-arch-gold)" />
-        <circle cx="50" cy="34" r="2" fill="url(#g-arch-gold)" />
+        <!-- Minimal Base Baseline -->
+        <line x1="10" y1="88" x2="90" y2="88" stroke="url(#g-arch-gold)" stroke-width="2.5" stroke-linecap="round" />
       </svg>
     `
   },
   {
     id: 'romantic-lace',
-    name: 'Romantic Lace & Heart',
+    name: 'Modern Romantic Contour',
     category: 'Romantic',
-    tag: 'Vintage Romance',
-    description: 'Delicate scalloped lace embroidery, intertwined love ribbons, and soft heart flourishes.',
+    tag: 'Soft & Sculptural',
+    description: 'Smooth pill-curved contour framing with a clean sculptural heart crest and minimalist rose-gold accents.',
     previewSvg: `
       <svg viewBox="0 0 100 100" fill="none" class="w-full h-full">
         <defs>
           <linearGradient id="g-lace-rose" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stop-color="#FCE7EC" />
             <stop offset="40%" stop-color="#E295A8" />
-            <stop offset="100%" stop-color="#B85B75" />
+            <stop offset="100%" stop-color="#A24861" />
           </linearGradient>
           <linearGradient id="g-lace-gold" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stop-color="#FFF3D4" />
@@ -259,45 +185,26 @@ export const FRAME_STYLE_OPTIONS: FrameStyleOption[] = [
           </filter>
         </defs>
 
-        <!-- Scalloped Outer Border Frame -->
-        <rect x="9" y="9" width="82" height="82" rx="14" stroke="url(#g-lace-rose)" stroke-width="3" filter="url(#shadow-lace)" />
-        <rect x="15" y="15" width="70" height="70" rx="9" stroke="url(#g-lace-gold)" stroke-width="2" />
+        <!-- Bold Soft Rounded Contour Frame -->
+        <rect x="12" y="12" width="76" height="76" rx="20" stroke="url(#g-lace-rose)" stroke-width="3" filter="url(#shadow-lace)" />
+        <rect x="18" y="18" width="64" height="64" rx="14" stroke="url(#g-lace-gold)" stroke-width="1.2" stroke-opacity="0.8" />
 
-        <!-- 4 Corner Sweetheart Filigree Medallions -->
-        <g transform="translate(24, 24)" filter="url(#shadow-lace)">
-          <path d="M 0,3 C -5,-5 -14,-3 -14,4 C -14,13 0,19 0,21 C 0,19 14,13 14,4 C 14,-3 5,-5 0,3 Z" fill="url(#g-lace-rose)" stroke="url(#g-lace-gold)" stroke-width="1.2" />
-          <circle cx="0" cy="8" r="2.2" fill="#FAF4F6" />
+        <!-- Confident Sculptural Heart Silhouette Crest -->
+        <g transform="translate(50, 12)" filter="url(#shadow-lace)">
+          <path d="M 0,0 C -5,-6 -12,-4 -12,3 C -12,10 0,16 0,18 C 0,16 12,10 12,3 C 12,-4 5,-6 0,0 Z" fill="url(#g-lace-rose)" stroke="url(#g-lace-gold)" stroke-width="1" />
         </g>
 
-        <g transform="translate(76, 24)" filter="url(#shadow-lace)">
-          <path d="M 0,3 C -5,-5 -14,-3 -14,4 C -14,13 0,19 0,21 C 0,19 14,13 14,4 C 14,-3 5,-5 0,3 Z" fill="url(#g-lace-rose)" stroke="url(#g-lace-gold)" stroke-width="1.2" />
-          <circle cx="0" cy="8" r="2.2" fill="#FAF4F6" />
-        </g>
-
-        <g transform="translate(24, 76)" filter="url(#shadow-lace)">
-          <path d="M 0,-3 C -5,5 -14,3 -14,-4 C -14,-13 0,-19 0,-21 C 0,-19 14,-13 14,-4 C 14,3 5,5 0,-3 Z" fill="url(#g-lace-rose)" stroke="url(#g-lace-gold)" stroke-width="1.2" />
-          <circle cx="0" cy="-8" r="2.2" fill="#FAF4F6" />
-        </g>
-
-        <g transform="translate(76, 76)" filter="url(#shadow-lace)">
-          <path d="M 0,-3 C -5,5 -14,3 -14,-4 C -14,-13 0,-19 0,-21 C 0,-19 14,-13 14,-4 C 14,3 5,5 0,-3 Z" fill="url(#g-lace-rose)" stroke="url(#g-lace-gold)" stroke-width="1.2" />
-          <circle cx="0" cy="-8" r="2.2" fill="#FAF4F6" />
-        </g>
-
-        <!-- Lustrous Pearl Beads Along Perimeter -->
-        <circle cx="50" cy="9" r="3.2" fill="url(#g-lace-gold)" filter="url(#shadow-lace)" />
-        <circle cx="50" cy="91" r="3.2" fill="url(#g-lace-gold)" filter="url(#shadow-lace)" />
-        <circle cx="9" cy="50" r="3.2" fill="url(#g-lace-gold)" filter="url(#shadow-lace)" />
-        <circle cx="91" cy="50" r="3.2" fill="url(#g-lace-gold)" filter="url(#shadow-lace)" />
+        <!-- Minimalist Anchor Accent at Bottom -->
+        <circle cx="50" cy="88" r="2.5" fill="url(#g-lace-gold)" />
       </svg>
     `
   },
   {
     id: 'contemporary-geo',
-    name: 'Art Deco Geometric Luxury',
+    name: 'Art Deco Geometric Precision',
     category: 'Contemporary',
-    tag: 'Gatsby Glamour',
-    description: '1920s stepped chevron corners, multi-faceted gold ray fans, and bold luxury angles.',
+    tag: 'Bold & Geometric',
+    description: 'Bold stepped corner chevrons, faceted angle brackets, and an asymmetric diamond centerpiece.',
     previewSvg: `
       <svg viewBox="0 0 100 100" fill="none" class="w-full h-full">
         <defs>
@@ -307,45 +214,33 @@ export const FRAME_STYLE_OPTIONS: FrameStyleOption[] = [
             <stop offset="70%" stop-color="#C8A84B" />
             <stop offset="100%" stop-color="#876214" />
           </linearGradient>
-          <linearGradient id="g-deco-amber" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#E2C873" />
-            <stop offset="100%" stop-color="#5A0A21" />
-          </linearGradient>
           <filter id="shadow-deco" x="-20%" y="-20%" width="140%" height="140%">
             <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#876214" flood-opacity="0.3" />
           </filter>
         </defs>
 
-        <!-- Bold Stepped Art Deco Outer Brackets -->
-        <path d="M 6 42 L 6 18 L 18 18 L 18 6 L 42 6" stroke="url(#g-deco-gold)" stroke-width="3.5" stroke-linecap="square" filter="url(#shadow-deco)" />
-        <path d="M 58 6 L 82 6 L 82 18 L 94 18 L 94 42" stroke="url(#g-deco-gold)" stroke-width="3.5" stroke-linecap="square" filter="url(#shadow-deco)" />
-        <path d="M 6 58 L 6 82 L 18 82 L 18 94 L 42 94" stroke="url(#g-deco-gold)" stroke-width="3.5" stroke-linecap="square" filter="url(#shadow-deco)" />
-        <path d="M 58 94 L 82 94 L 82 82 L 94 82 L 94 58" stroke="url(#g-deco-gold)" stroke-width="3.5" stroke-linecap="square" filter="url(#shadow-deco)" />
+        <!-- Bold Stepped Art Deco Corner Brackets -->
+        <path d="M 10 36 L 10 18 L 18 18 L 18 10 L 36 10" stroke="url(#g-deco-gold)" stroke-width="3.5" stroke-linecap="square" filter="url(#shadow-deco)" />
+        <path d="M 90 64 L 90 82 L 82 82 L 82 90 L 64 90" stroke="url(#g-deco-gold)" stroke-width="3.5" stroke-linecap="square" filter="url(#shadow-deco)" />
 
-        <!-- Inner Solid Square & Nested Diamond Frame -->
-        <rect x="22" y="22" width="56" height="56" stroke="url(#g-deco-gold)" stroke-width="2" />
-        <polygon points="50,26 74,50 50,74 26,50" stroke="url(#g-deco-gold)" stroke-width="2" fill="url(#g-deco-amber)" fill-opacity="0.15" />
+        <!-- Crisp Perimeter Connecting Lines -->
+        <path d="M 44 10 L 82 10 L 82 18 L 90 18 L 90 44" stroke="url(#g-deco-gold)" stroke-width="1.8" stroke-opacity="0.7" />
+        <path d="M 10 56 L 10 82 L 18 82 L 18 90 L 56 90" stroke="url(#g-deco-gold)" stroke-width="1.8" stroke-opacity="0.7" />
 
-        <!-- Corner Geometric Sunburst Rays -->
-        <line x1="6" y1="6" x2="22" y2="22" stroke="url(#g-deco-gold)" stroke-width="2.5" />
-        <line x1="94" y1="6" x2="78" y2="22" stroke="url(#g-deco-gold)" stroke-width="2.5" />
-        <line x1="6" y1="94" x2="22" y2="78" stroke="url(#g-deco-gold)" stroke-width="2.5" />
-        <line x1="94" y1="94" x2="78" y2="78" stroke="url(#g-deco-gold)" stroke-width="2.5" />
-
-        <!-- Center Diamond Medallion -->
+        <!-- Central Bold Faceted Diamond Crest -->
         <g transform="translate(50, 50)" filter="url(#shadow-deco)">
-          <polygon points="0,-7 7,0 0,7 -7,0" fill="url(#g-deco-gold)" />
-          <circle cx="0" cy="0" r="2" fill="#5A0A21" />
+          <polygon points="0,-12 12,0 0,12 -12,0" stroke="url(#g-deco-gold)" stroke-width="2.5" fill="none" />
+          <polygon points="0,-6 6,0 0,6 -6,0" fill="url(#g-deco-gold)" />
         </g>
       </svg>
     `
   },
   {
     id: 'habesha-heritage',
-    name: 'Habesha Tibeb Heritage',
+    name: 'Modern Habesha Geometry',
     category: 'Heritage',
-    tag: 'Authentic Ethiopian',
-    description: 'Traditional Ethiopian cross (Meskel) geometry, hand-braided gold borders, and Tibeb motif.',
+    tag: 'Authentic & Modern',
+    description: 'Contemporary Ethiopian Meskel cross silhouette with bold geometric Tibeb chevron framing.',
     previewSvg: `
       <svg viewBox="0 0 100 100" fill="none" class="w-full h-full">
         <defs>
@@ -356,57 +251,40 @@ export const FRAME_STYLE_OPTIONS: FrameStyleOption[] = [
             <stop offset="100%" stop-color="#F2D785" />
           </linearGradient>
           <linearGradient id="g-tibeb-burgundy" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#7C112E" />
+            <stop offset="0%" stop-color="#8C1434" />
             <stop offset="100%" stop-color="#3D0513" />
           </linearGradient>
           <filter id="shadow-tibeb" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#3D0513" flood-opacity="0.35" />
+            <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#3D0513" flood-opacity="0.3" />
           </filter>
         </defs>
 
-        <!-- Braided Double Structural Borders -->
-        <rect x="8" y="8" width="84" height="84" rx="4" stroke="url(#g-tibeb-gold)" stroke-width="3" filter="url(#shadow-tibeb)" />
-        <rect x="14" y="14" width="72" height="72" rx="2" stroke="url(#g-tibeb-gold)" stroke-width="2" />
+        <!-- Clean Bold Woven Border -->
+        <rect x="12" y="12" width="76" height="76" rx="2" stroke="url(#g-tibeb-gold)" stroke-width="2.5" filter="url(#shadow-tibeb)" />
 
-        <!-- 4 Ethiopian Meskel Cross Corner Medallions -->
-        <g transform="translate(24, 24)" filter="url(#shadow-tibeb)">
-          <path d="M -4 -13 L 4 -13 L 4 -4 L 13 -4 L 13 4 L 4 4 L 4 13 L -4 13 L -4 4 L -13 4 L -13 -4 L -4 -4 Z" fill="url(#g-tibeb-gold)" stroke="url(#g-tibeb-burgundy)" stroke-width="1.2" />
-          <circle cx="0" cy="0" r="2" fill="#FAF4F6" />
-        </g>
-
-        <g transform="translate(76, 24)" filter="url(#shadow-tibeb)">
-          <path d="M -4 -13 L 4 -13 L 4 -4 L 13 -4 L 13 4 L 4 4 L 4 13 L -4 13 L -4 4 L -13 4 L -13 -4 L -4 -4 Z" fill="url(#g-tibeb-gold)" stroke="url(#g-tibeb-burgundy)" stroke-width="1.2" />
-          <circle cx="0" cy="0" r="2" fill="#FAF4F6" />
-        </g>
-
-        <g transform="translate(24, 76)" filter="url(#shadow-tibeb)">
-          <path d="M -4 -13 L 4 -13 L 4 -4 L 13 -4 L 13 4 L 4 4 L 4 13 L -4 13 L -4 4 L -13 4 L -13 -4 L -4 -4 Z" fill="url(#g-tibeb-gold)" stroke="url(#g-tibeb-burgundy)" stroke-width="1.2" />
-          <circle cx="0" cy="0" r="2" fill="#FAF4F6" />
-        </g>
-
-        <g transform="translate(76, 76)" filter="url(#shadow-tibeb)">
-          <path d="M -4 -13 L 4 -13 L 4 -4 L 13 -4 L 13 4 L 4 4 L 4 13 L -4 13 L -4 4 L -13 4 L -13 -4 L -4 -4 Z" fill="url(#g-tibeb-gold)" stroke="url(#g-tibeb-burgundy)" stroke-width="1.2" />
-          <circle cx="0" cy="0" r="2" fill="#FAF4F6" />
-        </g>
-
-        <!-- Center Diamond Tibeb Motifs -->
-        <g transform="translate(50, 8)" filter="url(#shadow-tibeb)">
-          <polygon points="0,-6 7,0 0,6 -7,0" fill="url(#g-tibeb-burgundy)" stroke="url(#g-tibeb-gold)" stroke-width="1.5" />
+        <!-- Bold Ethiopian Meskel Cross Emblem (Apex) -->
+        <g transform="translate(50, 12)" filter="url(#shadow-tibeb)">
+          <path d="M -3 -10 L 3 -10 L 3 -3 L 10 -3 L 10 3 L 3 3 L 3 10 L -3 10 L -3 3 L -10 3 L -10 -3 L -3 -3 Z" fill="url(#g-tibeb-gold)" stroke="url(#g-tibeb-burgundy)" stroke-width="1" />
           <circle cx="0" cy="0" r="1.5" fill="#FAF4F6" />
         </g>
-        <g transform="translate(50, 92)" filter="url(#shadow-tibeb)">
+
+        <!-- Modern Tibeb Geometric Chevrons at Bottom -->
+        <g transform="translate(50, 88)" filter="url(#shadow-tibeb)">
           <polygon points="0,-6 7,0 0,6 -7,0" fill="url(#g-tibeb-burgundy)" stroke="url(#g-tibeb-gold)" stroke-width="1.5" />
-          <circle cx="0" cy="0" r="1.5" fill="#FAF4F6" />
         </g>
+
+        <!-- Clean Corner Notches -->
+        <polygon points="12,24 16,20 20,24 16,28" fill="url(#g-tibeb-gold)" />
+        <polygon points="88,24 84,20 80,24 84,28" fill="url(#g-tibeb-gold)" />
       </svg>
     `
   },
   {
     id: 'celestial-sparkle',
-    name: 'Celestial Starlight Glow',
+    name: 'Modern Celestial Polaris',
     category: 'Celestial',
-    tag: 'Starlit & Cosmic',
-    description: 'Brilliant 4-point astral starbursts, sparkling diamond constellation dust, and crescent sweeps.',
+    tag: 'Cosmic & Minimal',
+    description: 'A single radiant 4-point Polaris starburst with sleek cosmic orbital rings and clean starlight coordinates.',
     previewSvg: `
       <svg viewBox="0 0 100 100" fill="none" class="w-full h-full">
         <defs>
@@ -417,42 +295,27 @@ export const FRAME_STYLE_OPTIONS: FrameStyleOption[] = [
             <stop offset="100%" stop-color="#8C6819" />
           </linearGradient>
           <filter id="shadow-celestial" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#D4AF37" flood-opacity="0.4" />
+            <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#D4AF37" flood-opacity="0.35" />
           </filter>
         </defs>
 
-        <!-- Starlight Dual Border Frame with Notched Corners -->
-        <rect x="10" y="10" width="80" height="80" rx="6" stroke="url(#g-celestial-gold)" stroke-width="3" filter="url(#shadow-celestial)" />
-        <rect x="16" y="16" width="68" height="68" rx="4" stroke="url(#g-celestial-gold)" stroke-width="1.8" stroke-opacity="0.85" />
-
-        <!-- Grand Astral Starburst at Top-Left (24, 24) -->
-        <g transform="translate(24, 24)" filter="url(#shadow-celestial)">
-          <path d="M 0 -17 Q 0 0 -17 0 Q 0 0 0 17 Q 0 0 17 0 Q 0 0 0 -17 Z" fill="url(#g-celestial-gold)" />
+        <!-- Sleek Minimal Frame with Dynamic Arc Break -->
+        <rect x="12" y="12" width="76" height="76" rx="4" stroke="url(#g-celestial-gold)" stroke-width="2" stroke-opacity="0.6" filter="url(#shadow-celestial)" />
+        
+        <!-- Large Confident 4-Point Polaris Starburst at Top-Left (28, 28) -->
+        <g transform="translate(28, 28)" filter="url(#shadow-celestial)">
+          <path d="M 0 -18 Q 0 0 -18 0 Q 0 0 0 18 Q 0 0 18 0 Q 0 0 0 -18 Z" fill="url(#g-celestial-gold)" />
           <circle cx="0" cy="0" r="3" fill="#FFFFFF" />
         </g>
 
-        <!-- Grand Astral Starburst at Bottom-Right (76, 76) -->
-        <g transform="translate(76, 76)" filter="url(#shadow-celestial)">
-          <path d="M 0 -17 Q 0 0 -17 0 Q 0 0 0 17 Q 0 0 17 0 Q 0 0 0 -17 Z" fill="url(#g-celestial-gold)" />
-          <circle cx="0" cy="0" r="3" fill="#FFFFFF" />
-        </g>
+        <!-- Orbital Ring Trajectory -->
+        <ellipse cx="28" cy="28" rx="22" ry="7" transform="rotate(-30 28 28)" stroke="url(#g-celestial-gold)" stroke-width="1.2" stroke-opacity="0.85" />
 
-        <!-- Satellite Starbursts at Top-Right & Bottom-Left -->
-        <g transform="translate(76, 24) scale(0.65)" filter="url(#shadow-celestial)">
-          <path d="M 0 -14 Q 0 0 -14 0 Q 0 0 0 14 Q 0 0 14 0 Q 0 0 0 -14 Z" fill="url(#g-celestial-gold)" />
-          <circle cx="0" cy="0" r="2.5" fill="#FFFFFF" />
+        <!-- Minimal Complementary Satellite Star at Bottom-Right -->
+        <g transform="translate(74, 74) scale(0.6)" filter="url(#shadow-celestial)">
+          <path d="M 0 -12 Q 0 0 -12 0 Q 0 0 0 12 Q 0 0 12 0 Q 0 0 0 -12 Z" fill="url(#g-celestial-gold)" />
+          <circle cx="0" cy="0" r="2" fill="#FFFFFF" />
         </g>
-
-        <g transform="translate(24, 76) scale(0.65)" filter="url(#shadow-celestial)">
-          <path d="M 0 -14 Q 0 0 -14 0 Q 0 0 0 14 Q 0 0 14 0 Q 0 0 0 -14 Z" fill="url(#g-celestial-gold)" />
-          <circle cx="0" cy="0" r="2.5" fill="#FFFFFF" />
-        </g>
-
-        <!-- Stardust Diamond Sparkles -->
-        <polygon points="50,6 53,10 50,14 47,10" fill="url(#g-celestial-gold)" filter="url(#shadow-celestial)" />
-        <polygon points="50,86 53,90 50,94 47,90" fill="url(#g-celestial-gold)" filter="url(#shadow-celestial)" />
-        <polygon points="6,50 10,53 14,50 10,47" fill="url(#g-celestial-gold)" filter="url(#shadow-celestial)" />
-        <polygon points="86,50 90,53 94,50 90,47" fill="url(#g-celestial-gold)" filter="url(#shadow-celestial)" />
       </svg>
     `
   }
