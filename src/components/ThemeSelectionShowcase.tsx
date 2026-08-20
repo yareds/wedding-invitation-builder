@@ -1,6 +1,6 @@
-import React from 'react';
-import { motion } from 'motion/react';
-import { Check, Lock, Sparkles, ArrowRight, Eye } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Check, Lock, Sparkles, ArrowRight, Eye, Palette } from 'lucide-react';
 import { ThemeId } from '../types';
 import { THEME_PRESETS, ThemePreset } from '../utils/themePresets';
 
@@ -11,298 +11,400 @@ interface ThemeSelectionShowcaseProps {
   showFullPageDecorations?: boolean;
 }
 
+export type ThemeCategory =
+  | 'All'
+  | 'Jewel Tones'
+  | 'Pastels & Florals'
+  | 'Earth Tones'
+  | 'Neutrals & Classic'
+  | 'Bold & Modern';
+
+interface ShowcaseThemeItem {
+  id: ThemeId;
+  category: ThemeCategory;
+  artStyle: 'classical-arch' | 'botanical-swag' | 'floral-wreath' | 'celestial-night' | 'geometric-deco' | 'cathedral-crest' | 'sapphire-jewel' | 'amethyst-filigree' | 'ruby-garland' | 'lavender-mist' | 'sage-meadow' | 'peach-blossom' | 'terracotta-arch' | 'olive-foliage' | 'desert-dune' | 'slate-platinum' | 'espresso-pearl' | 'marigold-sun' | 'peacock-plume' | 'electric-neon';
+}
+
+const SHOWCASE_THEMES: ShowcaseThemeItem[] = [
+  { id: 'bordeaux', category: 'Jewel Tones', artStyle: 'classical-arch' },
+  { id: 'sapphire', category: 'Jewel Tones', artStyle: 'sapphire-jewel' },
+  { id: 'amethyst', category: 'Jewel Tones', artStyle: 'amethyst-filigree' },
+  { id: 'rubyvelvet', category: 'Jewel Tones', artStyle: 'ruby-garland' },
+  { id: 'peacockteal', category: 'Jewel Tones', artStyle: 'peacock-plume' },
+
+  { id: 'emerald', category: 'Pastels & Florals', artStyle: 'botanical-swag' },
+  { id: 'rosegarden', category: 'Pastels & Florals', artStyle: 'floral-wreath' },
+  { id: 'lavender', category: 'Pastels & Florals', artStyle: 'lavender-mist' },
+  { id: 'sagemint', category: 'Pastels & Florals', artStyle: 'sage-meadow' },
+  { id: 'peachblossom', category: 'Pastels & Florals', artStyle: 'peach-blossom' },
+
+  { id: 'terracotta', category: 'Earth Tones', artStyle: 'terracotta-arch' },
+  { id: 'olivebronze', category: 'Earth Tones', artStyle: 'olive-foliage' },
+  { id: 'desertsand', category: 'Earth Tones', artStyle: 'desert-dune' },
+  { id: 'espressopearl', category: 'Earth Tones', artStyle: 'espresso-pearl' },
+
+  { id: 'goldluxury', category: 'Neutrals & Classic', artStyle: 'geometric-deco' },
+  { id: 'classicivory', category: 'Neutrals & Classic', artStyle: 'cathedral-crest' },
+  { id: 'slateplatinum', category: 'Neutrals & Classic', artStyle: 'slate-platinum' },
+
+  { id: 'midnight', category: 'Bold & Modern', artStyle: 'celestial-night' },
+  { id: 'marigold', category: 'Bold & Modern', artStyle: 'marigold-sun' },
+  { id: 'electricviolet', category: 'Bold & Modern', artStyle: 'electric-neon' }
+];
+
 export function ThemeSelectionShowcase({
   selectedThemeId = 'bordeaux',
   onSelectTheme,
   onPreviewTheme,
   showFullPageDecorations = true
 }: ThemeSelectionShowcaseProps) {
+  const [activeCategory, setActiveCategory] = useState<ThemeCategory>('All');
 
-  const themes = [
-    {
-      id: 'bordeaux' as ThemeId,
-      name: 'Royal Burgundy',
-      description: 'Regal, romantic and timeless. Perfect for a luxurious celebration.',
-      headerBg: '#5A0A21',
-      swatches: ['#5A0A21', '#C86D84', '#FAD2D8', '#C8A84B'],
-      renderArtwork: () => (
-        <div className="relative w-full h-44 sm:h-52 overflow-hidden bg-[#4A0A1A] flex items-center justify-center">
-          {/* Deep Burgundy Velvet Textured Background */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#3D0513] via-[#5A0A21] to-[#30030E] opacity-95" />
-          <div className="absolute inset-0 bg-[radial-gradient(#C8A84B_1px,transparent_1px)] [background-size:16px_16px] opacity-15" />
-          
-          {/* Outer Gold Border Accents */}
-          <div className="absolute inset-2 border border-[#C8A84B]/40 rounded-sm pointer-events-none" />
-          <div className="absolute inset-3 border border-[#C8A84B]/20 border-dashed rounded-sm pointer-events-none" />
-
-          {/* SVG Classical Roman Archway with Soft Pink Roses & Gold Foliage */}
-          <svg viewBox="0 0 400 240" className="w-full h-full object-contain relative z-10 filter drop-shadow-md" fill="none">
-            {/* Background Arch Shadow */}
-            <path d="M140 240 L140 100 C140 60, 260 60, 260 100 L260 240 Z" fill="#2E040D" opacity="0.6" />
-            
-            {/* Outer Classical Arch Structure */}
-            <path d="M130 240 L130 95 C130 45, 270 45, 270 95 L270 240" stroke="#E2C873" strokeWidth="4" strokeLinecap="round" />
-            <path d="M140 240 L140 98 C140 55, 260 55, 260 98 L260 240" stroke="#C8A84B" strokeWidth="2" strokeDasharray="3 3" />
-            <path d="M152 240 L152 105 C152 70, 248 70, 248 105 L248 240" stroke="#FAF0F3" strokeWidth="1.5" opacity="0.8" />
-
-            {/* Arch Pillars / Fluted Columns */}
-            <rect x="120" y="210" width="24" height="30" rx="2" fill="#FAF0F3" stroke="#C8A84B" strokeWidth="1" />
-            <rect x="256" y="210" width="24" height="30" rx="2" fill="#FAF0F3" stroke="#C8A84B" strokeWidth="1" />
-            <rect x="122" y="85" width="20" height="15" rx="2" fill="#FAF0F3" stroke="#C8A84B" strokeWidth="1" />
-            <rect x="258" y="85" width="20" height="15" rx="2" fill="#FAF0F3" stroke="#C8A84B" strokeWidth="1" />
-
-            {/* Classical Keystone Medallion */}
-            <g transform="translate(200, 52)">
-              <polygon points="0,-10 10,0 0,10 -10,0" fill="#C8A84B" stroke="#FAF0F3" strokeWidth="1" />
-              <circle cx="0" cy="0" r="3" fill="#5A0A21" />
-            </g>
-
-            {/* Blooming Watercolor Roses on Bottom Right of Arch */}
-            <g transform="translate(250, 160)">
-              {/* Green/Gold Foliage */}
-              <path d="M-20 -10 C-35 -25 -10 -40 0 -20 C-10 -10 -20 -10 -20 -10 Z" fill="#3D5A40" opacity="0.8" />
-              <path d="M15 10 C30 -5 45 10 20 20 Z" fill="#C8A84B" opacity="0.75" />
-              <path d="M-10 20 C-25 35 -40 10 -20 0 Z" fill="#2D4A30" opacity="0.8" />
-              
-              {/* Grand Pink Rose Cluster */}
-              <circle cx="0" cy="0" r="16" fill="#E59EAF" />
-              <circle cx="-3" cy="-3" r="12" fill="#C86D84" />
-              <circle cx="2" cy="2" r="8" fill="#FAD2D8" />
-              <circle cx="0" cy="0" r="4" fill="#5A0A21" />
-
-              {/* Smaller Satellite Roses */}
-              <circle cx="22" cy="12" r="10" fill="#FAD2D8" />
-              <circle cx="20" cy="10" r="7" fill="#C86D84" />
-              
-              <circle cx="-16" cy="18" r="11" fill="#E59EAF" />
-              <circle cx="-18" cy="16" r="7" fill="#5A0A21" />
-            </g>
-
-            {/* Golden Ornamental Corner Lines */}
-            <path d="M20 20 L60 20 M20 20 L20 60" stroke="#C8A84B" strokeWidth="1.5" />
-            <circle cx="20" cy="20" r="3" fill="#C8A84B" />
-            <path d="M380 20 L340 20 M380 20 L380 60" stroke="#C8A84B" strokeWidth="1.5" />
-            <circle cx="380" cy="20" r="3" fill="#C8A84B" />
-          </svg>
-        </div>
-      )
-    },
-    {
-      id: 'emerald' as ThemeId,
-      name: 'Emerald Garden',
-      description: 'Fresh, elegant and inspired by nature. Ideal for garden and outdoor weddings.',
-      headerBg: '#1B4332',
-      swatches: ['#1B4332', '#74967E', '#F5EBE1', '#C8A84B'],
-      renderArtwork: () => (
-        <div className="relative w-full h-44 sm:h-52 overflow-hidden bg-[#F7F4EC] flex items-center justify-center">
-          {/* Parchment Watercolor Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[#FDFBF7] via-[#F4EDE2] to-[#EAE2D3] opacity-90" />
-          
-          {/* Subtle botanical leafy background watermark */}
-          <svg viewBox="0 0 400 240" className="w-full h-full object-cover absolute inset-0 z-0 opacity-15" fill="none">
-            <path d="M0 0 C 100 80, 200 40, 400 0" stroke="#1B4332" strokeWidth="20" />
-          </svg>
-
-          {/* Watercolor Foliage & Floral Garland Sprigs */}
-          <svg viewBox="0 0 400 240" className="w-full h-full object-contain relative z-10" fill="none">
-            {/* Top-Left Eucalyptus Swag */}
-            <g transform="translate(10, 10)">
-              <path d="M 0 0 C 40 30, 80 20, 140 50" stroke="#74967E" strokeWidth="2.5" strokeLinecap="round" />
-              {/* Eucalyptus Leaves */}
-              <ellipse cx="30" cy="12" rx="14" ry="9" fill="#2D6A4F" opacity="0.85" transform="rotate(-20 30 12)" />
-              <ellipse cx="65" cy="24" rx="15" ry="10" fill="#74967E" opacity="0.9" transform="rotate(15 65 24)" />
-              <ellipse cx="100" cy="32" rx="13" ry="8" fill="#40916C" opacity="0.85" transform="rotate(-10 100 32)" />
-              <ellipse cx="125" cy="48" rx="12" ry="7" fill="#2D6A4F" opacity="0.8" transform="rotate(30 125 48)" />
-
-              {/* Pastel Pink Blossom Flowers */}
-              <g transform="translate(75, 45)">
-                <circle cx="0" cy="0" r="10" fill="#F8BFCB" />
-                <circle cx="0" cy="0" r="6" fill="#E59EAF" />
-                <circle cx="0" cy="0" r="2.5" fill="#C8A84B" />
-              </g>
-              <g transform="translate(35, 30)">
-                <circle cx="0" cy="0" r="7" fill="#F8BFCB" />
-                <circle cx="0" cy="0" r="2" fill="#C8A84B" />
-              </g>
-            </g>
-
-            {/* Bottom-Right Watercolor Foliage Branch with Blooming Peonies */}
-            <g transform="translate(390, 230) rotate(180)">
-              <path d="M 0 0 C 50 40, 100 30, 160 60" stroke="#74967E" strokeWidth="3" strokeLinecap="round" />
-              <ellipse cx="35" cy="15" rx="16" ry="10" fill="#1B4332" opacity="0.9" transform="rotate(-25 35 15)" />
-              <ellipse cx="80" cy="30" rx="18" ry="11" fill="#74967E" opacity="0.95" transform="rotate(20 80 30)" />
-              <ellipse cx="120" cy="42" rx="15" ry="9" fill="#40916C" opacity="0.85" transform="rotate(-15 120 42)" />
-              
-              {/* Lush Watercolor Peony Rose */}
-              <g transform="translate(90, 60)">
-                <circle cx="0" cy="0" r="16" fill="#FAD2D8" />
-                <circle cx="-3" cy="-2" r="11" fill="#E59EAF" />
-                <circle cx="2" cy="2" r="6" fill="#C86D84" />
-                <circle cx="0" cy="0" r="2.5" fill="#C8A84B" />
-              </g>
-              <g transform="translate(135, 75)">
-                <circle cx="0" cy="0" r="10" fill="#FAD2D8" />
-                <circle cx="0" cy="0" r="3" fill="#C8A84B" />
-              </g>
-            </g>
-
-            {/* Gold Botanical Branch Accents */}
-            <path d="M 220 70 Q 260 90, 300 65" stroke="#C8A84B" strokeWidth="1.2" strokeDasharray="3 2" />
-            <circle cx="260" cy="80" r="2" fill="#C8A84B" />
-          </svg>
-        </div>
-      )
-    },
-    {
-      id: 'rosegarden' as ThemeId,
-      name: 'Rose Gold',
-      description: 'Soft, modern and full of warmth. A beautiful blend of romance and elegance.',
-      headerBg: '#C97D8B',
-      swatches: ['#D67584', '#F8BFCB', '#F9D9D2', '#C8A84B'],
-      renderArtwork: () => (
-        <div className="relative w-full h-44 sm:h-52 overflow-hidden bg-[#FAF0F2] flex items-center justify-center">
-          {/* Dreamy Blush Pink Watercolor Wash */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[#FFF5F7] via-[#FCE4EC] to-[#F8D2DB] opacity-95" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-[#FAD2D8] rounded-full blur-2xl opacity-60" />
-
-          {/* SVG Circular Golden Wreath with Pastel Blooming Roses */}
-          <svg viewBox="0 0 400 240" className="w-full h-full object-contain relative z-10" fill="none">
-            {/* Delicate Circular / Oval Golden Wreath Ring */}
-            <circle cx="200" cy="115" r="62" stroke="#C8A84B" strokeWidth="1.8" strokeDasharray="4 2" />
-            <circle cx="200" cy="115" r="68" stroke="#D67584" strokeWidth="0.8" opacity="0.6" />
-
-            {/* Left Floral Arch on Wreath */}
-            <g transform="translate(135, 120)">
-              {/* Foliage */}
-              <ellipse cx="-15" cy="-20" rx="14" ry="7" fill="#C8A84B" opacity="0.7" transform="rotate(-40 -15 -20)" />
-              <ellipse cx="-25" cy="10" rx="12" ry="6" fill="#A84A63" opacity="0.6" transform="rotate(30 -25 10)" />
-
-              {/* Large Soft Rose */}
-              <circle cx="-5" cy="0" r="18" fill="#F8BFCB" />
-              <circle cx="-7" cy="-2" r="13" fill="#D67584" />
-              <circle cx="-4" cy="2" r="8" fill="#F9D9D2" />
-              <circle cx="-5" cy="0" r="3" fill="#7A223B" />
-
-              {/* Satellite Rose */}
-              <circle cx="-10" cy="-22" r="11" fill="#F9D9D2" />
-              <circle cx="-10" cy="-22" r="7" fill="#D67584" />
-              <circle cx="-10" cy="-22" r="2.5" fill="#C8A84B" />
-            </g>
-
-            {/* Right Floral Sprigs on Wreath */}
-            <g transform="translate(265, 120)">
-              <ellipse cx="15" cy="-15" rx="13" ry="6" fill="#C8A84B" opacity="0.7" transform="rotate(40 15 -15)" />
-              <ellipse cx="20" cy="15" rx="11" ry="5" fill="#A84A63" opacity="0.6" transform="rotate(-30 20 15)" />
-
-              {/* Rose Gold Blossom */}
-              <circle cx="5" cy="0" r="16" fill="#F8BFCB" />
-              <circle cx="7" cy="-2" r="11" fill="#D67584" />
-              <circle cx="4" cy="2" r="6" fill="#F9D9D2" />
-              <circle cx="5" cy="0" r="2.5" fill="#7A223B" />
-
-              <circle cx="10" cy="20" r="10" fill="#F9D9D2" />
-              <circle cx="10" cy="20" r="6" fill="#D67584" />
-            </g>
-
-            {/* Top Wreath Gold Sparkles & Foliage */}
-            <g transform="translate(200, 48)">
-              <path d="M-15 0 C-5 -10 5 -10 15 0" stroke="#C8A84B" strokeWidth="1.5" />
-              <circle cx="0" cy="-6" r="3" fill="#C8A84B" />
-            </g>
-          </svg>
-        </div>
-      )
-    },
-    {
-      id: 'midnight' as ThemeId,
-      name: 'Midnight Blue',
-      description: 'Dramatic, sophisticated and enchanting. Made for a night to remember.',
-      headerBg: '#0F1E36',
-      swatches: ['#0F1E36', '#4A607A', '#D8D3D6', '#C8A84B'],
-      renderArtwork: () => (
-        <div className="relative w-full h-44 sm:h-52 overflow-hidden bg-[#0A1124] flex items-center justify-center">
-          {/* Deep Twilight Celestial Starry Sky */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[#060B18] via-[#0F1E36] to-[#081226]" />
-          
-          {/* Sparkling Stardust Nebula Glow */}
-          <div className="absolute top-1/3 right-1/4 w-36 h-36 bg-[#2B4C7E]/40 rounded-full blur-2xl" />
-          <div className="absolute bottom-1/4 left-1/3 w-32 h-32 bg-[#C8A84B]/20 rounded-full blur-2xl" />
-
-          {/* SVG Luminous Golden Crescent Moon & Constellations */}
-          <svg viewBox="0 0 400 240" className="w-full h-full object-contain relative z-10" fill="none">
-            {/* Constellation Dots & Fine Lines */}
-            <circle cx="60" cy="50" r="1.5" fill="#FFFFFF" opacity="0.9" />
-            <circle cx="95" cy="70" r="1" fill="#FFFFFF" opacity="0.7" />
-            <circle cx="140" cy="45" r="2" fill="#E2C873" opacity="0.9" />
-            <circle cx="180" cy="80" r="1" fill="#FFFFFF" opacity="0.8" />
-            <circle cx="80" cy="180" r="1.5" fill="#FFFFFF" opacity="0.8" />
-            <circle cx="120" cy="200" r="1" fill="#FFFFFF" opacity="0.6" />
-            <circle cx="220" cy="190" r="1.5" fill="#E2C873" opacity="0.9" />
-            <circle cx="340" cy="180" r="1.5" fill="#FFFFFF" opacity="0.8" />
-            
-            <line x1="60" y1="50" x2="95" y2="70" stroke="#FFFFFF" strokeWidth="0.5" strokeDasharray="2 2" opacity="0.4" />
-            <line x1="95" y1="70" x2="140" y2="45" stroke="#FFFFFF" strokeWidth="0.5" strokeDasharray="2 2" opacity="0.4" />
-
-            {/* Glowing Golden Crescent Moon on Top Left */}
-            <g transform="translate(135, 80) scale(1.15)">
-              {/* Moon Glow Aura */}
-              <circle cx="0" cy="0" r="26" fill="#C8A84B" opacity="0.15" />
-              
-              {/* Crescent Moon Path */}
-              <path
-                d="M 12 -24 A 26 26 0 1 0 12 24 A 20 20 0 1 1 12 -24 Z"
-                fill="url(#moonGoldGrad)"
-                stroke="#FFE7A3"
-                strokeWidth="0.8"
-              />
-
-              {/* Sparkling 4-Point Starlight near Moon */}
-              <g transform="translate(24, 18) scale(0.8)">
-                <path d="M 0 -12 Q 0 0 -12 0 Q 0 0 0 12 Q 0 0 12 0 Q 0 0 0 -12 Z" fill="#FFE7A3" />
-                <circle cx="0" cy="0" r="2" fill="#FFFFFF" />
-              </g>
-            </g>
-
-            {/* Cascading Golden Starlight Botanical Branch on Right */}
-            <g transform="translate(320, 110)">
-              <path d="M -10 -70 Q 20 0, -30 80" stroke="#C8A84B" strokeWidth="1.8" strokeLinecap="round" />
-              
-              {/* Golden Leaf Constellations */}
-              <ellipse cx="5" cy="-45" rx="10" ry="4" fill="#C8A84B" transform="rotate(25 5 -45)" />
-              <ellipse cx="-8" cy="-25" rx="8" ry="4" fill="#FFE7A3" transform="rotate(-35 -8 -25)" />
-              <ellipse cx="12" cy="5" rx="10" ry="5" fill="#C8A84B" transform="rotate(15 12 5)" />
-              <ellipse cx="-15" cy="30" rx="9" ry="4" fill="#FFE7A3" transform="rotate(-25 -15 30)" />
-              <ellipse cx="-10" cy="60" rx="8" ry="4" fill="#C8A84B" transform="rotate(30 -10 60)" />
-
-              {/* Radiant Starbursts */}
-              <g transform="translate(-10, -5)">
-                <path d="M 0 -10 Q 0 0 -10 0 Q 0 0 0 10 Q 0 0 10 0 Q 0 0 0 -10 Z" fill="#FFE7A3" />
-                <circle cx="0" cy="0" r="1.5" fill="#FFF" />
-              </g>
-              <g transform="translate(15, 45) scale(0.6)">
-                <path d="M 0 -10 Q 0 0 -10 0 Q 0 0 0 10 Q 0 0 10 0 Q 0 0 0 -10 Z" fill="#FFE7A3" />
-              </g>
-            </g>
-
-            <defs>
-              <linearGradient id="moonGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#FFF2B8" />
-                <stop offset="50%" stopColor="#E2C873" />
-                <stop offset="100%" stopColor="#C8A84B" />
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
-      )
-    }
+  const categories: { label: ThemeCategory; count: number }[] = [
+    { label: 'All', count: SHOWCASE_THEMES.length },
+    { label: 'Jewel Tones', count: SHOWCASE_THEMES.filter((t) => t.category === 'Jewel Tones').length },
+    { label: 'Pastels & Florals', count: SHOWCASE_THEMES.filter((t) => t.category === 'Pastels & Florals').length },
+    { label: 'Earth Tones', count: SHOWCASE_THEMES.filter((t) => t.category === 'Earth Tones').length },
+    { label: 'Neutrals & Classic', count: SHOWCASE_THEMES.filter((t) => t.category === 'Neutrals & Classic').length },
+    { label: 'Bold & Modern', count: SHOWCASE_THEMES.filter((t) => t.category === 'Bold & Modern').length }
   ];
 
+  const filteredThemes = activeCategory === 'All'
+    ? SHOWCASE_THEMES
+    : SHOWCASE_THEMES.filter((t) => t.category === activeCategory);
+
+  const renderThemeArtwork = (item: ShowcaseThemeItem, preset: ThemePreset) => {
+    const c = preset.colors;
+
+    return (
+      <div
+        className="relative w-full h-44 sm:h-52 overflow-hidden flex items-center justify-center transition-colors duration-300"
+        style={{ backgroundColor: c.bg }}
+      >
+        {/* Background Ambient Tint / Glow */}
+        <div
+          className="absolute inset-0 opacity-20"
+          style={{
+            backgroundImage: `radial-gradient(circle at 50% 40%, ${c.goldLt} 0%, transparent 70%)`
+          }}
+        />
+
+        {/* Outer Frame Lines */}
+        <div
+          className="absolute inset-2.5 rounded-xl border opacity-50 pointer-events-none"
+          style={{ borderColor: c.gold }}
+        />
+        <div
+          className="absolute inset-4 rounded-lg border border-dashed opacity-30 pointer-events-none"
+          style={{ borderColor: c.gold }}
+        />
+
+        {/* Vector SVG Composition */}
+        <svg viewBox="0 0 400 240" className="w-full h-full object-contain relative z-10 filter drop-shadow-sm" fill="none">
+          {/* Top-Center Decorative Emblem or Arch */}
+          {item.artStyle === 'classical-arch' && (
+            <g>
+              <path d="M130 240 L130 95 C130 45, 270 45, 270 95 L270 240" stroke={c.goldLt} strokeWidth="3.5" strokeLinecap="round" />
+              <path d="M145 240 L145 105 C145 65, 255 65, 255 105 L255 240" stroke={c.gold} strokeWidth="1.8" strokeDasharray="3 3" />
+              {/* Rosette Bouquet */}
+              <g transform="translate(250, 160)">
+                <circle cx="0" cy="0" r="16" fill={c.blushLt} />
+                <circle cx="-3" cy="-3" r="12" fill={c.blush} />
+                <circle cx="2" cy="2" r="8" fill={c.blushPale} />
+                <circle cx="0" cy="0" r="4" fill={c.primary} />
+                <ellipse cx="-18" cy="12" rx="10" ry="5" fill={c.mid} transform="rotate(-30 -18 12)" />
+              </g>
+              <polygon points="200,45 208,55 200,65 192,55" fill={c.gold} />
+            </g>
+          )}
+
+          {item.artStyle === 'sapphire-jewel' && (
+            <g>
+              <polygon points="200,30 250,90 200,190 150,90" stroke={c.gold} strokeWidth="2.5" fill={c.primary} fillOpacity="0.15" />
+              <polygon points="200,48 236,92 200,170 164,92" stroke={c.goldLt} strokeWidth="1.2" />
+              <circle cx="200" cy="92" r="8" fill={c.light} />
+              <circle cx="200" cy="92" r="4" fill="#FFFFFF" />
+              {/* Surrounding starbursts */}
+              <path d="M100 80 Q100 100 80 100 Q100 100 100 120 Q100 100 120 100 Q100 100 100 80 Z" fill={c.gold} />
+              <path d="M300 80 Q300 100 280 100 Q300 100 300 120 Q300 100 320 100 Q300 100 300 80 Z" fill={c.gold} />
+              <line x1="60" y1="120" x2="340" y2="120" stroke={c.gold} strokeWidth="1" strokeDasharray="4 4" opacity="0.6" />
+            </g>
+          )}
+
+          {item.artStyle === 'amethyst-filigree' && (
+            <g>
+              <circle cx="200" cy="115" r="55" stroke={c.gold} strokeWidth="2" />
+              <circle cx="200" cy="115" r="45" stroke={c.blushLt} strokeWidth="1.5" strokeDasharray="3 3" />
+              <g transform="translate(200, 115)">
+                <polygon points="0,-25 18,0 0,25 -18,0" fill={c.primary} stroke={c.goldLt} strokeWidth="1.5" />
+                <circle cx="0" cy="0" r="6" fill={c.gold} />
+              </g>
+              {/* Symmetrical Ornamental Wings */}
+              <path d="M140 115 C110 80, 80 110, 60 115 C80 120, 110 150, 140 115 Z" fill={c.blush} fillOpacity="0.4" stroke={c.gold} strokeWidth="1" />
+              <path d="M260 115 C290 80, 320 110, 340 115 C320 120, 290 150, 260 115 Z" fill={c.blush} fillOpacity="0.4" stroke={c.gold} strokeWidth="1" />
+            </g>
+          )}
+
+          {item.artStyle === 'ruby-garland' && (
+            <g>
+              <path d="M70 60 Q200 120 330 60" stroke={c.gold} strokeWidth="2.5" strokeLinecap="round" />
+              <path d="M90 75 Q200 135 310 75" stroke={c.primary} strokeWidth="1.5" strokeDasharray="4 2" />
+              {/* Ruby Clusters */}
+              <g transform="translate(200, 120)">
+                <circle cx="0" cy="0" r="14" fill={c.primary} />
+                <circle cx="-2" cy="-2" r="9" fill={c.light} />
+                <circle cx="1" cy="1" r="5" fill={c.blushLt} />
+                <polygon points="0,-20 6,-8 0,-4 -6,-8" fill={c.gold} />
+              </g>
+              <g transform="translate(130, 95)">
+                <circle cx="0" cy="0" r="10" fill={c.primary} />
+                <circle cx="0" cy="0" r="6" fill={c.light} />
+                <circle cx="0" cy="0" r="2" fill={c.goldLt} />
+              </g>
+              <g transform="translate(270, 95)">
+                <circle cx="0" cy="0" r="10" fill={c.primary} />
+                <circle cx="0" cy="0" r="6" fill={c.light} />
+                <circle cx="0" cy="0" r="2" fill={c.goldLt} />
+              </g>
+            </g>
+          )}
+
+          {item.artStyle === 'peacock-plume' && (
+            <g>
+              <path d="M120 180 C150 100, 180 50, 200 30 C220 50, 250 100, 280 180" stroke={c.light} strokeWidth="2.5" strokeLinecap="round" />
+              <g transform="translate(200, 80)">
+                <ellipse cx="0" cy="0" rx="28" ry="40" fill={c.mid} />
+                <ellipse cx="0" cy="6" rx="20" ry="28" fill={c.light} />
+                <ellipse cx="0" cy="12" rx="12" ry="16" fill={c.primary} />
+                <circle cx="0" cy="14" r="6" fill={c.gold} />
+              </g>
+              <circle cx="140" cy="140" r="4" fill={c.gold} />
+              <circle cx="260" cy="140" r="4" fill={c.gold} />
+            </g>
+          )}
+
+          {item.artStyle === 'botanical-swag' && (
+            <g>
+              {/* Eucalyptus Foliage Arch */}
+              <path d="M50 30 C120 80, 280 80, 350 30" stroke={c.mid} strokeWidth="2.5" strokeLinecap="round" />
+              <ellipse cx="120" cy="50" rx="14" ry="8" fill={c.light} transform="rotate(-15 120 50)" />
+              <ellipse cx="170" cy="65" rx="15" ry="9" fill={c.blush} transform="rotate(10 170 65)" />
+              <ellipse cx="230" cy="65" rx="15" ry="9" fill={c.light} transform="rotate(-10 230 65)" />
+              <ellipse cx="280" cy="50" rx="14" ry="8" fill={c.blush} transform="rotate(15 280 50)" />
+              <g transform="translate(200, 70)">
+                <circle cx="0" cy="0" r="12" fill={c.blushPale} stroke={c.gold} strokeWidth="1.5" />
+                <circle cx="0" cy="0" r="4" fill={c.gold} />
+              </g>
+            </g>
+          )}
+
+          {item.artStyle === 'floral-wreath' && (
+            <g>
+              <circle cx="200" cy="115" r="55" stroke={c.gold} strokeWidth="2" strokeDasharray="4 2" />
+              <g transform="translate(145, 115)">
+                <circle cx="0" cy="0" r="15" fill={c.blushLt} />
+                <circle cx="-2" cy="-2" r="10" fill={c.blush} />
+                <circle cx="0" cy="0" r="3" fill={c.primary} />
+                <ellipse cx="-12" cy="-14" rx="8" ry="4" fill={c.gold} transform="rotate(-30 -12 -14)" />
+              </g>
+              <g transform="translate(255, 115)">
+                <circle cx="0" cy="0" r="15" fill={c.blushLt} />
+                <circle cx="2" cy="-2" r="10" fill={c.blush} />
+                <circle cx="0" cy="0" r="3" fill={c.primary} />
+                <ellipse cx="12" cy="-14" rx="8" ry="4" fill={c.gold} transform="rotate(30 12 -14)" />
+              </g>
+            </g>
+          )}
+
+          {item.artStyle === 'lavender-mist' && (
+            <g>
+              <path d="M160 210 Q190 120 180 50" stroke={c.mid} strokeWidth="2" strokeLinecap="round" />
+              <path d="M200 210 Q200 110 200 40" stroke={c.mid} strokeWidth="2.5" strokeLinecap="round" />
+              <path d="M240 210 Q210 120 220 50" stroke={c.mid} strokeWidth="2" strokeLinecap="round" />
+              {/* Lavender Buds */}
+              {[45, 60, 75, 90, 105, 120].map((y, i) => (
+                <g key={i}>
+                  <ellipse cx="192" cy={y} rx="6" ry="3.5" fill={c.light} transform={`rotate(-25 192 ${y})`} />
+                  <ellipse cx="208" cy={y} rx="6" ry="3.5" fill={c.blush} transform={`rotate(25 208 ${y})`} />
+                  <circle cx="200" cy={y - 4} r="2.5" fill={c.gold} />
+                </g>
+              ))}
+            </g>
+          )}
+
+          {item.artStyle === 'sage-meadow' && (
+            <g>
+              <circle cx="200" cy="115" r="60" stroke={c.gold} strokeWidth="1.5" />
+              <path d="M120 160 C150 70, 250 70, 280 160" stroke={c.mid} strokeWidth="2.5" strokeLinecap="round" />
+              <ellipse cx="160" cy="95" rx="14" ry="7" fill={c.blush} transform="rotate(-30 160 95)" />
+              <ellipse cx="200" cy="80" rx="15" ry="8" fill={c.light} transform="rotate(0 200 80)" />
+              <ellipse cx="240" cy="95" rx="14" ry="7" fill={c.blush} transform="rotate(30 240 95)" />
+              <circle cx="200" cy="115" r="5" fill={c.gold} />
+            </g>
+          )}
+
+          {item.artStyle === 'peach-blossom' && (
+            <g>
+              <path d="M80 140 Q200 40 320 140" stroke={c.gold} strokeWidth="2.5" strokeLinecap="round" />
+              <g transform="translate(200, 85)">
+                <circle cx="0" cy="0" r="18" fill={c.blushLt} />
+                <circle cx="0" cy="0" r="12" fill={c.blush} />
+                <circle cx="0" cy="0" r="6" fill={c.light} />
+                <circle cx="0" cy="0" r="2.5" fill={c.gold} />
+              </g>
+              <g transform="translate(130, 110)">
+                <circle cx="0" cy="0" r="12" fill={c.blushLt} />
+                <circle cx="0" cy="0" r="7" fill={c.blush} />
+                <circle cx="0" cy="0" r="2" fill={c.gold} />
+              </g>
+              <g transform="translate(270, 110)">
+                <circle cx="0" cy="0" r="12" fill={c.blushLt} />
+                <circle cx="0" cy="0" r="7" fill={c.blush} />
+                <circle cx="0" cy="0" r="2" fill={c.gold} />
+              </g>
+            </g>
+          )}
+
+          {item.artStyle === 'terracotta-arch' && (
+            <g>
+              {/* Stepped Mediterranean Archway */}
+              <path d="M120 240 L120 100 C120 50, 280 50, 280 100 L280 240" stroke={c.primary} strokeWidth="4" strokeLinecap="round" />
+              <path d="M140 240 L140 110 C140 70, 260 70, 260 110 L260 240" stroke={c.mid} strokeWidth="2" />
+              <path d="M160 240 L160 120 C160 90, 240 90, 240 120 L240 240" stroke={c.gold} strokeWidth="2" strokeDasharray="4 3" />
+              <g transform="translate(200, 60)">
+                <circle cx="0" cy="0" r="10" fill={c.goldLt} stroke={c.gold} strokeWidth="2" />
+                <circle cx="0" cy="0" r="3.5" fill={c.primary} />
+              </g>
+            </g>
+          )}
+
+          {item.artStyle === 'olive-foliage' && (
+            <g>
+              <circle cx="200" cy="115" r="58" stroke={c.gold} strokeWidth="2" />
+              <path d="M110 130 C150 50, 250 50, 290 130" stroke={c.mid} strokeWidth="3" strokeLinecap="round" />
+              {/* Olive leaves and berries */}
+              <ellipse cx="150" cy="85" rx="16" ry="6" fill={c.primary} transform="rotate(-35 150 85)" />
+              <ellipse cx="200" cy="65" rx="16" ry="7" fill={c.light} />
+              <ellipse cx="250" cy="85" rx="16" ry="6" fill={c.primary} transform="rotate(35 250 85)" />
+              <circle cx="165" cy="98" r="4.5" fill={c.gold} />
+              <circle cx="235" cy="98" r="4.5" fill={c.gold} />
+            </g>
+          )}
+
+          {item.artStyle === 'desert-dune' && (
+            <g>
+              <path d="M40 180 Q130 110 220 160 T400 130" stroke={c.mid} strokeWidth="3" fill={c.blushPale} fillOpacity="0.5" />
+              <path d="M0 210 Q140 130 260 180 T400 170" stroke={c.primary} strokeWidth="2.5" fill={c.blushLt} fillOpacity="0.3" />
+              <circle cx="200" cy="70" r="24" fill={c.goldLt} stroke={c.gold} strokeWidth="2" />
+              <polygon points="200,20 206,34 200,30 194,34" fill={c.gold} />
+            </g>
+          )}
+
+          {item.artStyle === 'espresso-pearl' && (
+            <g>
+              <circle cx="200" cy="115" r="54" stroke={c.gold} strokeWidth="2.5" />
+              <circle cx="200" cy="115" r="42" stroke={c.blush} strokeWidth="1.2" strokeDasharray="3 3" />
+              <g transform="translate(200, 115)">
+                <rect x="-18" y="-18" width="36" height="36" rx="4" fill={c.primary} stroke={c.goldLt} strokeWidth="1.5" transform="rotate(45)" />
+                <circle cx="0" cy="0" r="5" fill={c.goldPale} />
+              </g>
+              <path d="M60 115 L120 115 M280 115 L340 115" stroke={c.gold} strokeWidth="1.5" strokeLinecap="round" />
+            </g>
+          )}
+
+          {item.artStyle === 'geometric-deco' && (
+            <g>
+              <rect x="130" y="45" width="140" height="140" stroke={c.gold} strokeWidth="2.5" fill="none" transform="rotate(45 200 115)" />
+              <rect x="145" y="60" width="110" height="110" stroke={c.goldLt} strokeWidth="1.5" fill="none" transform="rotate(45 200 115)" />
+              <g transform="translate(200, 115)">
+                <polygon points="0,-18 18,0 0,18 -18,0" fill={c.primary} stroke={c.gold} strokeWidth="1" />
+                <circle cx="0" cy="0" r="4" fill={c.goldLt} />
+              </g>
+            </g>
+          )}
+
+          {item.artStyle === 'cathedral-crest' && (
+            <g>
+              <path d="M120 230 L120 110 C120 40, 200 10, 200 10 C200 10, 280 40, 280 110 L280 230" stroke={c.primary} strokeWidth="3" strokeLinecap="round" />
+              <path d="M136 230 L136 115 C136 55, 200 30, 200 30 C200 30, 264 55, 264 115 L264 230" stroke={c.gold} strokeWidth="1.5" strokeDasharray="4 2" />
+              <polygon points="200,10 206,24 200,20 194,24" fill={c.gold} />
+              <circle cx="200" cy="110" r="16" stroke={c.gold} strokeWidth="1.8" fill={c.goldPale} />
+              <polygon points="200,100 207,110 200,120 193,110" fill={c.gold} />
+            </g>
+          )}
+
+          {item.artStyle === 'slate-platinum' && (
+            <g>
+              <line x1="60" y1="115" x2="340" y2="115" stroke={c.primary} strokeWidth="2.5" />
+              <line x1="60" y1="105" x2="340" y2="105" stroke={c.gold} strokeWidth="1" strokeOpacity="0.7" />
+              <line x1="60" y1="125" x2="340" y2="125" stroke={c.gold} strokeWidth="1" strokeOpacity="0.7" />
+              <g transform="translate(200, 115)">
+                <polygon points="0,-30 30,0 0,30 -30,0" fill={c.primary} stroke={c.gold} strokeWidth="2" />
+                <polygon points="0,-16 16,0 0,16 -16,0" fill={c.mid} stroke={c.goldLt} strokeWidth="1" />
+                <circle cx="0" cy="0" r="3.5" fill="#FFFFFF" />
+              </g>
+            </g>
+          )}
+
+          {item.artStyle === 'celestial-night' && (
+            <g>
+              {/* Golden Crescent Moon and Polaris */}
+              <g transform="translate(150, 95)">
+                <path d="M 10 -20 A 22 22 0 1 0 10 20 A 16 16 0 1 1 10 -20 Z" fill={c.gold} stroke={c.goldLt} strokeWidth="1" />
+              </g>
+              <g transform="translate(250, 95)">
+                <path d="M 0 -22 Q 0 0 -22 0 Q 0 0 0 22 Q 0 0 22 0 Q 0 0 0 -22 Z" fill={c.goldLt} />
+                <circle cx="0" cy="0" r="4" fill="#FFFFFF" />
+              </g>
+              {/* Constellation Dots */}
+              <circle cx="80" cy="60" r="2" fill={c.goldLt} />
+              <circle cx="120" cy="160" r="2" fill={c.goldLt} />
+              <circle cx="320" cy="70" r="2" fill={c.goldLt} />
+              <circle cx="290" cy="160" r="2" fill={c.goldLt} />
+            </g>
+          )}
+
+          {item.artStyle === 'marigold-sun' && (
+            <g>
+              <circle cx="200" cy="115" r="35" fill={c.light} stroke={c.gold} strokeWidth="2" />
+              {/* Radial Sunburst Rays */}
+              {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((deg, i) => (
+                <line
+                  key={i}
+                  x1="200"
+                  y1="115"
+                  x2={200 + Math.cos((deg * Math.PI) / 180) * 65}
+                  y2={115 + Math.sin((deg * Math.PI) / 180) * 65}
+                  stroke={c.gold}
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              ))}
+              <circle cx="200" cy="115" r="18" fill={c.gold} />
+              <circle cx="200" cy="115" r="7" fill={c.primary} />
+            </g>
+          )}
+
+          {item.artStyle === 'electric-neon' && (
+            <g>
+              <polygon points="200,30 260,115 200,200 140,115" stroke={c.blush} strokeWidth="3" fill={c.primary} fillOpacity="0.2" />
+              <circle cx="200" cy="115" r="40" stroke={c.gold} strokeWidth="2.5" strokeDasharray="6 3" />
+              <g transform="translate(200, 115)">
+                <circle cx="0" cy="0" r="12" fill={c.blushLt} />
+                <circle cx="0" cy="0" r="6" fill={c.gold} />
+              </g>
+            </g>
+          )}
+        </svg>
+      </div>
+    );
+  };
+
   return (
-    <div className="relative w-full max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-16 text-[#3B0B1F]">
-      {/* Surrounding Soft Watercolor Flower Corner Borders (matching user reference screenshot) */}
+    <div className="relative w-full max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-16 text-[#3B0B1F]">
+      {/* Surrounding Soft Watercolor Flower Corner Borders */}
       {showFullPageDecorations && (
         <div className="pointer-events-none absolute inset-0 overflow-hidden select-none">
-          {/* Top-Left Floral Bouquet */}
           <div className="absolute -top-6 -left-6 w-36 h-36 sm:w-56 sm:h-56 opacity-85">
             <svg viewBox="0 0 200 200" className="w-full h-full" fill="none">
               <ellipse cx="40" cy="60" rx="25" ry="12" fill="#74967E" transform="rotate(-30 40 60)" opacity="0.8" />
@@ -311,39 +413,12 @@ export function ThemeSelectionShowcase({
               <circle cx="65" cy="65" r="22" fill="#E59EAF" />
               <circle cx="72" cy="72" r="14" fill="#C86D84" />
               <circle cx="70" cy="70" r="5" fill="#5A0A21" />
-              <circle cx="120" cy="40" r="18" fill="#FAD2D8" />
-              <circle cx="118" cy="38" r="12" fill="#E59EAF" />
             </svg>
           </div>
-
-          {/* Top-Right Floral Bouquet */}
           <div className="absolute -top-6 -right-6 w-36 h-36 sm:w-56 sm:h-56 opacity-85 scale-x-[-1]">
             <svg viewBox="0 0 200 200" className="w-full h-full" fill="none">
               <ellipse cx="40" cy="60" rx="25" ry="12" fill="#74967E" transform="rotate(-30 40 60)" opacity="0.8" />
               <ellipse cx="60" cy="30" rx="22" ry="10" fill="#C8A84B" transform="rotate(40 60 30)" opacity="0.75" />
-              <circle cx="70" cy="70" r="30" fill="#FAD2D8" />
-              <circle cx="65" cy="65" r="22" fill="#E59EAF" />
-              <circle cx="72" cy="72" r="14" fill="#C86D84" />
-              <circle cx="70" cy="70" r="5" fill="#5A0A21" />
-              <circle cx="120" cy="40" r="18" fill="#FAD2D8" />
-              <circle cx="118" cy="38" r="12" fill="#E59EAF" />
-            </svg>
-          </div>
-
-          {/* Bottom-Left Floral Bouquet */}
-          <div className="absolute -bottom-6 -left-6 w-36 h-36 sm:w-56 sm:h-56 opacity-85 scale-y-[-1]">
-            <svg viewBox="0 0 200 200" className="w-full h-full" fill="none">
-              <ellipse cx="40" cy="60" rx="25" ry="12" fill="#74967E" transform="rotate(-30 40 60)" opacity="0.8" />
-              <circle cx="70" cy="70" r="30" fill="#FAD2D8" />
-              <circle cx="65" cy="65" r="22" fill="#E59EAF" />
-              <circle cx="72" cy="72" r="14" fill="#C86D84" />
-            </svg>
-          </div>
-
-          {/* Bottom-Right Floral Bouquet */}
-          <div className="absolute -bottom-6 -right-6 w-36 h-36 sm:w-56 sm:h-56 opacity-85 scale-[-1]">
-            <svg viewBox="0 0 200 200" className="w-full h-full" fill="none">
-              <ellipse cx="40" cy="60" rx="25" ry="12" fill="#74967E" transform="rotate(-30 40 60)" opacity="0.8" />
               <circle cx="70" cy="70" r="30" fill="#FAD2D8" />
               <circle cx="65" cy="65" r="22" fill="#E59EAF" />
               <circle cx="72" cy="72" r="14" fill="#C86D84" />
@@ -353,8 +428,7 @@ export function ThemeSelectionShowcase({
       )}
 
       {/* Center Section Header */}
-      <div className="text-center space-y-3 max-w-2xl mx-auto mb-10 sm:mb-14 relative z-10">
-        {/* Top Decorative Gold Leaf & Heart Divider */}
+      <div className="text-center space-y-3 max-w-2xl mx-auto mb-8 sm:mb-12 relative z-10">
         <div className="flex items-center justify-center gap-2 select-none">
           <svg width="40" height="16" viewBox="0 0 40 16" fill="none" className="text-[#C8A84B]">
             <path d="M40 8 C30 4, 15 12, 0 8" stroke="currentColor" strokeWidth="1.2" />
@@ -373,134 +447,164 @@ export function ThemeSelectionShowcase({
           </svg>
         </div>
 
-        {/* Title in Romantic Wine/Burgundy Serif */}
         <h2 className="font-serif-heading text-3xl sm:text-5xl font-normal text-[#5A0A21] tracking-tight">
           Choose Your Theme
         </h2>
 
-        {/* Subtitle */}
         <p className="font-body text-xs sm:text-base text-[#3B0B1F]/75 max-w-lg mx-auto leading-relaxed">
-          Select a theme to create a wedding invitation as unique as your love story.
+          Select from 20 bespoke palettes crafted across jewel tones, pastels, rich earth tones, neutrals, and modern luxury aesthetics.
         </p>
 
-        {/* Bottom Decorative Gold Leaf & Heart Divider */}
-        <div className="flex items-center justify-center gap-2 select-none pt-1">
-          <svg width="40" height="16" viewBox="0 0 40 16" fill="none" className="text-[#C8A84B]">
-            <path d="M40 8 C30 4, 15 12, 0 8" stroke="currentColor" strokeWidth="1.2" />
-            <ellipse cx="12" cy="4" rx="4" ry="2" fill="currentColor" opacity="0.8" />
-          </svg>
-          <div className="text-[#C8A84B] flex items-center justify-center">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="#C8A84B">
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-            </svg>
-          </div>
-          <svg width="40" height="16" viewBox="0 0 40 16" fill="none" className="text-[#C8A84B] scale-x-[-1]">
-            <path d="M40 8 C30 4, 15 12, 0 8" stroke="currentColor" strokeWidth="1.2" />
-            <ellipse cx="12" cy="4" rx="4" ry="2" fill="currentColor" opacity="0.8" />
-          </svg>
+        {/* Category Filter Pills */}
+        <div className="pt-4 flex items-center justify-center gap-2 flex-wrap">
+          {categories.map((cat) => {
+            const isActive = activeCategory === cat.label;
+            return (
+              <button
+                key={cat.label}
+                type="button"
+                onClick={() => setActiveCategory(cat.label)}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all cursor-pointer flex items-center gap-1.5 ${
+                  isActive
+                    ? 'bg-[#3B0B1F] text-[#FAF0F3] shadow-md border border-[#C8A84B]'
+                    : 'bg-white/80 border border-[#C8A84B]/40 text-[#3B0B1F]/80 hover:bg-white hover:border-[#C8A84B]'
+                }`}
+              >
+                <span>{cat.label}</span>
+                <span
+                  className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                    isActive ? 'bg-[#C8A84B] text-[#3B0B1F]' : 'bg-gray-100 text-gray-600'
+                  }`}
+                >
+                  {cat.count}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* 2x2 Grid of Luxury Theme Cards (Exact match to Reference Screenshot) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 relative z-10">
-        {themes.map((theme) => {
-          const isSelected = selectedThemeId === theme.id;
-          const presetData = THEME_PRESETS[theme.id];
+      {/* Grid of Luxury Theme Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 relative z-10">
+        <AnimatePresence mode="popLayout">
+          {filteredThemes.map((item) => {
+            const preset = THEME_PRESETS[item.id] || THEME_PRESETS.bordeaux;
+            const isSelected = selectedThemeId === item.id;
+            const swatches = [
+              preset.colors.primary,
+              preset.colors.blush,
+              preset.colors.blushLt,
+              preset.colors.gold
+            ];
 
-          return (
-            <motion.div
-              key={theme.id}
-              whileHover={{ y: -4 }}
-              transition={{ duration: 0.2 }}
-              onClick={() => onSelectTheme(theme.id)}
-              className={`bg-white rounded-3xl overflow-hidden border-2 transition-all duration-300 shadow-lg cursor-pointer flex flex-col relative group ${
-                isSelected
-                  ? 'border-[#C8A84B] ring-4 ring-[#C8A84B]/20 shadow-2xl scale-[1.01]'
-                  : 'border-[#EAE0D5] hover:border-[#C8A84B]/70 hover:shadow-xl'
-              }`}
-            >
-              {/* Golden Checkmark Badge on Top Right when Selected */}
-              {isSelected && (
-                <div className="absolute top-3 right-3 z-30 w-8 h-8 rounded-full bg-[#C8A84B] border-2 border-white flex items-center justify-center shadow-lg animate-in zoom-in duration-200">
-                  <Check className="w-5 h-5 text-[#5A0A21] stroke-[2.5]" />
-                </div>
-              )}
-
-              {/* Theme Illustrated Artwork Canvas */}
-              <div className="relative">
-                {theme.renderArtwork()}
-              </div>
-
-              {/* Solid Color-Blocked Title Banner */}
-              <div
-                className="py-3 px-4 text-center transition-colors shadow-inner"
-                style={{ backgroundColor: theme.headerBg }}
+            return (
+              <motion.div
+                key={item.id}
+                layout
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+                onClick={() => onSelectTheme(item.id)}
+                className={`bg-white rounded-3xl overflow-hidden border-2 transition-all duration-300 shadow-md cursor-pointer flex flex-col relative group hover:-translate-y-1 ${
+                  isSelected
+                    ? 'border-[#C8A84B] ring-4 ring-[#C8A84B]/20 shadow-2xl scale-[1.01]'
+                    : 'border-[#EAE0D5] hover:border-[#C8A84B]/70 hover:shadow-xl'
+                }`}
               >
-                <h3 className="font-serif-heading text-lg sm:text-xl font-normal text-white tracking-wide">
-                  {theme.name}
-                </h3>
-              </div>
+                {/* Golden Checkmark Badge on Top Right when Selected */}
+                {isSelected && (
+                  <div className="absolute top-3 right-3 z-30 w-8 h-8 rounded-full bg-[#C8A84B] border-2 border-white flex items-center justify-center shadow-lg animate-in zoom-in duration-200">
+                    <Check className="w-5 h-5 text-[#5A0A21] stroke-[2.5]" />
+                  </div>
+                )}
 
-              {/* Body: Description & 4-Swatch Color Palette */}
-              <div className="p-5 sm:p-6 text-center space-y-4 flex-1 flex flex-col justify-between bg-white">
-                <p className="font-body text-xs sm:text-sm text-[#3B0B1F]/75 leading-relaxed min-h-[2.5rem]">
-                  {theme.description}
-                </p>
-
-                {/* 4 Rounded Rectangular Color Swatches */}
-                <div className="flex items-center justify-center gap-2 pt-1">
-                  {theme.swatches.map((color, idx) => (
-                    <div
-                      key={idx}
-                      className="w-10 h-7 rounded-lg border border-black/10 shadow-sm transition-transform hover:scale-110"
-                      style={{ backgroundColor: color }}
-                      title={`Color ${idx + 1}: ${color}`}
-                    />
-                  ))}
+                {/* Category Tag on Top Left */}
+                <div className="absolute top-3 left-3 z-20">
+                  <span className="font-body text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider bg-[#3B0B1F]/90 text-[#C8A84B] shadow-sm backdrop-blur-xs">
+                    {item.category}
+                  </span>
                 </div>
 
-                {/* Optional Preview / Select Actions */}
-                <div className="pt-2 flex items-center justify-center gap-3 border-t border-gray-100 mt-2">
-                  {onPreviewTheme && (
+                {/* Theme Illustrated Artwork Canvas */}
+                <div className="relative">
+                  {renderThemeArtwork(item, preset)}
+                </div>
+
+                {/* Solid Color-Blocked Title Banner */}
+                <div
+                  className="py-3 px-4 text-center transition-colors shadow-inner flex items-center justify-between"
+                  style={{ backgroundColor: preset.colors.primary }}
+                >
+                  <h3 className="font-serif-heading text-base sm:text-lg font-normal text-white tracking-wide truncate">
+                    {preset.name}
+                  </h3>
+                  <span className="text-[10px] font-body font-semibold text-[#E2C873] uppercase tracking-wider shrink-0 ml-2">
+                    {preset.themeStyle.split('&')[0].trim()}
+                  </span>
+                </div>
+
+                {/* Body: Description & 4-Swatch Color Palette */}
+                <div className="p-5 sm:p-6 text-center space-y-4 flex-1 flex flex-col justify-between bg-white">
+                  <p className="font-body text-xs text-[#3B0B1F]/75 leading-relaxed min-h-[2.5rem]">
+                    {preset.description}
+                  </p>
+
+                  {/* 4 Rounded Rectangular Color Swatches */}
+                  <div className="flex items-center justify-center gap-2 pt-1">
+                    {swatches.map((color, idx) => (
+                      <div
+                        key={idx}
+                        className="w-9 h-6 rounded-md border border-black/10 shadow-xs transition-transform hover:scale-110"
+                        style={{ backgroundColor: color }}
+                        title={`Color ${idx + 1}: ${color}`}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Preview / Select Actions */}
+                  <div className="pt-3 flex items-center justify-between gap-2 border-t border-gray-100 mt-2">
+                    {onPreviewTheme && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onPreviewTheme(preset);
+                        }}
+                        className="text-[11px] font-semibold text-[#A87B1B] hover:text-[#5A0A21] flex items-center gap-1 cursor-pointer transition-colors"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>Preview</span>
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
-                        onPreviewTheme(presetData);
+                        onSelectTheme(item.id);
                       }}
-                      className="text-[11px] font-semibold text-[#A87B1B] hover:text-[#5A0A21] flex items-center gap-1 cursor-pointer transition-colors"
+                      className={`text-[11px] font-bold px-4 py-1.5 rounded-full transition-all flex items-center gap-1 cursor-pointer ml-auto ${
+                        isSelected
+                          ? 'bg-[#5A0A21] text-[#FAF0F3] shadow-xs'
+                          : 'bg-[#FAF0F3] text-[#5A0A21] hover:bg-[#5A0A21] hover:text-white'
+                      }`}
                     >
-                      <Eye className="w-3.5 h-3.5" />
-                      <span>Live Preview</span>
+                      <span>{isSelected ? 'Active Theme' : 'Choose'}</span>
+                      <ArrowRight className="w-3 h-3" />
                     </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelectTheme(theme.id);
-                    }}
-                    className={`text-[11px] font-bold px-4 py-1.5 rounded-full transition-all flex items-center gap-1 cursor-pointer ${
-                      isSelected
-                        ? 'bg-[#5A0A21] text-[#FAF0F3] shadow-xs'
-                        : 'bg-[#FAF0F3] text-[#5A0A21] hover:bg-[#5A0A21] hover:text-white'
-                    }`}
-                  >
-                    <span>{isSelected ? 'Active Theme' : 'Choose Theme'}</span>
-                    <ArrowRight className="w-3 h-3" />
-                  </button>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          );
-        })}
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
       </div>
 
-      {/* Bottom Footer Note with Lock Icon (as in user's image) */}
+      {/* Bottom Footer Note with Lock Icon */}
       <div className="mt-12 sm:mt-16 text-center relative z-10">
         <div className="inline-flex items-center gap-2 text-xs sm:text-sm text-[#3B0B1F]/80 font-body bg-white/70 backdrop-blur-xs px-5 py-2.5 rounded-full border border-[#C8A84B]/30 shadow-xs">
           <Lock className="w-4 h-4 text-[#5A0A21] shrink-0" />
-          <span>All themes are fully customizable in our invitation builder.</span>
+          <span>All 20 themes are fully customizable in our live invitation builder.</span>
         </div>
       </div>
     </div>

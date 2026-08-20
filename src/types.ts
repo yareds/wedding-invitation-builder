@@ -23,17 +23,45 @@ export interface GalleryPhoto {
   aspectRatio?: string;
 }
 
-export type ThemeId = 'bordeaux' | 'emerald' | 'midnight' | 'rosegarden' | 'goldluxury' | 'classicivory';
+export type ThemeId =
+  | 'bordeaux'
+  | 'emerald'
+  | 'rosegarden'
+  | 'midnight'
+  | 'goldluxury'
+  | 'classicivory'
+  | 'sapphire'
+  | 'amethyst'
+  | 'rubyvelvet'
+  | 'lavender'
+  | 'sagemint'
+  | 'peachblossom'
+  | 'terracotta'
+  | 'olivebronze'
+  | 'desertsand'
+  | 'slateplatinum'
+  | 'espressopearl'
+  | 'marigold'
+  | 'peacockteal'
+  | 'electricviolet';
 
 export type FrameStyleId =
   | 'botanical-floral'
+  | 'floral-garland'
   | 'royal-luxury'
+  | 'luxury-sovereign'
   | 'modern-minimalist'
+  | 'minimalist-horizon'
   | 'classic-arch'
+  | 'classic-pediment'
   | 'romantic-lace'
+  | 'romantic-ribbon'
   | 'contemporary-geo'
+  | 'contemporary-prism'
   | 'habesha-heritage'
-  | 'celestial-sparkle';
+  | 'heritage-knotwork'
+  | 'celestial-sparkle'
+  | 'celestial-lunar';
 
 export interface ThemeColors {
   primary: string;

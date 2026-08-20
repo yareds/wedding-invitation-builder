@@ -25,6 +25,7 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
   const [activeStep, setActiveStep] = useState<number>(1);
   const [step1Tab, setStep1Tab] = useState<'palettes' | 'frames'>('palettes');
   const [selectedFrameCategory, setSelectedFrameCategory] = useState<string>('All');
+  const [selectedThemeCategory, setSelectedThemeCategory] = useState<string>('All');
 
   const steps = [
     { id: 1, title: 'Color & Theme', icon: Palette },
@@ -393,7 +394,7 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
                   }`}
                 >
                   <Palette className="w-3.5 h-3.5 text-[#C8A84B]" />
-                  <span>Color Themes (6)</span>
+                  <span>Color Themes ({Object.keys(THEME_PRESETS).length})</span>
                 </button>
 
                 <button
@@ -406,9 +407,32 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
                   }`}
                 >
                   <Layers className="w-3.5 h-3.5 text-[#C8A84B]" />
-                  <span>Frame Styles (8)</span>
+                  <span>Frame Styles ({FRAME_STYLE_OPTIONS.length})</span>
                 </button>
               </div>
+
+              {/* Sticky Category Filter Chips when Palettes tab is active */}
+              {step1Tab === 'palettes' && (
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none text-xs">
+                  {['All', 'Jewel Tones', 'Pastels & Florals', 'Earth Tones', 'Neutrals & Classic', 'Bold & Modern'].map((cat) => {
+                    const isCatActive = selectedThemeCategory === cat;
+                    return (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => setSelectedThemeCategory(cat)}
+                        className={`px-2.5 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                          isCatActive
+                            ? 'bg-[#C8A84B] text-[#3B0B1F] shadow-sm font-bold'
+                            : 'bg-white border border-gray-200 text-[#3B0B1F]/70 hover:border-[#C8A84B]'
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
 
               {/* Sticky Category Filter Chips when Frame Styles tab is active */}
               {step1Tab === 'frames' && (
@@ -439,7 +463,34 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
               <div className="space-y-3 animate-in fade-in duration-200 pt-1">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-bold text-[#A87B1B] uppercase tracking-wider">
-                    Select Visual Color Palette
+                    Select Visual Color Palette ({
+                      Object.values(THEME_PRESETS).filter((t) => {
+                        if (selectedThemeCategory === 'All') return true;
+                        const themeCatMap: Record<string, string> = {
+                          bordeaux: 'Jewel Tones',
+                          sapphire: 'Jewel Tones',
+                          amethyst: 'Jewel Tones',
+                          rubyvelvet: 'Jewel Tones',
+                          peacockteal: 'Jewel Tones',
+                          emerald: 'Pastels & Florals',
+                          rosegarden: 'Pastels & Florals',
+                          lavender: 'Pastels & Florals',
+                          sagemint: 'Pastels & Florals',
+                          peachblossom: 'Pastels & Florals',
+                          terracotta: 'Earth Tones',
+                          olivebronze: 'Earth Tones',
+                          desertsand: 'Earth Tones',
+                          espressopearl: 'Earth Tones',
+                          goldluxury: 'Neutrals & Classic',
+                          classicivory: 'Neutrals & Classic',
+                          slateplatinum: 'Neutrals & Classic',
+                          midnight: 'Bold & Modern',
+                          marigold: 'Bold & Modern',
+                          electricviolet: 'Bold & Modern'
+                        };
+                        return themeCatMap[t.id] === selectedThemeCategory;
+                      }).length
+                    })
                   </span>
                   <button
                     type="button"
@@ -450,7 +501,34 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
                   </button>
                 </div>
 
-                {Object.values(THEME_PRESETS).map((t) => {
+                {Object.values(THEME_PRESETS)
+                  .filter((t) => {
+                    if (selectedThemeCategory === 'All') return true;
+                    const themeCatMap: Record<string, string> = {
+                      bordeaux: 'Jewel Tones',
+                      sapphire: 'Jewel Tones',
+                      amethyst: 'Jewel Tones',
+                      rubyvelvet: 'Jewel Tones',
+                      peacockteal: 'Jewel Tones',
+                      emerald: 'Pastels & Florals',
+                      rosegarden: 'Pastels & Florals',
+                      lavender: 'Pastels & Florals',
+                      sagemint: 'Pastels & Florals',
+                      peachblossom: 'Pastels & Florals',
+                      terracotta: 'Earth Tones',
+                      olivebronze: 'Earth Tones',
+                      desertsand: 'Earth Tones',
+                      espressopearl: 'Earth Tones',
+                      goldluxury: 'Neutrals & Classic',
+                      classicivory: 'Neutrals & Classic',
+                      slateplatinum: 'Neutrals & Classic',
+                      midnight: 'Bold & Modern',
+                      marigold: 'Bold & Modern',
+                      electricviolet: 'Bold & Modern'
+                    };
+                    return themeCatMap[t.id] === selectedThemeCategory;
+                  })
+                  .map((t) => {
                   const isSelected = config.themeId === t.id;
                   return (
                     <div
