@@ -11,8 +11,10 @@ export const BotanicalFooter: React.FC<BotanicalFooterProps> = ({ config }) => {
   const theme = THEME_PRESETS[config.themeId] || THEME_PRESETS.bordeaux;
   const colors = theme.colors;
 
-  const groomInit = (config.groomEth || config.groomEn || 'የሙሽራው ስም').trim()[0] || 'የ';
-  const brideInit = (config.brideEth || config.brideEn || 'የሙሽሪት ስም').trim()[0] || 'የ';
+  const groomFullName = [config.groomEn, config.groomEth].filter(Boolean).join(' ').trim() || 'የሙሽራው ስም';
+  const brideFullName = [config.brideEn, config.brideEth].filter(Boolean).join(' ').trim() || 'የሙሽሪት ስም';
+  const groomInit = (config.groomEn || config.groomEth || 'የሙሽራው ስም').trim()[0] || 'የ';
+  const brideInit = (config.brideEn || config.brideEth || 'የሙሽሪት ስም').trim()[0] || 'የ';
 
   return (
     <footer
@@ -42,7 +44,7 @@ export const BotanicalFooter: React.FC<BotanicalFooterProps> = ({ config }) => {
         </div>
 
         <h3 className="font-serif-heading text-2xl sm:text-3xl font-normal text-[#FAF0F3]">
-          {config.groomEth || config.groomEn || 'የሙሽራው ስም'} እና {config.brideEth || config.brideEn || 'የሙሽሪት ስም'}
+          {groomFullName} እና {brideFullName}
         </h3>
 
         <p className="font-quote italic text-sm max-w-md mx-auto text-[#E5A4B5]">

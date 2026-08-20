@@ -9,9 +9,9 @@ export async function generateAndDownloadProjectZip(config: WeddingConfig, proje
   const theme = THEME_PRESETS[config.themeId] || THEME_PRESETS.bordeaux;
   const colors = theme.colors;
 
-  const groom = config.groomEth || config.groomEn || 'የሙሽራው ስም';
-  const bride = config.brideEth || config.brideEn || 'የሙሽሪት ስም';
-  const filenamePrefix = `${groom.toLowerCase()}-and-${bride.toLowerCase()}-wedding-${projectId.toLowerCase()}`;
+  const groom = [config.groomEn, config.groomEth].filter(Boolean).join(' ').trim() || 'የሙሽራው ስም';
+  const bride = [config.brideEn, config.brideEth].filter(Boolean).join(' ').trim() || 'የሙሽሪት ስም';
+  const filenamePrefix = `${groom.toLowerCase().replace(/\s+/g, '-')}-and-${bride.toLowerCase().replace(/\s+/g, '-')}-wedding-${projectId.toLowerCase()}`;
 
   // 1. Generate standalone, self-contained index.html
   const htmlContent = generateStandaloneHtml(config, projectId);
@@ -116,13 +116,15 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
   const theme = THEME_PRESETS[config.themeId] || THEME_PRESETS.bordeaux;
   const colors = theme.colors;
 
-  const groomEth = config.groomEth || 'የሙሽራው ስም';
-  const brideEth = config.brideEth || 'የሙሽሪት ስም';
-  const groomEn = config.groomEn || 'Groom';
-  const brideEn = config.brideEn || 'Bride';
-  const groomInit = (groomEth || groomEn).trim()[0] || 'የ';
-  const brideInit = (brideEth || brideEn).trim()[0] || 'የ';
-  const coupleTitle = `${groomEth} እና ${brideEth}`;
+  const groom = [config.groomEn, config.groomEth].filter(Boolean).join(' ').trim() || 'የሙሽራው ስም';
+  const bride = [config.brideEn, config.brideEth].filter(Boolean).join(' ').trim() || 'የሙሽሪት ስም';
+  const groomEth = groom;
+  const brideEth = bride;
+  const groomEn = groom;
+  const brideEn = bride;
+  const groomInit = (config.groomEn || config.groomEth || 'የ').trim()[0] || 'የ';
+  const brideInit = (config.brideEn || config.brideEth || 'የ').trim()[0] || 'የ';
+  const coupleTitle = `${groom} እና ${bride}`;
 
   const galleryImgs = config.galleryImgs && config.galleryImgs.length > 0 ? config.galleryImgs : [
     'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80',
@@ -362,16 +364,11 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
 
         <div class="mb-4 max-w-3xl">
           <h1 class="font-serif-heading text-3xl sm:text-5xl md:text-6xl font-normal leading-tight tracking-tight mb-2" style="color: #FFFFFF">
-            ${groomEth}
+            ${groom}
             <span class="block font-quote italic text-2xl sm:text-4xl my-2 font-light" style="color: ${colors.gold}">እና</span>
-            ${brideEth}
+            ${bride}
           </h1>
-          <p class="font-quote italic text-base sm:text-xl tracking-wide mt-2 opacity-90" style="color: #FFFFFF">${groomEn} &amp; ${brideEn}</p>
         </div>
-
-        ${config.scripture && config.scripture !== 'ሁሉን ያዘጋጀ ግን እግዚአብሔር ነው።' ? `<p class="font-serif-heading text-base sm:text-lg max-w-xl mx-auto leading-relaxed mb-8 opacity-90 tracking-wide" style="color: #FFFFFF">
-          ${config.scripture}
-        </p>` : ''}
 
         <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm font-body tracking-wider uppercase font-medium" style="color: #FFFFFF">
           <div class="flex items-center gap-2">

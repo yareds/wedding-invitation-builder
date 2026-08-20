@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { WeddingConfig } from '../types';
 import { THEME_PRESETS } from '../utils/themePresets';
 import {
@@ -6,10 +6,11 @@ import {
   submitProjectOrder,
   getDraftFilesLocally,
   clearDraftFilesLocally,
+  getAllSavedProjects,
   SavedProject
 } from '../utils/projectDatabase';
 import { uploadFileToFirebaseStorage } from '../lib/firebase';
-import { X, Send, Copy, Check, MessageSquare, ShieldCheck, Banknote, AlertCircle, Lock, User, Phone, FileText, AlertTriangle, ArrowLeft, Loader2 } from 'lucide-react';
+import { X, Send, Copy, Check, MessageSquare, ShieldCheck, Banknote, AlertCircle, Lock, User, Phone, FileText, AlertTriangle, ArrowLeft, Loader2, RotateCw } from 'lucide-react';
 
 interface OrderModalProps {
   config: WeddingConfig;
@@ -17,6 +18,30 @@ interface OrderModalProps {
   onClose: () => void;
   onUpdateConfig?: (updated: WeddingConfig) => void;
   projectId: string;
+}
+
+// Helper to upload a file to Firebase Storage with retries and a descriptive error message identifying which file failed
+async function uploadFileWithRetry(
+  file: File | Blob,
+  folder: string,
+  fileLabel: string,
+  timeoutMs: number,
+  maxRetries = 2
+): Promise<string> {
+  let lastError: any = null;
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await uploadFileToFirebaseStorage(file, folder, undefined, timeoutMs);
+    } catch (err: any) {
+      lastError = err;
+      console.warn(`[Upload Attempt ${attempt}/${maxRetries} Failed] ${fileLabel}:`, err);
+      if (attempt < maxRetries) {
+        await new Promise((res) => setTimeout(res, 1200));
+      }
+    }
+  }
+  const detail = lastError?.message ? ` (${lastError.message})` : '';
+  throw new Error(`${fileLabel} failed to upload — please try again${detail}`);
 }
 
 export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose, onUpdateConfig, projectId }) => {
@@ -34,10 +59,30 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submitStatusText, setSubmitStatusText] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [lastActionType, setLastActionType] = useState<'submit_only' | 'Telegram' | 'WhatsApp'>('submit_only');
+
+  useEffect(() => {
+    if (!isOpen || !projectId) return;
+    const existing = getAllSavedProjects().find((p) => p.id === projectId);
+    if (existing) {
+      setCurrentProject(existing);
+      if (existing.customerName && !customerName) {
+        setCustomerName(existing.customerName);
+      }
+      if (existing.customerPhone && !customerPhone) {
+        setCustomerPhone(existing.customerPhone);
+      }
+      if (existing.orderStatus === 'submitted') {
+        setIsOrderSubmitted(true);
+      }
+    }
+  }, [isOpen, projectId]);
 
   if (!isOpen) return null;
 
-  const handleSubmitOrder = async (actionType: 'submit_only' | 'Telegram' | 'WhatsApp') => {
+  const handleSubmitOrder = async (actionType: 'submit_only' | 'Telegram' | 'WhatsApp' = lastActionType) => {
+    if (isOrderSubmitted) return;
+    setLastActionType(actionType);
     if (!isAllInfoComplete) {
       setShowValidationErrors(true);
       return;
@@ -45,7 +90,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
 
     setIsSubmitting(true);
     setSubmitError(null);
-    setSubmitStatusText('Preparing order submission...');
+    setSubmitStatusText('Preparing files for upload...');
 
     try {
       // 1. Retrieve pending draft files from IndexedDB
@@ -55,35 +100,43 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
       let finalBgMusicUrl = config.bgMusicUrl;
       let finalGalleryImgs = [...(config.galleryImgs || [])];
 
-      // 2. Upload pending files to Firebase Storage if present
-      if (draftFiles?.heroImgFile) {
-        setSubmitStatusText('Uploading hero image to storage...');
-        finalHeroImg = await uploadFileToFirebaseStorage(
-          draftFiles.heroImgFile,
-          'hero_images',
-          undefined,
-          90000
-        );
+      // 2. Prepare upload promises to run all uploads in parallel
+      const heroPromise: Promise<string | null> = draftFiles?.heroImgFile
+        ? uploadFileWithRetry(draftFiles.heroImgFile, 'hero_images', 'Your hero image', 90000, 2)
+        : Promise.resolve(null);
+
+      // Increase audio upload timeout to 300000ms (5 minutes)
+      const audioPromise: Promise<string | null> = draftFiles?.bgMusicFile
+        ? uploadFileWithRetry(draftFiles.bgMusicFile, 'audio', 'Your audio file', 300000, 2)
+        : Promise.resolve(null);
+
+      // Parallelize gallery photos uploads as well
+      const galleryPromises: Promise<string>[] = (draftFiles?.galleryFiles || []).map((file, idx) =>
+        uploadFileWithRetry(file, 'gallery', `Gallery photo #${idx + 1}`, 90000, 2)
+      );
+
+      const hasMediaToUpload = Boolean(
+        draftFiles?.heroImgFile || draftFiles?.bgMusicFile || (draftFiles?.galleryFiles && draftFiles.galleryFiles.length > 0)
+      );
+
+      if (hasMediaToUpload) {
+        setSubmitStatusText('Uploading media files in parallel...');
       }
 
-      if (draftFiles?.bgMusicFile) {
-        setSubmitStatusText('Uploading audio track to storage...');
-        finalBgMusicUrl = await uploadFileToFirebaseStorage(
-          draftFiles.bgMusicFile,
-          'audio',
-          undefined,
-          160000
-        );
+      // Parallel execution via Promise.all - if ANY fails, Promise.all rejects immediately
+      const [uploadedHeroUrl, uploadedAudioUrl, uploadedGalleryUrls] = await Promise.all([
+        heroPromise,
+        audioPromise,
+        Promise.all(galleryPromises)
+      ]);
+
+      if (uploadedHeroUrl) {
+        finalHeroImg = uploadedHeroUrl;
       }
-
-      if (draftFiles?.galleryFiles && draftFiles.galleryFiles.length > 0) {
-        setSubmitStatusText(`Uploading ${draftFiles.galleryFiles.length} gallery photos...`);
-        const uploadedGalleryUrls: string[] = [];
-        for (const file of draftFiles.galleryFiles) {
-          const url = await uploadFileToFirebaseStorage(file, 'gallery', undefined, 90000);
-          uploadedGalleryUrls.push(url);
-        }
-
+      if (uploadedAudioUrl) {
+        finalBgMusicUrl = uploadedAudioUrl;
+      }
+      if (uploadedGalleryUrls && uploadedGalleryUrls.length > 0) {
         let uploadedIdx = 0;
         finalGalleryImgs = finalGalleryImgs.map((imgUrl) => {
           if (imgUrl.startsWith('blob:') && uploadedIdx < uploadedGalleryUrls.length) {
@@ -115,7 +168,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
 
       setSubmitStatusText('Saving project to database...');
 
-      // 3. Save project to local + Firestore database
+      // 3. Save project to local + Firestore database (strictly only executes when all uploads succeed)
       const savedRecord = await saveProjectToDatabase(finalConfig, projectId);
       setCurrentProject(savedRecord);
 
@@ -166,15 +219,17 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
 
   const currentTheme = THEME_PRESETS[config.themeId] || THEME_PRESETS.bordeaux;
 
-  const groom = (config.groomEn || config.groomEth || '').trim();
-  const bride = (config.brideEn || config.brideEth || '').trim();
+  const groom = [config.groomEn, config.groomEth].filter(Boolean).join(' ').trim();
+  const bride = [config.brideEn, config.brideEth].filter(Boolean).join(' ').trim();
   const dateGC = (config.dateGC || '').trim();
+  const heroImg = (config.heroImg || '').trim();
   const church = (config.churchEn || config.churchEth || '').trim();
   const reception = (config.receptionEn || config.receptionEth || '').trim();
   const contactPhone = (config.phone1 || '').trim();
   const activeProjectId = currentProject?.id || projectId;
 
   // Check validity of essential wedding fields
+  const isHeroImgValid = Boolean(heroImg);
   const isGroomValid = Boolean(groom && groom !== 'የሙሽራው ስም');
   const isBrideValid = Boolean(bride && bride !== 'የሙሽሪት ስም');
   const isDateValid = Boolean(dateGC);
@@ -184,11 +239,12 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
 
   // Missing essential wedding fields
   const essentialWeddingMissing: { key: string; label: string }[] = [];
+  if (!isHeroImgValid) essentialWeddingMissing.push({ key: 'heroImg', label: "Hero Background Photo / Image" });
   if (!isGroomValid) essentialWeddingMissing.push({ key: 'groom', label: "Groom's Name" });
   if (!isBrideValid) essentialWeddingMissing.push({ key: 'bride', label: "Bride's Name" });
   if (!isDateValid) essentialWeddingMissing.push({ key: 'dateGC', label: "Wedding Date" });
-  if (!isChurchValid) essentialWeddingMissing.push({ key: 'church', label: "Ceremony Venue" });
-  if (!isReceptionValid) essentialWeddingMissing.push({ key: 'reception', label: "Reception Venue" });
+  if (!isChurchValid) essentialWeddingMissing.push({ key: 'church', label: "Ceremony Venue (Church/Cathedral)" });
+  if (!isReceptionValid) essentialWeddingMissing.push({ key: 'reception', label: "Reception Venue (Hall/Resort)" });
   if (!isPhone1Valid) essentialWeddingMissing.push({ key: 'phone1', label: "Contact Phone Number" });
 
   const isEssentialWeddingComplete = essentialWeddingMissing.length === 0;
@@ -259,10 +315,10 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
     );
   }
 
-  // Filter out Awash Bank tile & fallback to default Telebirr and CBE details
-  const fallbackBankDetails = [
+  // Official payment accounts for hosting order (TeleBirr & CBE)
+  const activeBankDetails = [
     {
-      bankName: 'Telebirr SuperApp',
+      bankName: 'TeleBirr',
       accountName: 'Yared Abegaz',
       accountNumber: '0995967804'
     },
@@ -272,14 +328,6 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
       accountNumber: '1000450356817'
     }
   ];
-
-  const rawBankDetails = config.bankDetails && config.bankDetails.length > 0
-    ? config.bankDetails
-    : fallbackBankDetails;
-
-  const activeBankDetails = rawBankDetails.filter(
-    (b) => !b.bankName.toLowerCase().includes('awash')
-  );
 
   const orderSummaryText = `
 💒 WEDDING WEBSITE ORDER SUBMISSION:
@@ -369,33 +417,6 @@ Order details submitted for online hosting.
           </button>
         </div>
 
-        {/* Validation Warning Alert (If missing information) */}
-        {(!isAllInfoComplete || showValidationErrors) && (
-          <div className="p-4 bg-amber-50 rounded-2xl border-2 border-amber-400 text-amber-950 text-xs font-body mb-5 shadow-sm space-y-2">
-            <div className="flex items-center gap-2 font-bold text-amber-900 text-sm">
-              <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 animate-bounce" />
-              <span>Incomplete Information — Cannot Submit Order Yet</span>
-            </div>
-            <p className="text-amber-800 leading-relaxed">
-              You must provide all required order contact information and wedding invitation details before submitting your order and payment receipt.
-            </p>
-            <div className="pt-2 border-t border-amber-200">
-              <p className="font-bold text-amber-900 mb-1">Missing Required Fields ({missingFields.length}):</p>
-              <div className="flex flex-wrap gap-1.5">
-                {missingFields.map((f) => (
-                  <span
-                    key={f.key}
-                    className="px-2.5 py-1 rounded-md bg-amber-100 border border-amber-300 text-amber-900 text-[11px] font-semibold flex items-center gap-1"
-                  >
-                    <AlertCircle className="w-3 h-3 text-red-500 shrink-0" />
-                    {f.label}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Section 1: Customer Contact Info Inputs */}
         <div className="bg-white rounded-2xl p-4 border border-[#E0D0B8] mb-5 space-y-3 shadow-sm">
           <h3 className="font-serif-heading text-base font-semibold text-[#3D0A1F] flex items-center gap-1.5">
@@ -455,44 +476,66 @@ Order details submitted for online hosting.
         {/* Section 2: Wedding Invitation Details Summary & Quick Edit */}
         <div className="bg-white rounded-2xl p-4 border border-[#E0D0B8] mb-5 space-y-3 text-xs font-body text-[#3D0A1F] shadow-sm">
           <div className="flex items-center justify-between border-b border-[#E0D0B8] pb-2">
-            <span className="font-semibold text-sm text-[#3D0A1F]">2. Wedding Invitation Information Check:</span>
-            <span className="font-serif-heading font-bold text-base text-[#A68224]">30,000 ETB</span>
+            <span className="font-semibold text-sm text-[#3D0A1F] flex items-center gap-1.5">
+              <FileText className="w-4 h-4 text-[#A68224]" />
+              2. Wedding Invitation Information Check (Required):
+            </span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[#3D0A1F]">
             <div>
               <label className="block text-[11px] font-semibold text-[#A68224] mb-0.5">
-                Groom Name <span className="text-red-500">*</span>
+                Groom's First Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                value={config.groomEn || config.groomEth || ''}
-                onChange={(e) => {
-                  updateConfigField('groomEn', e.target.value);
-                  updateConfigField('groomEth', e.target.value);
-                }}
-                placeholder="Groom's Full Name"
+                value={config.groomEn || ''}
+                onChange={(e) => updateConfigField('groomEn', e.target.value)}
+                placeholder="e.g. Dawit"
                 className={`w-full px-2.5 py-1.5 rounded-lg bg-[#FAF7F2] border text-xs text-[#3D0A1F] ${
-                  !isGroomValid ? 'border-red-500' : 'border-[#D8C7A8]'
+                  !isGroomValid ? 'border-red-500 ring-1 ring-red-500/20' : 'border-[#D8C7A8]'
                 }`}
               />
             </div>
 
             <div>
               <label className="block text-[11px] font-semibold text-[#A68224] mb-0.5">
-                Bride Name <span className="text-red-500">*</span>
+                Groom's Last Name
               </label>
               <input
                 type="text"
-                value={config.brideEn || config.brideEth || ''}
-                onChange={(e) => {
-                  updateConfigField('brideEn', e.target.value);
-                  updateConfigField('brideEth', e.target.value);
-                }}
-                placeholder="Bride's Full Name"
+                value={config.groomEth || ''}
+                onChange={(e) => updateConfigField('groomEth', e.target.value)}
+                placeholder="e.g. Tesfaye / ተስፋዬ"
+                className="w-full px-2.5 py-1.5 rounded-lg bg-[#FAF7F2] border border-[#D8C7A8] text-xs text-[#3D0A1F]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-semibold text-[#A68224] mb-0.5">
+                Bride's First Name <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={config.brideEn || ''}
+                onChange={(e) => updateConfigField('brideEn', e.target.value)}
+                placeholder="e.g. Selamawit"
                 className={`w-full px-2.5 py-1.5 rounded-lg bg-[#FAF7F2] border text-xs text-[#3D0A1F] ${
-                  !isBrideValid ? 'border-red-500' : 'border-[#D8C7A8]'
+                  !isBrideValid ? 'border-red-500 ring-1 ring-red-500/20' : 'border-[#D8C7A8]'
                 }`}
+              />
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-semibold text-[#A68224] mb-0.5">
+                Bride's Last Name
+              </label>
+              <input
+                type="text"
+                value={config.brideEth || ''}
+                onChange={(e) => updateConfigField('brideEth', e.target.value)}
+                placeholder="e.g. Bekele / በቀለ"
+                className="w-full px-2.5 py-1.5 rounded-lg bg-[#FAF7F2] border border-[#D8C7A8] text-xs text-[#3D0A1F]"
               />
             </div>
 
@@ -506,7 +549,7 @@ Order details submitted for online hosting.
                 onChange={(e) => updateConfigField('dateGC', e.target.value)}
                 placeholder="e.g. Saturday, May 09, 2026"
                 className={`w-full px-2.5 py-1.5 rounded-lg bg-[#FAF7F2] border text-xs text-[#3D0A1F] ${
-                  !isDateValid ? 'border-red-500' : 'border-[#D8C7A8]'
+                  !isDateValid ? 'border-red-500 ring-1 ring-red-500/20' : 'border-[#D8C7A8]'
                 }`}
               />
             </div>
@@ -524,7 +567,7 @@ Order details submitted for online hosting.
                 }}
                 placeholder="Church / Cathedral"
                 className={`w-full px-2.5 py-1.5 rounded-lg bg-[#FAF7F2] border text-xs text-[#3D0A1F] ${
-                  !isChurchValid ? 'border-red-500' : 'border-[#D8C7A8]'
+                  !isChurchValid ? 'border-red-500 ring-1 ring-red-500/20' : 'border-[#D8C7A8]'
                 }`}
               />
             </div>
@@ -542,7 +585,7 @@ Order details submitted for online hosting.
                 }}
                 placeholder="Reception Hall / Resort"
                 className={`w-full px-2.5 py-1.5 rounded-lg bg-[#FAF7F2] border text-xs text-[#3D0A1F] ${
-                  !isReceptionValid ? 'border-red-500' : 'border-[#D8C7A8]'
+                  !isReceptionValid ? 'border-red-500 ring-1 ring-red-500/20' : 'border-[#D8C7A8]'
                 }`}
               />
             </div>
@@ -557,7 +600,7 @@ Order details submitted for online hosting.
                 onChange={(e) => updateConfigField('phone1', e.target.value)}
                 placeholder="Primary Contact Phone"
                 className={`w-full px-2.5 py-1.5 rounded-lg bg-[#FAF7F2] border text-xs text-[#3D0A1F] ${
-                  !isPhone1Valid ? 'border-red-500' : 'border-[#D8C7A8]'
+                  !isPhone1Valid ? 'border-red-500 ring-1 ring-red-500/20' : 'border-[#D8C7A8]'
                 }`}
               />
             </div>
@@ -568,7 +611,7 @@ Order details submitted for online hosting.
         <div className="mb-6">
           <h3 className="font-serif-heading text-lg font-normal mb-2 flex items-center gap-2 text-[#3D0A1F]">
             <Banknote className="w-5 h-5 text-[#A68224]" />
-            Payment Information (Bank Transfer &amp; Telebirr)
+            Payment Information (Bank Transfer &amp; TeleBirr)
           </h3>
           <p className="font-body text-xs text-[#5C3240] mb-3 leading-relaxed">
             Please transfer the 25,000 ETB fee to any of our official accounts below:
@@ -634,18 +677,35 @@ Order details submitted for online hosting.
             )}
           </div>
 
-          {/* Submission Loading & Error Feedback */}
+          {/* Submission Loading & Error Feedback with Retry Option */}
           {submitError && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs flex items-center gap-2 animate-in fade-in mb-3">
-              <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
-              <span className="flex-1 font-medium">{submitError}</span>
-              <button
-                type="button"
-                onClick={() => setSubmitError(null)}
-                className="p-1 text-red-400 hover:text-red-600 rounded-lg cursor-pointer"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
+            <div className="p-4 bg-red-50 border-2 border-red-300 rounded-2xl text-red-800 text-xs space-y-2.5 animate-in fade-in mb-3 shadow-xs">
+              <div className="flex items-start gap-2.5">
+                <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+                <div className="flex-1 space-y-1">
+                  <p className="font-semibold text-sm text-red-900">Upload / Submission Notice</p>
+                  <p className="font-medium text-red-700 leading-relaxed">{submitError}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSubmitError(null)}
+                  className="p-1 text-red-400 hover:text-red-600 rounded-lg cursor-pointer transition-colors"
+                  title="Dismiss error"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="pt-2 flex items-center justify-end gap-2 border-t border-red-200/80">
+                <button
+                  type="button"
+                  onClick={() => handleSubmitOrder(lastActionType)}
+                  disabled={isSubmitting}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-red-700 hover:bg-red-800 text-white font-semibold text-xs transition-all cursor-pointer shadow-xs"
+                >
+                  <RotateCw className="w-3.5 h-3.5" />
+                  Retry Submission
+                </button>
+              </div>
             </div>
           )}
 
@@ -658,19 +718,27 @@ Order details submitted for online hosting.
 
           <button
             onClick={() => handleSubmitOrder('submit_only')}
-            disabled={!isAllInfoComplete || isSubmitting}
+            disabled={!isAllInfoComplete || isSubmitting || isOrderSubmitted}
             className={`w-full py-4 px-6 rounded-2xl font-body text-sm font-bold uppercase tracking-wider transition-all shadow-lg flex items-center justify-center gap-2 ${
-              isAllInfoComplete && !isSubmitting
+              isAllInfoComplete && !isSubmitting && !isOrderSubmitted
                 ? 'bg-[#3D0A1F] text-[#FAF5F0] hover:bg-[#2D0817] cursor-pointer hover:shadow-xl border-2 border-[#C8A84B]'
                 : 'bg-gray-200 text-gray-500 opacity-60 cursor-not-allowed border border-gray-300'
             }`}
           >
             {isSubmitting ? (
               <Loader2 className="w-5 h-5 text-[#C8A84B] animate-spin" />
+            ) : isOrderSubmitted ? (
+              <Check className="w-5 h-5 text-emerald-600" />
             ) : (
               <Check className="w-5 h-5 text-[#C8A84B]" />
             )}
-            <span>{isSubmitting ? 'Submitting Order...' : 'Submit Order'}</span>
+            <span>
+              {isSubmitting
+                ? 'Submitting Order...'
+                : isOrderSubmitted
+                ? 'Order Submitted'
+                : 'Submit Order'}
+            </span>
           </button>
 
           {/* Optional Direct Messaging Channels */}
@@ -681,9 +749,9 @@ Order details submitted for online hosting.
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
                 onClick={() => handleSubmitOrder('Telegram')}
-                disabled={!isAllInfoComplete || isSubmitting}
+                disabled={!isAllInfoComplete || isSubmitting || isOrderSubmitted}
                 className={`py-2.5 px-3 rounded-xl font-body text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
-                  isAllInfoComplete && !isSubmitting
+                  isAllInfoComplete && !isSubmitting && !isOrderSubmitted
                     ? 'bg-[#0088cc] text-white hover:bg-[#0077b5] shadow-sm cursor-pointer'
                     : 'bg-gray-200 text-gray-500 opacity-60 cursor-not-allowed border border-gray-300'
                 }`}
@@ -694,9 +762,9 @@ Order details submitted for online hosting.
 
               <button
                 onClick={() => handleSubmitOrder('WhatsApp')}
-                disabled={!isAllInfoComplete || isSubmitting}
+                disabled={!isAllInfoComplete || isSubmitting || isOrderSubmitted}
                 className={`py-2.5 px-3 rounded-xl font-body text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
-                  isAllInfoComplete && !isSubmitting
+                  isAllInfoComplete && !isSubmitting && !isOrderSubmitted
                     ? 'bg-[#25D366] text-white hover:bg-[#20ba5a] shadow-sm cursor-pointer'
                     : 'bg-gray-200 text-gray-500 opacity-60 cursor-not-allowed border border-gray-300'
                 }`}

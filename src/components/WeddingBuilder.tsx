@@ -138,6 +138,22 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
     }
   };
 
+  // Image Delete handler for Hero Background
+  const handleRemoveHeroImage = async () => {
+    handleTextChange('heroImg', null);
+    setRawHeroFile(undefined);
+    setHeroUploadError(null);
+    try {
+      await saveDraftFilesLocally(projectId, {
+        heroImgFile: null,
+        bgMusicFile: rawMusicFile,
+        galleryFiles: rawGalleryFiles
+      });
+    } catch (err: any) {
+      console.error('Hero Image Local Delete Error:', err);
+    }
+  };
+
   // Audio Upload handler for Background Music (local preview + IndexedDB draft store)
   const handleAudioUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -695,22 +711,34 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
 
             {/* Hero Image Upload */}
             <div className="space-y-2">
-              <label className="block font-body text-xs font-semibold text-[#3B0B1F] uppercase">
-                Hero Section Background Image
+              <label className="block font-body text-xs font-semibold text-[#3B0B1F] uppercase flex items-center justify-between">
+                <span>
+                  Hero Background Image <span className="text-red-500">*</span>
+                </span>
+                {config.heroImg ? (
+                  <span className="text-[10px] text-green-700 bg-green-100 px-2 py-0.5 rounded-full font-bold">Uploaded</span>
+                ) : (
+                  <span className="text-[10px] text-red-600 bg-red-100 px-2 py-0.5 rounded-full font-bold">Required for Order</span>
+                )}
               </label>
               <div className="flex items-center gap-3">
-                <div className="w-20 h-20 rounded-xl overflow-hidden border border-[#C8A84B] shadow-sm bg-gray-100 flex-shrink-0 relative">
+                <div className={`w-20 h-20 rounded-xl overflow-hidden border shadow-sm bg-gray-100 flex-shrink-0 relative ${
+                  !config.heroImg ? 'border-red-400 ring-2 ring-red-400/20' : 'border-[#C8A84B]'
+                }`}>
                   {config.heroImg ? (
                     <img src={config.heroImg} alt="Hero Preview" className="w-full h-full object-cover object-top" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">Default</div>
+                    <div className="w-full h-full flex flex-col items-center justify-center text-[10px] text-red-500 font-semibold p-1 text-center">
+                      <span>No Photo</span>
+                      <span className="text-[9px] text-red-400">Required</span>
+                    </div>
                   )}
                 </div>
                 <div className="flex-1 space-y-2">
-                  <div className="flex items-center gap-3">
-                    <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#3B0B1F] text-[#FDF0F3] font-body text-xs font-semibold cursor-pointer hover:bg-[#2D0817] shadow-sm">
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#3B0B1F] text-[#FDF0F3] font-body text-xs font-semibold cursor-pointer hover:bg-[#2D0817] shadow-sm transition-colors">
                       <Upload className="w-4 h-4 text-[#C8A84B]" />
-                      <span>Upload Custom Image</span>
+                      <span>{config.heroImg ? 'Change Image' : 'Upload Hero Image *'}</span>
                       <input
                         type="file"
                         accept="image/*"
@@ -718,6 +746,18 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
                         className="hidden"
                       />
                     </label>
+
+                    {config.heroImg && (
+                      <button
+                        type="button"
+                        onClick={handleRemoveHeroImage}
+                        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 font-body text-xs font-semibold cursor-pointer transition-colors shadow-xs"
+                        title="Delete hero image"
+                      >
+                        <Trash2 className="w-3.5 h-3.5 text-red-600" />
+                        <span>Delete Image</span>
+                      </button>
+                    )}
                   </div>
                   {heroUploadError && (
                     <div className="flex items-center gap-2 p-2.5 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl mt-2 animate-in fade-in">
@@ -734,7 +774,7 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
                     </div>
                   )}
                   <p className="text-[11px] text-[#3B0B1F]/60 font-body">
-                    Recommended high-resolution couple photo or wedding banner.
+                    Required main couple photo displayed prominently at the top of your wedding website.
                   </p>
                 </div>
               </div>
@@ -883,50 +923,50 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block font-body text-xs font-semibold text-[#3B0B1F] uppercase mb-1">
-                  Groom Name (English)
+                  Groom's First Name
                 </label>
                 <input
                   type="text"
                   value={config.groomEn}
                   onChange={(e) => handleTextChange('groomEn', e.target.value)}
-                  placeholder="e.g. Dawit Tesfaye"
+                  placeholder="e.g. Dawit"
                   className="w-full px-3 py-2 rounded-xl border border-[#D4849A]/40 bg-[#FDF0F3]/30 text-xs text-[#3B0B1F] focus:outline-none focus:border-[#C8A84B]"
                 />
               </div>
               <div>
                 <label className="block font-body text-xs font-semibold text-[#3B0B1F] uppercase mb-1">
-                  Groom Name (Amharic)
+                  Groom's Last Name
                 </label>
                 <input
                   type="text"
                   value={config.groomEth}
                   onChange={(e) => handleTextChange('groomEth', e.target.value)}
-                  placeholder="e.g. ዳዊት ተስፋዬ"
+                  placeholder="e.g. ተስፋዬ"
                   className="w-full px-3 py-2 rounded-xl border border-[#D4849A]/40 bg-[#FDF0F3]/30 text-xs text-[#3B0B1F] focus:outline-none focus:border-[#C8A84B]"
                 />
               </div>
 
               <div>
                 <label className="block font-body text-xs font-semibold text-[#3B0B1F] uppercase mb-1">
-                  Bride Name (English)
+                  Bride's First Name
                 </label>
                 <input
                   type="text"
                   value={config.brideEn}
                   onChange={(e) => handleTextChange('brideEn', e.target.value)}
-                  placeholder="e.g. Selamawit Bekele"
+                  placeholder="e.g. Selamawit"
                   className="w-full px-3 py-2 rounded-xl border border-[#D4849A]/40 bg-[#FDF0F3]/30 text-xs text-[#3B0B1F] focus:outline-none focus:border-[#C8A84B]"
                 />
               </div>
               <div>
                 <label className="block font-body text-xs font-semibold text-[#3B0B1F] uppercase mb-1">
-                  Bride Name (Amharic)
+                  Bride's Last Name
                 </label>
                 <input
                   type="text"
                   value={config.brideEth}
                   onChange={(e) => handleTextChange('brideEth', e.target.value)}
-                  placeholder="e.g. ሰላማዊት በቀለ"
+                  placeholder="e.g. በቀለ"
                   className="w-full px-3 py-2 rounded-xl border border-[#D4849A]/40 bg-[#FDF0F3]/30 text-xs text-[#3B0B1F] focus:outline-none focus:border-[#C8A84B]"
                 />
               </div>
@@ -990,8 +1030,15 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
 
             {/* Ceremony Details */}
             <div className="space-y-2 p-3 bg-[#FDF0F3]/50 rounded-2xl border border-[#D4849A]/30">
-              <h4 className="font-serif-heading text-xs font-bold text-[#3B0B1F] uppercase tracking-wider">
-                1. Sacred Matrimony . የቃልኪዳን ስነስርዓት
+              <h4 className="font-serif-heading text-xs font-bold text-[#3B0B1F] uppercase tracking-wider flex items-center justify-between">
+                <span>
+                  1. Sacred Matrimony . የቃልኪዳን ስነስርዓት (Ceremony Venue) <span className="text-red-500">*</span>
+                </span>
+                {(config.churchEn || config.churchEth) ? (
+                  <span className="text-[10px] text-green-700 bg-green-100 px-2 py-0.5 rounded-full font-bold">Entered</span>
+                ) : (
+                  <span className="text-[10px] text-red-600 bg-red-100 px-2 py-0.5 rounded-full font-bold">Required</span>
+                )}
               </h4>
               <input
                 type="text"
@@ -1011,8 +1058,15 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
 
             {/* Reception Details */}
             <div className="space-y-2 p-3 bg-[#FDF0F3]/50 rounded-2xl border border-[#D4849A]/30">
-              <h4 className="font-serif-heading text-xs font-bold text-[#3B0B1F] uppercase tracking-wider">
-                2. Reception &amp; Dinner . የምሳ/እራት ግብዣ ቦታ
+              <h4 className="font-serif-heading text-xs font-bold text-[#3B0B1F] uppercase tracking-wider flex items-center justify-between">
+                <span>
+                  2. Reception &amp; Dinner . የምሳ/እራት ግብዣ ቦታ (Reception Venue) <span className="text-red-500">*</span>
+                </span>
+                {(config.receptionEn || config.receptionEth) ? (
+                  <span className="text-[10px] text-green-700 bg-green-100 px-2 py-0.5 rounded-full font-bold">Entered</span>
+                ) : (
+                  <span className="text-[10px] text-red-600 bg-red-100 px-2 py-0.5 rounded-full font-bold">Required</span>
+                )}
               </h4>
               <input
                 type="text"
@@ -1238,15 +1292,16 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
       {/* Bottom Sticky CTA Footer */}
       <div className="p-4 bg-[#FDF0F3] border-t border-[#D4849A]/30 space-y-2">
         {(() => {
-          const groom = (config.groomEn || config.groomEth || '').trim();
-          const bride = (config.brideEn || config.brideEth || '').trim();
+          const groom = [config.groomEn, config.groomEth].filter(Boolean).join(' ').trim();
+          const bride = [config.brideEn, config.brideEth].filter(Boolean).join(' ').trim();
+          const isHeroImgValid = Boolean(config.heroImg && config.heroImg.trim() !== '');
           const isGroomValid = Boolean(groom && groom !== 'የሙሽራው ስም');
           const isBrideValid = Boolean(bride && bride !== 'የሙሽሪት ስም');
           const isDateValid = Boolean(config.dateGC?.trim());
           const isChurchValid = Boolean((config.churchEn || config.churchEth || '').trim());
           const isReceptionValid = Boolean((config.receptionEn || config.receptionEth || '').trim());
           const isPhoneValid = Boolean(config.phone1?.trim());
-          const missingCount = [isGroomValid, isBrideValid, isDateValid, isChurchValid, isReceptionValid, isPhoneValid].filter(v => !v).length;
+          const missingCount = [isHeroImgValid, isGroomValid, isBrideValid, isDateValid, isChurchValid, isReceptionValid, isPhoneValid].filter(v => !v).length;
 
           return (
             <div>

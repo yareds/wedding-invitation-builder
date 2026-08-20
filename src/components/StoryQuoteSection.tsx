@@ -11,8 +11,8 @@ export const StoryQuoteSection: React.FC<StoryQuoteSectionProps> = ({ config }) 
   const theme = THEME_PRESETS[config.themeId] || THEME_PRESETS.bordeaux;
   const colors = theme.colors;
 
-  const groomName = config.groomEth || config.groomEn || 'የሙሽራው ስም';
-  const brideName = config.brideEth || config.brideEn || 'የሙሽሪት ስም';
+  const groomName = [config.groomEn, config.groomEth].filter(Boolean).join(' ').trim() || 'የሙሽራው ስም';
+  const brideName = [config.brideEn, config.brideEth].filter(Boolean).join(' ').trim() || 'የሙሽሪት ስም';
 
   return (
     <section

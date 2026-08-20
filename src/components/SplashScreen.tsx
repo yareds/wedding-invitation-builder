@@ -21,8 +21,10 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ config, onOpenInvita
     }, 700);
   };
 
-  const groomInit = (config.groomEth || config.groomEn || 'የሙሽራው ስም').trim()[0] || 'የ';
-  const brideInit = (config.brideEth || config.brideEn || 'የሙሽሪት ስም').trim()[0] || 'የ';
+  const groomFullName = [config.groomEn, config.groomEth].filter(Boolean).join(' ').trim() || 'የሙሽራው ስም';
+  const brideFullName = [config.brideEn, config.brideEth].filter(Boolean).join(' ').trim() || 'የሙሽሪት ስም';
+  const groomInit = (config.groomEn || config.groomEth || 'የሙሽራው ስም').trim()[0] || 'የ';
+  const brideInit = (config.brideEn || config.brideEth || 'የሙሽሪት ስም').trim()[0] || 'የ';
 
   return (
     <div
@@ -65,9 +67,9 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ config, onOpenInvita
 
         {/* Couple Names */}
         <h1 className="font-serif-heading text-2xl sm:text-4xl font-normal leading-tight mb-3" style={{ color: colors.blushPale }}>
-          {config.groomEth || config.groomEn || 'የሙሽራው ስም'}{' '}
+          {groomFullName}{' '}
           <span className="font-serif-heading italic text-xl sm:text-3xl" style={{ color: colors.gold }}>እና</span>{' '}
-          {config.brideEth || config.brideEn || 'የሙሽሪት ስም'}
+          {brideFullName}
         </h1>
 
         {/* Date and Location */}

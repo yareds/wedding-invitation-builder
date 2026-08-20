@@ -11,6 +11,9 @@ export const LightboxGallery: React.FC<LightboxGalleryProps> = ({ config }) => {
   const theme = THEME_PRESETS[config.themeId] || THEME_PRESETS.bordeaux;
   const colors = theme.colors;
 
+  const groomFullName = [config.groomEn, config.groomEth].filter(Boolean).join(' ').trim() || 'Groom';
+  const brideFullName = [config.brideEn, config.brideEth].filter(Boolean).join(' ').trim() || 'Bride';
+
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
@@ -161,7 +164,7 @@ export const LightboxGallery: React.FC<LightboxGalleryProps> = ({ config }) => {
                   }}
                 >
                   <span className="font-serif-heading text-sm font-normal" style={{ color: colors.gold }}>
-                    {config.groomEn || 'Sebastian'} &amp; {config.brideEn || 'Amara'}
+                    {groomFullName} &amp; {brideFullName}
                   </span>
                   <span className="font-body text-[11px] opacity-80">Click to expand</span>
                 </div>
@@ -205,7 +208,7 @@ export const LightboxGallery: React.FC<LightboxGalleryProps> = ({ config }) => {
                       }}
                     >
                       <span className="font-serif-heading text-sm font-normal" style={{ color: colors.gold }}>
-                        {config.groomEn || 'Sebastian'} &amp; {config.brideEn || 'Amara'}
+                        {groomFullName} &amp; {brideFullName}
                       </span>
                       <span className="font-body text-[11px] opacity-80">Click to expand</span>
                     </div>
@@ -246,7 +249,7 @@ export const LightboxGallery: React.FC<LightboxGalleryProps> = ({ config }) => {
                       }}
                     >
                       <span className="font-serif-heading text-sm font-normal" style={{ color: colors.gold }}>
-                        {config.groomEn || 'Sebastian'} &amp; {config.brideEn || 'Amara'}
+                        {groomFullName} &amp; {brideFullName}
                       </span>
                       <span className="font-body text-[11px] opacity-80">Click to expand</span>
                     </div>
@@ -339,7 +342,7 @@ export const LightboxGallery: React.FC<LightboxGalleryProps> = ({ config }) => {
                 Photo {selectedIndex + 1} of {imagesList.length}
               </h3>
               <p className="font-body text-xs sm:text-sm text-white/80">
-                {config.groomEn || 'Sebastian'} &amp; {config.brideEn || 'Amara'}
+                {groomFullName} &amp; {brideFullName}
               </p>
               <p className="font-quote text-[11px] mt-1" style={{ color: colors.blush }}>
                 Swipe left/right or use arrow keys to browse

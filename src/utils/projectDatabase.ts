@@ -67,16 +67,16 @@ function openIndexedDB(): Promise<IDBDatabase> {
 // Save pending draft File/Blob objects locally to IndexedDB 'pendingDraftFiles' store
 export async function saveDraftFilesLocally(
   id: string,
-  files: { heroImgFile?: File; bgMusicFile?: File; galleryFiles?: File[] }
+  files: { heroImgFile?: File | null; bgMusicFile?: File | null; galleryFiles?: File[] | null }
 ): Promise<void> {
   try {
     const idb = await openIndexedDB();
     const existing = await getDraftFilesLocally(id);
     const updated: PendingDraftFiles = {
       id,
-      heroImgFile: files.heroImgFile !== undefined ? files.heroImgFile : existing?.heroImgFile,
-      bgMusicFile: files.bgMusicFile !== undefined ? files.bgMusicFile : existing?.bgMusicFile,
-      galleryFiles: files.galleryFiles !== undefined ? files.galleryFiles : existing?.galleryFiles,
+      heroImgFile: files.heroImgFile === null ? undefined : (files.heroImgFile !== undefined ? files.heroImgFile : existing?.heroImgFile),
+      bgMusicFile: files.bgMusicFile === null ? undefined : (files.bgMusicFile !== undefined ? files.bgMusicFile : existing?.bgMusicFile),
+      galleryFiles: files.galleryFiles === null ? undefined : (files.galleryFiles !== undefined ? files.galleryFiles : existing?.galleryFiles),
       updatedAt: new Date().toISOString()
     };
 
@@ -134,8 +134,8 @@ export function saveLocalDraftConfig(
 ): SavedProject {
   const projects = [...getAllSavedProjects()];
   const id = existingId || generateProjectId();
-  const groom = config.groomEth || config.groomEn || 'የሙሽራው ስም';
-  const bride = config.brideEth || config.brideEn || 'የሙሽሪት ስም';
+  const groom = [config.groomEn, config.groomEth].filter(Boolean).join(' ').trim() || 'የሙሽራው ስም';
+  const bride = [config.brideEn, config.brideEth].filter(Boolean).join(' ').trim() || 'የሙሽሪት ስም';
   const coupleNames = `${groom} እና ${bride}`;
   const now = new Date().toISOString();
 
@@ -366,8 +366,8 @@ export async function saveProjectToDatabase(
 ): Promise<SavedProject> {
   const projects = [...getAllSavedProjects()];
   const id = existingId || generateProjectId();
-  const groom = config.groomEth || config.groomEn || 'የሙሽራው ስም';
-  const bride = config.brideEth || config.brideEn || 'የሙሽሪት ስም';
+  const groom = [config.groomEn, config.groomEth].filter(Boolean).join(' ').trim() || 'የሙሽራው ስም';
+  const bride = [config.brideEn, config.brideEth].filter(Boolean).join(' ').trim() || 'የሙሽሪት ስም';
   const coupleNames = `${groom} እና ${bride}`;
   const now = new Date().toISOString();
 

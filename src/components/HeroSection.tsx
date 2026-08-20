@@ -14,11 +14,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
   const theme = THEME_PRESETS[config.themeId] || THEME_PRESETS.bordeaux;
   const colors = theme.colors;
 
-  const groomInit = (config.groomEth || config.groomEn || 'የሙሽራው ስም').trim()[0] || 'የ';
-  const brideInit = (config.brideEth || config.brideEn || 'የሙሽሪት ስም').trim()[0] || 'የ';
+  const groomInit = (config.groomEn || config.groomEth || 'የሙሽራው ስም').trim()[0] || 'የ';
+  const brideInit = (config.brideEn || config.brideEth || 'የሙሽሪት ስም').trim()[0] || 'የ';
 
-  const groomName = config.groomEth || config.groomEn || 'የሙሽራው ስም';
-  const brideName = config.brideEth || config.brideEn || 'የሙሽሪት ስም';
+  const groomName = [config.groomEn, config.groomEth].filter(Boolean).join(' ').trim() || 'የሙሽራው ስም';
+  const brideName = [config.brideEn, config.brideEth].filter(Boolean).join(' ').trim() || 'የሙሽሪት ስም';
 
   return (
     <section
@@ -127,33 +127,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
               {brideName}
             </motion.span>
           </motion.h1>
-
-          {/* English Sub-heading */}
-          {(config.groomEn || config.brideEn) && (
-            <motion.p
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.75 }}
-              className="font-quote italic text-base sm:text-xl tracking-wide mt-2 opacity-95"
-              style={{ color: '#FFFFFF' }}
-            >
-              {config.groomEn} &amp; {config.brideEn}
-            </motion.p>
-          )}
         </div>
-
-        {/* Subtitle / Scripture Text */}
-        {config.scripture && config.scripture !== 'ሁሉን ያዘጋጀ ግን እግዚአብሔር ነው።' && (
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.85 }}
-            className="font-serif-heading text-base sm:text-lg max-w-xl mx-auto leading-relaxed mb-8 opacity-90 tracking-wide"
-            style={{ color: '#FFFFFF' }}
-          >
-            {config.scripture}
-          </motion.p>
-        )}
 
         {/* Key Event Date & Location Info */}
         <motion.div
