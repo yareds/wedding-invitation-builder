@@ -98,6 +98,7 @@ export interface WeddingConfig {
   scripture: string;
   scriptureRef: string;
   storyText?: string;
+  contactInfo?: string;
   phone1: string;
   phone2: string;
   whatsappNumber: string;

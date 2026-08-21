@@ -225,7 +225,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
   const heroImg = (config.heroImg || '').trim();
   const church = (config.churchEn || config.churchEth || '').trim();
   const reception = (config.receptionEn || config.receptionEth || '').trim();
-  const contactPhone = (config.phone1 || '').trim();
+  const contactPhone = (config.contactInfo || config.phone1 || '').trim();
   const activeProjectId = currentProject?.id || projectId;
 
   // Check validity of essential wedding fields
@@ -245,7 +245,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
   if (!isDateValid) essentialWeddingMissing.push({ key: 'dateGC', label: "Wedding Date" });
   if (!isChurchValid) essentialWeddingMissing.push({ key: 'church', label: "Ceremony Venue (Church/Cathedral)" });
   if (!isReceptionValid) essentialWeddingMissing.push({ key: 'reception', label: "Reception Venue (Hall/Resort)" });
-  if (!isPhone1Valid) essentialWeddingMissing.push({ key: 'phone1', label: "Contact Phone Number" });
+  if (!isPhone1Valid) essentialWeddingMissing.push({ key: 'contactInfo', label: "Contact & Assistance Info" });
 
   const isEssentialWeddingComplete = essentialWeddingMissing.length === 0;
 

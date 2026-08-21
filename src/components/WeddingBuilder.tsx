@@ -1084,6 +1084,28 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
               />
             </div>
 
+            {/* Contact & Assistance Info */}
+            <div className="space-y-2 p-3 bg-[#FDF0F3]/50 rounded-2xl border border-[#D4849A]/30">
+              <h4 className="font-serif-heading text-xs font-bold text-[#3B0B1F] uppercase tracking-wider flex items-center justify-between">
+                <span>3. Contact &amp; Assistance Info</span>
+                {config.contactInfo ? (
+                  <span className="text-[10px] text-green-700 bg-green-100 px-2 py-0.5 rounded-full font-bold">Entered</span>
+                ) : (
+                  <span className="text-[10px] text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full font-bold">Optional</span>
+                )}
+              </h4>
+              <textarea
+                rows={2}
+                value={config.contactInfo || ''}
+                onChange={(e) => handleTextChange('contactInfo', e.target.value)}
+                placeholder="e.g. +251 91 123 4567 / +251 92 234 5678 · info@wedding.et (type any phone, email, note, or guest instructions)"
+                className="w-full px-3 py-2 rounded-lg border text-xs bg-white text-[#3B0B1F]"
+              />
+              <p className="text-[11px] text-[#3B0B1F]/60 font-body">
+                Displayed in the dedicated Contact &amp; Assistance section at the very bottom of your invitation.
+              </p>
+            </div>
+
             {/* Wedding Day Schedule Editor */}
             <div className="space-y-3 pt-3 border-t border-[#D4849A]/30">
               <div className="flex items-center justify-between">
@@ -1300,7 +1322,7 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
           const isDateValid = Boolean(config.dateGC?.trim());
           const isChurchValid = Boolean((config.churchEn || config.churchEth || '').trim());
           const isReceptionValid = Boolean((config.receptionEn || config.receptionEth || '').trim());
-          const isPhoneValid = Boolean(config.phone1?.trim());
+          const isPhoneValid = Boolean((config.contactInfo || config.phone1)?.trim());
           const missingCount = [isHeroImgValid, isGroomValid, isBrideValid, isDateValid, isChurchValid, isReceptionValid, isPhoneValid].filter(v => !v).length;
 
           return (

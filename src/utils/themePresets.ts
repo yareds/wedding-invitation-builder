@@ -431,6 +431,7 @@ export const DEFAULT_WEDDING_CONFIG: WeddingConfig = {
   scripture: '“ስለዚህ ሰው አባቱንና እናቱን ይተዋል፥ ከሚስቱም ጋር ይተባበራል፥ ሁለቱም አንድ ሥጋ ይሆናሉ።”',
   scriptureRef: 'የማቴዎስ ወንጌል 19፥6',
   storyText: 'በእምነት እና በፍቅር የተሳሰረ ጉዟችን ዛሬ በአንድነት አምሮ ደምቋል። From our first meeting in Addis Ababa to this blessed covenant, our journey has been filled with faith, shared laughter, and unconditional love.',
+  contactInfo: '+251 91 123 4567 / +251 92 234 5678 · info@wedding.et',
   phone1: '+251 91 123 4567',
   phone2: '+251 92 234 5678',
   whatsappNumber: '+251 91 123 4567',

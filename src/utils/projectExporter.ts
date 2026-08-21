@@ -126,16 +126,7 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
   const brideInit = (config.brideEn || config.brideEth || 'የ').trim()[0] || 'የ';
   const coupleTitle = `${groom} እና ${bride}`;
 
-  const galleryImgs = config.galleryImgs && config.galleryImgs.length > 0 ? config.galleryImgs : [
-    'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=800&q=80'
-  ];
+  const galleryImgs = config.galleryImgs || [];
   const galleryImgsJson = JSON.stringify(galleryImgs);
 
   const scheduleList = config.schedule && config.schedule.length > 0 ? config.schedule : [
@@ -216,7 +207,7 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
   const row1Images = galleryImgs.length >= 8 ? galleryImgs.slice(0, 4) : galleryImgs.slice(0, Math.ceil(galleryImgs.length / 2));
   const row2Images = galleryImgs.length >= 8 ? galleryImgs.slice(4, 8) : (galleryImgs.slice(Math.ceil(galleryImgs.length / 2)).length > 0 ? galleryImgs.slice(Math.ceil(galleryImgs.length / 2)) : row1Images);
 
-  const marqueeRow1Items = [...row1Images, ...row1Images, ...row1Images, ...row1Images]
+  const marqueeRow1Items = row1Images.length > 0 ? [...row1Images, ...row1Images, ...row1Images, ...row1Images]
     .map((url) => {
       const origIdx = galleryImgs.indexOf(url) >= 0 ? galleryImgs.indexOf(url) : 0;
       return `
@@ -229,9 +220,9 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
       </div>
     `;
     })
-    .join('');
+    .join('') : '';
 
-  const marqueeRow2Items = [...row2Images, ...row2Images, ...row2Images, ...row2Images]
+  const marqueeRow2Items = row2Images.length > 0 ? [...row2Images, ...row2Images, ...row2Images, ...row2Images]
     .map((url) => {
       const origIdx = galleryImgs.indexOf(url) >= 0 ? galleryImgs.indexOf(url) : 0;
       return `
@@ -244,7 +235,76 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
       </div>
     `;
     })
-    .join('');
+    .join('') : '';
+
+  // Gallery HTML generation based on photo count
+  let gallerySectionHtml = '';
+  if (galleryImgs.length === 0) {
+    gallerySectionHtml = `
+    <!-- 6. Gallery Section (Empty State) -->
+    <section id="gallery-section" class="py-16 overflow-hidden max-w-5xl mx-auto px-4">
+      <div class="text-center mb-8 px-4">
+        <p class="font-body text-xs uppercase tracking-[0.3em] font-semibold mb-2" style="color: ${colors.blush}">Shared Moments</p>
+        <h2 class="font-serif-heading text-3xl sm:text-4xl font-normal" style="color: ${colors.primary}">Love Story Gallery</h2>
+        <div class="w-16 h-[2px] mx-auto mt-4" style="background-color: ${colors.gold}"></div>
+      </div>
+      <div class="max-w-md mx-auto p-8 rounded-2xl border text-center shadow-xs" style="border-color: ${colors.gold}40; background-color: #FFFFFF">
+        <div class="w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center border" style="border-color: ${colors.gold}60; background-color: ${colors.blushPale}; color: ${colors.gold}">
+          <svg class="w-5 h-5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+        </div>
+        <h3 class="font-serif-heading text-lg font-normal mb-1" style="color: ${colors.primary}">No Photos Added Yet</h3>
+        <p class="font-body text-xs leading-relaxed opacity-75" style="color: ${colors.primary}">Uploaded wedding and engagement photos will appear here in your live gallery.</p>
+      </div>
+    </section>
+    `;
+  } else if (galleryImgs.length < 4) {
+    const gridColsClass = galleryImgs.length === 1 ? 'max-w-md grid-cols-1' : galleryImgs.length === 2 ? 'max-w-2xl grid-cols-1 sm:grid-cols-2' : 'max-w-4xl grid-cols-1 sm:grid-cols-3';
+    const staticGridItems = galleryImgs.map((url, idx) => `
+      <div onclick="openLightbox(${idx})" class="group relative aspect-[4/3] bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border cursor-pointer" style="border-color: ${colors.blush}40">
+        <img src="${url}" alt="Photo ${idx + 1}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 text-white" style="background: linear-gradient(to top, ${colors.primary}E0, transparent)">
+          <span class="font-serif-heading text-sm font-normal" style="color: ${colors.gold}">${groomEn} &amp; ${brideEn}</span>
+          <span class="font-body text-[11px] opacity-80">Click to expand</span>
+        </div>
+      </div>
+    `).join('');
+    gallerySectionHtml = `
+    <!-- 6. Gallery Section (Static Grid) -->
+    <section id="gallery-section" class="py-16 overflow-hidden max-w-7xl mx-auto">
+      <div class="text-center mb-10 px-4">
+        <p class="font-body text-xs uppercase tracking-[0.3em] font-semibold mb-2" style="color: ${colors.blush}">Shared Moments</p>
+        <h2 class="font-serif-heading text-3xl sm:text-4xl font-normal" style="color: ${colors.primary}">Love Story Gallery</h2>
+        <p class="font-quote text-xs italic mt-2 opacity-80" style="color: ${colors.primary}">Click any photo to expand into full view</p>
+        <div class="w-16 h-[2px] mx-auto mt-4" style="background-color: ${colors.gold}"></div>
+      </div>
+      <div class="px-4">
+        <div class="grid gap-4 sm:gap-6 mx-auto ${gridColsClass}">
+          ${staticGridItems}
+        </div>
+      </div>
+    </section>
+    `;
+  } else {
+    gallerySectionHtml = `
+    <!-- 6. Dual Row Gallery Slider -->
+    <section id="gallery-section" class="py-16 overflow-hidden max-w-7xl mx-auto">
+      <div class="text-center mb-10 px-4">
+        <p class="font-body text-xs uppercase tracking-[0.3em] font-semibold mb-2" style="color: ${colors.blush}">Shared Moments</p>
+        <h2 class="font-serif-heading text-3xl sm:text-4xl font-normal" style="color: ${colors.primary}">Love Story Gallery</h2>
+        <p class="font-quote text-xs italic mt-2 opacity-80" style="color: ${colors.primary}">Hover to pause scrolling • Click any photo to expand</p>
+        <div class="w-16 h-[2px] mx-auto mt-4" style="background-color: ${colors.gold}"></div>
+      </div>
+      <div class="space-y-6">
+        <div class="overflow-hidden py-2 relative">
+          <div class="animate-scroll-right gap-4 px-2">${marqueeRow1Items}</div>
+        </div>
+        <div class="overflow-hidden py-2 relative">
+          <div class="animate-scroll-left gap-4 px-2">${marqueeRow2Items}</div>
+        </div>
+      </div>
+    </section>
+    `;
+  }
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -255,17 +315,18 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Noto+Serif+Ethiopic:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Lora:ital,wght@0,400..700;1,400..700&family=Noto+Sans+Ethiopic:wght@100..900&family=Raleway:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Raleway', sans-serif;
       background-color: ${colors.blushPale};
       color: ${colors.primary};
     }
-    .font-serif-heading { font-family: 'Playfair Display', 'Noto Serif Ethiopic', serif; }
-    .font-ethiopic { font-family: 'Noto Serif Ethiopic', serif; }
-    .font-script { font-family: 'Great Vibes', cursive; }
-    .font-quote { font-family: 'Playfair Display', serif; font-style: italic; }
+    .font-body { font-family: 'Raleway', sans-serif; }
+    .font-serif-heading { font-family: 'Bodoni Moda', serif; }
+    .font-quote { font-family: 'Lora', serif; font-style: italic; }
+    .font-amharic { font-family: 'Noto Sans Ethiopic', sans-serif; }
+    .font-ethiopic { font-family: 'Noto Sans Ethiopic', sans-serif; }
 
     @keyframes scrollRight {
       0% { transform: translateX(-50%); }
@@ -475,47 +536,6 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
             </div>
           </div>
         </div>
-
-        <!-- Card 3: Attire Guidance -->
-        <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-md border-l-4 flex flex-col md:flex-row md:items-center justify-between gap-6" style="border-left-color: ${colors.blush}">
-          <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-full border flex items-center justify-center shrink-0" style="background-color: ${colors.blushPale}; border-color: ${colors.blush}60">
-              <span style="color: ${colors.blush}" class="text-xl">👔</span>
-            </div>
-            <div>
-              <span class="font-body text-[11px] uppercase tracking-widest font-semibold block mb-1" style="color: ${colors.blush}">Attire Guidance</span>
-              <h3 class="font-serif-heading text-xl sm:text-2xl font-normal mb-2" style="color: ${colors.primary}">${config.dressCode || 'Black-Tie Formal & Traditional Elegance'}</h3>
-              <p class="font-body text-sm leading-relaxed mb-2 opacity-80" style="color: ${colors.primary}">We kindly request formal attire or traditional Ethiopian celebration wear.</p>
-              <div class="flex items-center gap-2 mt-3">
-                <span class="font-body text-xs opacity-70" style="color: ${colors.primary}">Palette Inspiration:</span>
-                <div class="flex items-center gap-1.5">
-                  <span class="w-4 h-4 rounded-full border shadow-sm" style="background-color: ${colors.primary}"></span>
-                  <span class="w-4 h-4 rounded-full border shadow-sm" style="background-color: ${colors.blush}"></span>
-                  <span class="w-4 h-4 rounded-full border shadow-sm" style="background-color: ${colors.gold}"></span>
-                  <span class="w-4 h-4 rounded-full border shadow-sm" style="background-color: ${colors.bg}"></span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 4: Contact & Assistance -->
-        <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-md border-l-4 flex flex-col md:flex-row md:items-center justify-between gap-6" style="border-left-color: ${colors.gold}">
-          <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-full border flex items-center justify-center shrink-0" style="background-color: ${colors.blushPale}; border-color: ${colors.gold}60">
-              <span style="color: ${colors.gold}" class="text-xl">📞</span>
-            </div>
-            <div>
-              <span class="font-body text-[11px] uppercase tracking-widest font-semibold block mb-1" style="color: ${colors.blush}">Contact &amp; Assistance</span>
-              <h3 class="font-serif-heading text-xl sm:text-2xl font-normal mb-2" style="color: ${colors.primary}">Wedding Hotline &amp; Inquiry</h3>
-              <p class="font-body text-sm leading-relaxed" style="color: ${colors.primary}">For special assistance, travel advice, or dietary requirements, please reach us directly:</p>
-              <div class="mt-3 flex flex-wrap items-center gap-4 text-xs font-semibold" style="color: ${colors.primary}">
-                ${config.phone1 ? `<span class="px-3 py-1 rounded-full bg-slate-100 border">📞 ${config.phone1}</span>` : ''}
-                ${config.phone2 ? `<span class="px-3 py-1 rounded-full bg-slate-100 border">📞 ${config.phone2}</span>` : ''}
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -559,23 +579,7 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
       </div>
     </section>
 
-    <!-- 6. Dual Row Gallery Slider -->
-    <section class="py-16 overflow-hidden max-w-7xl mx-auto">
-      <div class="text-center mb-10 px-4">
-        <p class="font-body text-xs uppercase tracking-[0.3em] font-semibold mb-2" style="color: ${colors.blush}">Shared Moments</p>
-        <h2 class="font-serif-heading text-3xl sm:text-4xl font-normal" style="color: ${colors.primary}">Love Story Gallery</h2>
-        <p class="font-quote text-xs italic mt-2 opacity-80" style="color: ${colors.primary}">Hover to pause scrolling • Click any photo to expand</p>
-        <div class="w-16 h-[2px] mx-auto mt-4" style="background-color: ${colors.gold}"></div>
-      </div>
-      <div class="space-y-6">
-        <div class="overflow-hidden py-2 relative">
-          <div class="animate-scroll-right gap-4 px-2">${marqueeRow1Items}</div>
-        </div>
-        <div class="overflow-hidden py-2 relative">
-          <div class="animate-scroll-left gap-4 px-2">${marqueeRow2Items}</div>
-        </div>
-      </div>
-    </section>
+    ${gallerySectionHtml}
 
     <!-- 8. RSVP Banner Section -->
     <section class="py-12 text-center px-4 my-8" style="background-color: ${colors.primary}; color: ${colors.blushPale}">
@@ -601,6 +605,19 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
       </div>
       ${getBotanicalFrameHtml('banner-bottom', config.themeId, config.frameStyle, 'mt-8 -mb-12')}
     </footer>
+
+    <!-- 10. Contact & Assistance Standalone Section -->
+    <section id="contact-section" class="py-8 px-4 text-center border-t" style="background-color: ${colors.footerBg || colors.primary}; border-color: ${colors.gold}40; color: #FAF0F3">
+      <div class="max-w-2xl mx-auto space-y-3">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold uppercase tracking-widest border shadow-xs" style="border-color: ${colors.gold}60; background-color: rgba(255, 255, 255, 0.08); color: ${colors.gold}">
+          <span>📞</span>
+          <span>Contact &amp; Assistance Info</span>
+        </div>
+        <p class="font-body text-xs sm:text-sm leading-relaxed whitespace-pre-line opacity-95 text-[#FAF0F3]">
+          ${(config.contactInfo || '').trim() || '+251 91 123 4567 / +251 92 234 5678 · info@wedding.et'}
+        </p>
+      </div>
+    </section>
 
   </div>
 
