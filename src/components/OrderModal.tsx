@@ -81,7 +81,22 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
   if (!isOpen) return null;
 
   const handleSubmitOrder = async (actionType: 'submit_only' | 'Telegram' | 'WhatsApp' = lastActionType) => {
-    if (isOrderSubmitted) return;
+    if (isOrderSubmitted) {
+      if (actionType === 'Telegram') {
+        const text = encodeURIComponent(
+          `Hello! I am sending my order confirmation for my wedding invitation:\n\nCustomer: ${customerName}\nPhone: ${customerPhone}\nProject ID: ${projectId}`
+        );
+        window.open(`https://t.me/yared_abegaz?text=${text}`, '_blank');
+        setSentSuccess('Telegram');
+      } else if (actionType === 'WhatsApp') {
+        const text = encodeURIComponent(
+          `Hello! I am sending my order confirmation for my wedding invitation:\n\nCustomer: ${customerName}\nPhone: ${customerPhone}\nProject ID: ${projectId}`
+        );
+        window.open(`https://wa.me/15714749554?text=${text}`, '_blank');
+        setSentSuccess('WhatsApp');
+      }
+      return;
+    }
     setLastActionType(actionType);
     if (!isAllInfoComplete) {
       setShowValidationErrors(true);
@@ -225,7 +240,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
   const heroImg = (config.heroImg || '').trim();
   const church = (config.churchEn || config.churchEth || '').trim();
   const reception = (config.receptionEn || config.receptionEth || '').trim();
-  const contactPhone = (config.contactInfo || config.phone1 || '').trim();
+  const contactPhone = (config.phone1 || '').trim();
   const activeProjectId = currentProject?.id || projectId;
 
   // Check validity of essential wedding fields
@@ -235,7 +250,6 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
   const isDateValid = Boolean(dateGC);
   const isChurchValid = Boolean(church);
   const isReceptionValid = Boolean(reception);
-  const isPhone1Valid = Boolean(contactPhone);
 
   // Missing essential wedding fields
   const essentialWeddingMissing: { key: string; label: string }[] = [];
@@ -245,7 +259,6 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
   if (!isDateValid) essentialWeddingMissing.push({ key: 'dateGC', label: "Wedding Date" });
   if (!isChurchValid) essentialWeddingMissing.push({ key: 'church', label: "Ceremony Venue (Church/Cathedral)" });
   if (!isReceptionValid) essentialWeddingMissing.push({ key: 'reception', label: "Reception Venue (Hall/Resort)" });
-  if (!isPhone1Valid) essentialWeddingMissing.push({ key: 'contactInfo', label: "Contact & Assistance Info" });
 
   const isEssentialWeddingComplete = essentialWeddingMissing.length === 0;
 
@@ -589,21 +602,6 @@ Order details submitted for online hosting.
                 }`}
               />
             </div>
-
-            <div>
-              <label className="block text-[11px] font-semibold text-[#A68224] mb-0.5">
-                Contact Phone <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                value={config.phone1 || ''}
-                onChange={(e) => updateConfigField('phone1', e.target.value)}
-                placeholder="Primary Contact Phone"
-                className={`w-full px-2.5 py-1.5 rounded-lg bg-[#FAF7F2] border text-xs text-[#3D0A1F] ${
-                  !isPhone1Valid ? 'border-red-500 ring-1 ring-red-500/20' : 'border-[#D8C7A8]'
-                }`}
-              />
-            </div>
           </div>
         </div>
 
@@ -614,7 +612,7 @@ Order details submitted for online hosting.
             Payment Information (Bank Transfer &amp; TeleBirr)
           </h3>
           <p className="font-body text-xs text-[#5C3240] mb-3 leading-relaxed">
-            Please transfer the 25,000 ETB fee to any of our official accounts below:
+            Please transfer the <strong className="font-bold text-[#3D0A1F]">25,000 Birr</strong> fee to any of our official accounts below:
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -743,15 +741,15 @@ Order details submitted for online hosting.
 
           {/* Optional Direct Messaging Channels */}
           <div className="pt-2 border-t border-[#E0D0B8]/60 space-y-2">
-            <p className="text-[11px] font-body text-[#6B4752] text-center">
-              Or send your order details directly via messaging app:
+            <p className="text-xs font-body font-semibold text-[#3D0A1F] text-center">
+              Message us via:
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
                 onClick={() => handleSubmitOrder('Telegram')}
-                disabled={!isAllInfoComplete || isSubmitting || isOrderSubmitted}
+                disabled={!isAllInfoComplete || isSubmitting}
                 className={`py-2.5 px-3 rounded-xl font-body text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
-                  isAllInfoComplete && !isSubmitting && !isOrderSubmitted
+                  isAllInfoComplete && !isSubmitting
                     ? 'bg-[#0088cc] text-white hover:bg-[#0077b5] shadow-sm cursor-pointer'
                     : 'bg-gray-200 text-gray-500 opacity-60 cursor-not-allowed border border-gray-300'
                 }`}
@@ -762,9 +760,9 @@ Order details submitted for online hosting.
 
               <button
                 onClick={() => handleSubmitOrder('WhatsApp')}
-                disabled={!isAllInfoComplete || isSubmitting || isOrderSubmitted}
+                disabled={!isAllInfoComplete || isSubmitting}
                 className={`py-2.5 px-3 rounded-xl font-body text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
-                  isAllInfoComplete && !isSubmitting && !isOrderSubmitted
+                  isAllInfoComplete && !isSubmitting
                     ? 'bg-[#25D366] text-white hover:bg-[#20ba5a] shadow-sm cursor-pointer'
                     : 'bg-gray-200 text-gray-500 opacity-60 cursor-not-allowed border border-gray-300'
                 }`}

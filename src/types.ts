@@ -90,7 +90,6 @@ export interface WeddingConfig {
   dayName: string;
   timeDisplay: string;
   countdownDate: string;
-  dressCode: string;
   churchEth: string;
   churchEn: string;
   receptionEth: string;

@@ -16,7 +16,6 @@ import { TimelineSection } from './components/TimelineSection';
 import { LightboxGallery } from './components/LightboxGallery';
 import { RSVPModal } from './components/RSVPModal';
 import { BotanicalFooter } from './components/BotanicalFooter';
-import { ContactSection } from './components/ContactSection';
 import { romanticPiano } from './utils/audioEngine';
 import { Eye, Smartphone, Monitor, ShoppingBag, Sparkles, FolderOpen, ShieldCheck, Lock, UserCheck, Home, AlertTriangle, X } from 'lucide-react';
 
@@ -278,8 +277,6 @@ export default function App() {
                 </section>
 
                 <BotanicalFooter config={config} />
-
-                <ContactSection config={config} />
               </div>
             </div>
           </div>

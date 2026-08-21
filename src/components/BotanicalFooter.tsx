@@ -54,6 +54,12 @@ export const BotanicalFooter: React.FC<BotanicalFooterProps> = ({ config }) => {
         <p className="font-body text-xs tracking-widest uppercase pt-4 text-[#FAF0F3]/80">
           {config.dateGC || 'May 09, 2026'} • {config.dateEC || 'ግንቦት 01, 2018 ዓ.ም'}
         </p>
+
+        {config.contactInfo && config.contactInfo.trim() && (
+          <p className="font-body text-xs sm:text-sm leading-relaxed text-[#FAF0F3]/90 pt-1">
+            {config.contactInfo.trim()}
+          </p>
+        )}
       </div>
 
       {/* Bottom SVG Vine-and-Flower Band */}

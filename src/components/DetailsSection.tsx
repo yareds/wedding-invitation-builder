@@ -52,11 +52,8 @@ export const DetailsSection: React.FC<DetailsSectionProps> = ({ config }) => {
               <h3 className="font-serif-heading text-xl sm:text-2xl font-normal mb-2" style={{ color: colors.primary }}>
                 {config.churchEth || 'ቅድስት ሥላሴ ካቴድራል፤ አዲስ አበባ'}
               </h3>
-              <p className="font-body text-sm font-semibold mb-2" style={{ color: colors.primary }}>
+              <p className="font-body text-sm font-semibold" style={{ color: colors.primary }}>
                 {config.churchEn || 'Holy Trinity Cathedral, Addis Ababa'}
-              </p>
-              <p className="font-quote italic text-xs" style={{ color: colors.blush }}>
-                Organ prelude begins 30 minutes prior. Doors close promptly for the processional.
               </p>
             </div>
           </div>
@@ -88,11 +85,8 @@ export const DetailsSection: React.FC<DetailsSectionProps> = ({ config }) => {
               <h3 className="font-serif-heading text-xl sm:text-2xl font-normal mb-2" style={{ color: colors.primary }}>
                 {config.receptionEth || 'ግዮን ሆቴል (ግራንድ ሆል)፤ አዲስ አበባ'}
               </h3>
-              <p className="font-body text-sm font-semibold mb-2" style={{ color: colors.primary }}>
+              <p className="font-body text-sm font-semibold" style={{ color: colors.primary }}>
                 {config.receptionEn || 'Ghion Hotel Grand Hall, Addis Ababa'}
-              </p>
-              <p className="font-quote italic text-xs" style={{ color: colors.blush }}>
-                Cocktails, traditional toast, lunch &amp; dinner banquet, and live music celebration.
               </p>
             </div>
           </div>

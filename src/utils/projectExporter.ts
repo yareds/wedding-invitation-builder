@@ -514,8 +514,7 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
                 <span class="font-body text-[11px] uppercase tracking-widest font-semibold" style="color: ${colors.blush}">Sacred Matrimony . የቃልኪዳን ስነስርዓት</span>
               </div>
               <h3 class="font-serif-heading text-xl sm:text-2xl font-normal mb-2" style="color: ${colors.primary}">${config.churchEth || 'ቅድስት ሥላሴ ካቴድራል፤ አዲስ አበባ'}</h3>
-              <p class="font-body text-sm font-semibold mb-2" style="color: ${colors.primary}">${config.churchEn || 'Holy Trinity Cathedral, Addis Ababa'}</p>
-              <p class="font-quote italic text-xs" style="color: ${colors.blush}">Organ prelude begins 30 minutes prior. Doors close promptly for the processional.</p>
+              <p class="font-body text-sm font-semibold" style="color: ${colors.primary}">${config.churchEn || 'Holy Trinity Cathedral, Addis Ababa'}</p>
             </div>
           </div>
         </div>
@@ -531,8 +530,7 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
                 <span class="font-body text-[11px] uppercase tracking-widest font-semibold" style="color: ${colors.blush}">Reception &amp; Dinner . የምሳ/እራት ግብዣ ቦታ</span>
               </div>
               <h3 class="font-serif-heading text-xl sm:text-2xl font-normal mb-2" style="color: ${colors.primary}">${config.receptionEth || 'ግዮን ሆቴል (ግራንድ ሆል)፤ አዲስ አበባ'}</h3>
-              <p class="font-body text-sm font-semibold mb-2" style="color: ${colors.primary}">${config.receptionEn || 'Ghion Hotel Grand Hall, Addis Ababa'}</p>
-              <p class="font-quote italic text-xs" style="color: ${colors.blush}">Cocktails, traditional toast, lunch & dinner banquet, and live music celebration.</p>
+              <p class="font-body text-sm font-semibold" style="color: ${colors.primary}">${config.receptionEn || 'Ghion Hotel Grand Hall, Addis Ababa'}</p>
             </div>
           </div>
         </div>
@@ -602,22 +600,10 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
         <h3 class="font-serif-heading text-2xl sm:text-3xl font-normal text-[#FAF0F3]">${groomEth} እና ${brideEth}</h3>
         <p class="font-quote italic text-sm max-w-md mx-auto text-[#E5A4B5]">"We cannot wait to share the magic of our wedding day with you."</p>
         <p class="font-body text-xs tracking-widest uppercase pt-4 text-[#FAF0F3]/80">${config.dateGC || 'May 09, 2026'} • ${config.dateEC || 'ግንቦት 01, 2018 ዓ.ም'}</p>
+        ${config.contactInfo && config.contactInfo.trim() ? `<p class="font-body text-xs sm:text-sm leading-relaxed text-[#FAF0F3]/90 pt-1">${config.contactInfo.trim()}</p>` : ''}
       </div>
       ${getBotanicalFrameHtml('banner-bottom', config.themeId, config.frameStyle, 'mt-8 -mb-12')}
     </footer>
-
-    <!-- 10. Contact & Assistance Standalone Section -->
-    <section id="contact-section" class="py-8 px-4 text-center border-t" style="background-color: ${colors.footerBg || colors.primary}; border-color: ${colors.gold}40; color: #FAF0F3">
-      <div class="max-w-2xl mx-auto space-y-3">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold uppercase tracking-widest border shadow-xs" style="border-color: ${colors.gold}60; background-color: rgba(255, 255, 255, 0.08); color: ${colors.gold}">
-          <span>📞</span>
-          <span>Contact &amp; Assistance Info</span>
-        </div>
-        <p class="font-body text-xs sm:text-sm leading-relaxed whitespace-pre-line opacity-95 text-[#FAF0F3]">
-          ${(config.contactInfo || '').trim() || '+251 91 123 4567 / +251 92 234 5678 · info@wedding.et'}
-        </p>
-      </div>
-    </section>
 
   </div>
 

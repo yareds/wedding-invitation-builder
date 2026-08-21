@@ -83,7 +83,6 @@ export const ProjectRegistryModal: React.FC<ProjectRegistryModalProps> = ({
   const [isLoadingFirestore, setIsLoadingFirestore] = useState<boolean>(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
-  const [isExportingActive, setIsExportingActive] = useState<boolean>(false);
 
   // Active project RSVP inspection drawer state
   const [selectedRsvpProject, setSelectedRsvpProject] = useState<SavedProject | null>(null);
@@ -218,18 +217,6 @@ export const ProjectRegistryModal: React.FC<ProjectRegistryModalProps> = ({
       console.error('Download error:', err);
     } finally {
       setDownloadingId(null);
-    }
-  };
-
-  const handleExportActiveConfig = async () => {
-    if (!currentConfig) return;
-    setIsExportingActive(true);
-    try {
-      await generateAndDownloadProjectZip(currentConfig, `ADMIN-${Date.now().toString().slice(-6)}`);
-    } catch (err) {
-      console.error('Active export error:', err);
-    } finally {
-      setIsExportingActive(false);
     }
   };
 
@@ -488,33 +475,6 @@ export const ProjectRegistryModal: React.FC<ProjectRegistryModalProps> = ({
                     ))}
                   </div>
                 )}
-              </div>
-            )}
-
-            {/* Active Customizer Standalone Export Banner */}
-            {currentConfig && !selectedRsvpProject && (
-              <div className="bg-[#3B0B1F] text-[#FDF0F3] rounded-2xl p-4 border border-[#C8A84B] shadow-lg mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-1.5 text-[#C8A84B]">
-                    <Sparkles className="w-4 h-4" />
-                    <span className="font-body text-xs font-bold uppercase tracking-wider">Active Workspace Website Export</span>
-                  </div>
-                  <p className="font-serif-heading text-base font-normal text-white">
-                    Download Standalone ZIP Website Package
-                  </p>
-                  <p className="font-body text-[11px] text-[#FDF0F3]/70">
-                    Generates production self-contained <code className="text-[#C8A84B] font-mono">index.html</code>, assets, Netlify config, and Firebase rules for currently active preview.
-                  </p>
-                </div>
-
-                <button
-                  onClick={handleExportActiveConfig}
-                  disabled={isExportingActive}
-                  className="px-5 py-2.5 rounded-xl bg-[#C8A84B] text-[#3B0B1F] font-body text-xs font-bold uppercase tracking-wider hover:bg-[#E2C873] shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 shrink-0"
-                >
-                  <Download className="w-4 h-4" />
-                  <span>{isExportingActive ? 'Generating ZIP...' : 'Export Active ZIP Website'}</span>
-                </button>
               </div>
             )}
 

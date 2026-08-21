@@ -1322,7 +1322,7 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
           const isDateValid = Boolean(config.dateGC?.trim());
           const isChurchValid = Boolean((config.churchEn || config.churchEth || '').trim());
           const isReceptionValid = Boolean((config.receptionEn || config.receptionEth || '').trim());
-          const isPhoneValid = Boolean((config.contactInfo || config.phone1)?.trim());
+          const isPhoneValid = Boolean(config.phone1?.trim());
           const missingCount = [isHeroImgValid, isGroomValid, isBrideValid, isDateValid, isChurchValid, isReceptionValid, isPhoneValid].filter(v => !v).length;
 
           return (
