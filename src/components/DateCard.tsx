@@ -130,7 +130,7 @@ export const DateCard: React.FC<DateCardProps> = ({ config, onOpenRSVP }) => {
           }}
         >
           <div className="p-2 sm:p-3 text-center">
-            <span className="block font-serif-heading text-2xl sm:text-4xl font-semibold" style={{ color: colors.primary }}>
+            <span className="block font-body text-2xl sm:text-4xl font-semibold" style={{ color: colors.primary }}>
               {timeLeft.days}
             </span>
             <span className="font-body text-[10px] sm:text-xs uppercase tracking-wider font-medium" style={{ color: colors.blush }}>
@@ -138,7 +138,7 @@ export const DateCard: React.FC<DateCardProps> = ({ config, onOpenRSVP }) => {
             </span>
           </div>
           <div className="p-2 sm:p-3 text-center border-l" style={{ borderColor: colors.blush + '30' }}>
-            <span className="block font-serif-heading text-2xl sm:text-4xl font-semibold" style={{ color: colors.primary }}>
+            <span className="block font-body text-2xl sm:text-4xl font-semibold" style={{ color: colors.primary }}>
               {timeLeft.hours}
             </span>
             <span className="font-body text-[10px] sm:text-xs uppercase tracking-wider font-medium" style={{ color: colors.blush }}>
@@ -146,7 +146,7 @@ export const DateCard: React.FC<DateCardProps> = ({ config, onOpenRSVP }) => {
             </span>
           </div>
           <div className="p-2 sm:p-3 text-center border-l" style={{ borderColor: colors.blush + '30' }}>
-            <span className="block font-serif-heading text-2xl sm:text-4xl font-semibold" style={{ color: colors.primary }}>
+            <span className="block font-body text-2xl sm:text-4xl font-semibold" style={{ color: colors.primary }}>
               {timeLeft.minutes}
             </span>
             <span className="font-body text-[10px] sm:text-xs uppercase tracking-wider font-medium" style={{ color: colors.blush }}>
@@ -154,7 +154,7 @@ export const DateCard: React.FC<DateCardProps> = ({ config, onOpenRSVP }) => {
             </span>
           </div>
           <div className="p-2 sm:p-3 text-center border-l" style={{ borderColor: colors.blush + '30' }}>
-            <span className="block font-serif-heading text-2xl sm:text-4xl font-semibold" style={{ color: colors.gold }}>
+            <span className="block font-body text-2xl sm:text-4xl font-semibold" style={{ color: colors.gold }}>
               {timeLeft.seconds}
             </span>
             <span className="font-body text-[10px] sm:text-xs uppercase tracking-wider font-medium" style={{ color: colors.blush }}>

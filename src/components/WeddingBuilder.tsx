@@ -3,7 +3,7 @@ import { WeddingConfig, ThemeId, FrameStyleId, TimelineEvent } from '../types';
 import { THEME_PRESETS, SAMPLE_WEDDING_CONFIG, DEFAULT_WEDDING_CONFIG } from '../utils/themePresets';
 import { FRAME_STYLE_OPTIONS } from '../utils/frameStyles';
 import { saveDraftFilesLocally, getDraftFilesLocally, saveLocalDraftConfig } from '../utils/projectDatabase';
-import { Palette, Heart, Image as ImageIcon, Music, MapPin, Plus, Trash2, Check, ShoppingBag, Monitor, Smartphone, Upload, AlertCircle, Sparkles, RefreshCw, Loader2, X, Frame, Layers } from 'lucide-react';
+import { Palette, Heart, Image as ImageIcon, Music, MapPin, Plus, Trash2, Check, CheckCircle, ShoppingBag, Monitor, Smartphone, Upload, AlertCircle, Sparkles, RefreshCw, Loader2, X, Frame, Layers } from 'lucide-react';
 
 interface WeddingBuilderProps {
   config: WeddingConfig;
@@ -1314,6 +1314,20 @@ export const WeddingBuilder: React.FC<WeddingBuilderProps> = ({
       {/* Bottom Sticky CTA Footer */}
       <div className="p-4 bg-[#FDF0F3] border-t border-[#D4849A]/30 space-y-2">
         {(() => {
+          const isOrderSubmitted = config.orderStatus === 'submitted' || config.orderStatus === 'approved';
+          if (isOrderSubmitted) {
+            return (
+              <button
+                onClick={onOpenOrderModal}
+                id="submit-order-btn"
+                className="w-full py-3.5 rounded-full bg-emerald-800 text-emerald-100 border border-emerald-600/40 font-body text-xs font-semibold uppercase tracking-wider hover:bg-emerald-750 shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                <CheckCircle className="w-4 h-4 text-emerald-300" />
+                <span>{config.orderStatus === 'approved' ? 'Order Approved ✓' : 'Order Submitted ✓'}</span>
+              </button>
+            );
+          }
+
           const groom = [config.groomEn, config.groomEth].filter(Boolean).join(' ').trim();
           const bride = [config.brideEn, config.brideEth].filter(Boolean).join(' ').trim();
           const isHeroImgValid = Boolean(config.heroImg && config.heroImg.trim() !== '');

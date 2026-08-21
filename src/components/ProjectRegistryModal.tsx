@@ -600,7 +600,7 @@ export const ProjectRegistryModal: React.FC<ProjectRegistryModalProps> = ({
 
                         <button
                           onClick={() => {
-                            onLoadProject(proj.config);
+                            onLoadProject({ ...proj.config, orderStatus: proj.orderStatus });
                             onClose();
                           }}
                           className="px-3.5 py-2 rounded-xl bg-[#3B0B1F] text-[#FDF0F3] font-body text-xs font-semibold hover:bg-[#2D0817] transition-all cursor-pointer flex items-center gap-1.5"

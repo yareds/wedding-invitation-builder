@@ -113,6 +113,7 @@ export interface WeddingConfig {
   galleryImgs: string[];
   schedule: TimelineEvent[];
   bankDetails: BankDetail[];
+  orderStatus?: 'draft' | 'submitted' | 'approved';
 }
 
 export interface SavedProject {

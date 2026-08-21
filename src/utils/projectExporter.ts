@@ -357,6 +357,7 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
   <div class="fixed top-5 right-5 z-40 flex items-center gap-2">
     <button id="musicToggleBtn" onclick="toggleAudio()" class="relative p-3 rounded-full border transition-all duration-300 shadow-xl cursor-pointer flex items-center justify-center bg-[#3B0B1F] border-[#C8A84B] text-[#C8A84B]">
       <span id="musicIcon" class="text-base font-serif-heading">🎵 ♪</span>
+      <span id="musicText" class="sr-only">Play Music</span>
     </button>
   </div>
 
@@ -381,7 +382,9 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
       </div>
 
       <h1 class="font-serif-heading text-2xl sm:text-4xl font-normal leading-tight mb-3" style="color: ${colors.blushPale}">
-        ${groomEth} <span class="font-serif-heading italic text-xl sm:text-3xl" style="color: ${colors.gold}">እና</span> ${brideEth}
+        <span>${groomEth}</span>
+        <span class="block font-quote italic text-xl sm:text-3xl my-1" style="color: ${colors.gold}">እና</span>
+        <span>${brideEth}</span>
       </h1>
 
       <p class="font-quote italic text-sm sm:text-base mb-4" style="color: ${colors.blushPale}">
@@ -403,7 +406,7 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
 
     <!-- 1. Hero Section -->
     <section class="relative pt-20 pb-16 px-4 sm:px-6 md:px-8 overflow-hidden text-center transition-colors duration-500" style="background-color: ${colors.bg}; color: ${colors.primary}">
-      ${config.heroImg ? `<div class="absolute inset-0 z-0 overflow-hidden"><img src="${config.heroImg}" alt="Hero Background" class="w-full h-full object-cover object-center opacity-70 transition-opacity duration-700 pointer-events-none" /><div class="absolute inset-0" style="background-color: ${colors.heroOv || 'rgba(0,0,0,0.45)'}"></div></div>` : ''}
+      ${config.heroImg ? `<div class="absolute inset-0 z-0 overflow-hidden aspect-[3/4] sm:aspect-[16/9] md:aspect-[21/9]"><img src="${config.heroImg}" alt="Hero Background" class="w-full h-full object-cover opacity-70 transition-opacity duration-700 pointer-events-none" style="object-position: center 30%;" /><div class="absolute inset-0" style="background-color: ${colors.heroOv || 'rgba(0,0,0,0.45)'}"></div></div>` : ''}
 
       ${getBotanicalFrameHtml('top-left', config.themeId, config.frameStyle, 'absolute top-2 left-2 sm:top-6 sm:left-6 z-10')}
       ${getBotanicalFrameHtml('top-right', config.themeId, config.frameStyle, 'absolute top-2 right-2 sm:top-6 sm:right-6 z-10')}
@@ -469,19 +472,19 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
 
         <div id="countdown" class="grid grid-cols-4 gap-2 sm:gap-4 max-w-md mx-auto mb-8 p-4 rounded-2xl border" style="background-color: ${colors.blushPale}; border-color: ${colors.blush}40">
           <div class="p-2 sm:p-3 text-center">
-            <span id="cd-days" class="block font-serif-heading text-2xl sm:text-4xl font-semibold" style="color: ${colors.primary}">00</span>
+            <span id="cd-days" class="block font-body text-2xl sm:text-4xl font-semibold" style="color: ${colors.primary}">00</span>
             <span class="font-body text-[10px] sm:text-xs uppercase tracking-wider font-medium" style="color: ${colors.blush}">Days</span>
           </div>
           <div class="p-2 sm:p-3 text-center border-l" style="border-color: ${colors.blush}30">
-            <span id="cd-hours" class="block font-serif-heading text-2xl sm:text-4xl font-semibold" style="color: ${colors.primary}">00</span>
+            <span id="cd-hours" class="block font-body text-2xl sm:text-4xl font-semibold" style="color: ${colors.primary}">00</span>
             <span class="font-body text-[10px] sm:text-xs uppercase tracking-wider font-medium" style="color: ${colors.blush}">Hours</span>
           </div>
           <div class="p-2 sm:p-3 text-center border-l" style="border-color: ${colors.blush}30">
-            <span id="cd-mins" class="block font-serif-heading text-2xl sm:text-4xl font-semibold" style="color: ${colors.primary}">00</span>
+            <span id="cd-mins" class="block font-body text-2xl sm:text-4xl font-semibold" style="color: ${colors.primary}">00</span>
             <span class="font-body text-[10px] sm:text-xs uppercase tracking-wider font-medium" style="color: ${colors.blush}">Mins</span>
           </div>
           <div class="p-2 sm:p-3 text-center border-l" style="border-color: ${colors.blush}30">
-            <span id="cd-secs" class="block font-serif-heading text-2xl sm:text-4xl font-semibold" style="color: ${colors.gold}">00</span>
+            <span id="cd-secs" class="block font-body text-2xl sm:text-4xl font-semibold" style="color: ${colors.gold}">00</span>
             <span class="font-body text-[10px] sm:text-xs uppercase tracking-wider font-medium" style="color: ${colors.blush}">Secs</span>
           </div>
         </div>
@@ -758,12 +761,11 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
     function updateAudioUI() {
       const btnText = document.getElementById('musicText');
       const btnIcon = document.getElementById('musicIcon');
-      if (isPlaying) {
-        btnText.innerText = 'Pause Music';
-        btnIcon.innerText = '🔊';
-      } else {
-        btnText.innerText = 'Play Music';
-        btnIcon.innerText = '🎵';
+      if (btnText) {
+        btnText.innerText = isPlaying ? 'Pause Music' : 'Play Music';
+      }
+      if (btnIcon) {
+        btnIcon.innerText = isPlaying ? '🔊' : '🎵';
       }
     }
 

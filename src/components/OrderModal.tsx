@@ -200,7 +200,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({ config, isOpen, onClose,
       await clearDraftFilesLocally(projectId);
 
       if (onUpdateConfig) {
-        onUpdateConfig(finalConfig);
+        onUpdateConfig({ ...finalConfig, orderStatus: 'submitted' });
       }
 
       setIsOrderSubmitted(true);

@@ -17,7 +17,7 @@ import { LightboxGallery } from './components/LightboxGallery';
 import { RSVPModal } from './components/RSVPModal';
 import { BotanicalFooter } from './components/BotanicalFooter';
 import { romanticPiano } from './utils/audioEngine';
-import { Eye, Smartphone, Monitor, ShoppingBag, Sparkles, FolderOpen, ShieldCheck, Lock, UserCheck, Home, AlertTriangle, X } from 'lucide-react';
+import { Eye, Smartphone, Monitor, ShoppingBag, Sparkles, FolderOpen, ShieldCheck, Lock, UserCheck, Home, AlertTriangle, CheckCircle, X } from 'lucide-react';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<'landing' | 'builder'>('landing');
@@ -30,6 +30,17 @@ export default function App() {
   const [activeViewMode, setActiveViewMode] = useState<'split' | 'guest'>('split');
   const [currentProjectId, setCurrentProjectId] = useState<string>(() => generateProjectId());
   const [cloudSaveError, setCloudSaveError] = useState<string | null>(null);
+  const [orderSubmittedToast, setOrderSubmittedToast] = useState<string | null>(null);
+
+  const isOrderSubmitted = config.orderStatus === 'submitted' || config.orderStatus === 'approved';
+
+  const handleOpenOrder = () => {
+    if (isOrderSubmitted) {
+      setOrderSubmittedToast("Your order has already been submitted — we'll be in touch soon!");
+      return;
+    }
+    setIsOrderModalOpen(true);
+  };
 
   useEffect(() => {
     const handleSaveError = (e: any) => {
@@ -136,12 +147,25 @@ export default function App() {
           </div>
 
           <button
-            onClick={() => setIsOrderModalOpen(true)}
+            onClick={handleOpenOrder}
             id="top-order-btn"
-            className="px-4 py-1.5 rounded-full bg-[#C8A84B] text-[#3B0B1F] font-body text-xs font-semibold uppercase tracking-wider hover:bg-[#E2C873] transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+            className={`px-4 py-1.5 rounded-full font-body text-xs font-semibold uppercase tracking-wider transition-all shadow-md flex items-center gap-1.5 cursor-pointer ${
+              isOrderSubmitted
+                ? 'bg-emerald-800 text-emerald-100 border border-emerald-500/50 hover:bg-emerald-700'
+                : 'bg-[#C8A84B] text-[#3B0B1F] hover:bg-[#E2C873]'
+            }`}
           >
-            <ShoppingBag className="w-3.5 h-3.5" />
-            <span>Order &amp; Pay</span>
+            {isOrderSubmitted ? (
+              <>
+                <CheckCircle className="w-3.5 h-3.5 text-emerald-300" />
+                <span>{config.orderStatus === 'approved' ? 'Order Approved ✓' : 'Order Submitted ✓'}</span>
+              </>
+            ) : (
+              <>
+                <ShoppingBag className="w-3.5 h-3.5" />
+                <span>Order &amp; Pay</span>
+              </>
+            )}
           </button>
         </div>
       </header>
@@ -157,7 +181,7 @@ export default function App() {
             <WeddingBuilder
               config={config}
               onChangeConfig={setConfig}
-              onOpenOrderModal={() => setIsOrderModalOpen(true)}
+              onOpenOrderModal={handleOpenOrder}
               deviceMode={deviceMode}
               onToggleDeviceMode={setDeviceMode}
               projectId={currentProjectId}
@@ -293,6 +317,24 @@ export default function App() {
         onUpdateConfig={setConfig}
         projectId={currentProjectId}
       />
+
+      {/* Order Submitted Notification Toast Banner */}
+      {orderSubmittedToast && (
+        <div className="fixed bottom-5 right-5 z-[9999] max-w-md bg-emerald-950 text-emerald-100 border-2 border-emerald-500 rounded-2xl p-4 shadow-2xl flex items-start gap-3 animate-in fade-in slide-in-from-bottom-5">
+          <CheckCircle className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+          <div className="flex-1 text-xs">
+            <p className="font-bold uppercase tracking-wider mb-1 text-emerald-300">Order Confirmed</p>
+            <p className="leading-relaxed opacity-95">{orderSubmittedToast}</p>
+          </div>
+          <button
+            onClick={() => setOrderSubmittedToast(null)}
+            className="p-1 hover:bg-emerald-900 rounded-lg text-emerald-300 hover:text-white transition-colors cursor-pointer"
+            title="Dismiss notification"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       {/* Cloud Save Error Alert Toast Banner */}
       {cloudSaveError && (

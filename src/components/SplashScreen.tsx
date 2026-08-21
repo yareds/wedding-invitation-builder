@@ -67,9 +67,9 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ config, onOpenInvita
 
         {/* Couple Names */}
         <h1 className="font-serif-heading text-2xl sm:text-4xl font-normal leading-tight mb-3" style={{ color: colors.blushPale }}>
-          {groomFullName}{' '}
-          <span className="font-serif-heading italic text-xl sm:text-3xl" style={{ color: colors.gold }}>እና</span>{' '}
-          {brideFullName}
+          <span>{groomFullName}</span>
+          <span className="block font-quote italic text-xl sm:text-3xl my-1" style={{ color: colors.gold }}>እና</span>
+          <span>{brideFullName}</span>
         </h1>
 
         {/* Date and Location */}
