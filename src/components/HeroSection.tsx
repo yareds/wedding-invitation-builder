@@ -34,7 +34,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
 
       {/* Background Image Layer if custom hero image is uploaded */}
       {config.heroImg && (
-        <div className="absolute inset-0 z-0 overflow-hidden aspect-[3/4] sm:aspect-[16/9] md:aspect-[21/9]">
+        <div className="absolute inset-0 z-0 overflow-hidden aspect-[4/5] sm:aspect-[4/3]">
           <img
             src={config.heroImg}
             alt="Hero Background"

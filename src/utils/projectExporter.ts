@@ -406,7 +406,7 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
 
     <!-- 1. Hero Section -->
     <section class="relative pt-20 pb-16 px-4 sm:px-6 md:px-8 overflow-hidden text-center transition-colors duration-500" style="background-color: ${colors.bg}; color: ${colors.primary}">
-      ${config.heroImg ? `<div class="absolute inset-0 z-0 overflow-hidden aspect-[3/4] sm:aspect-[16/9] md:aspect-[21/9]"><img src="${config.heroImg}" alt="Hero Background" class="w-full h-full object-cover opacity-70 transition-opacity duration-700 pointer-events-none" style="object-position: center 30%;" /><div class="absolute inset-0" style="background-color: ${colors.heroOv || 'rgba(0,0,0,0.45)'}"></div></div>` : ''}
+      ${config.heroImg ? `<div class="absolute inset-0 z-0 overflow-hidden aspect-[4/5] sm:aspect-[4/3]"><img src="${config.heroImg}" alt="Hero Background" class="w-full h-full object-cover opacity-70 transition-opacity duration-700 pointer-events-none" style="object-position: center 30%;" /><div class="absolute inset-0" style="background-color: ${colors.heroOv || 'rgba(0,0,0,0.45)'}"></div></div>` : ''}
 
       ${getBotanicalFrameHtml('top-left', config.themeId, config.frameStyle, 'absolute top-2 left-2 sm:top-6 sm:left-6 z-10')}
       ${getBotanicalFrameHtml('top-right', config.themeId, config.frameStyle, 'absolute top-2 right-2 sm:top-6 sm:right-6 z-10')}
