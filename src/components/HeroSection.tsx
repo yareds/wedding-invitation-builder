@@ -23,7 +23,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
   return (
     <section
       id="hero-section"
-      className="relative w-full min-h-[520px] sm:min-h-[500px] py-8 sm:py-12 overflow-hidden text-center transition-colors duration-500 flex flex-col justify-center items-center px-3 sm:px-6 md:px-8"
+      className="relative w-full min-h-[520px] sm:min-h-[600px] md:min-h-[650px] lg:min-h-[700px] py-8 sm:py-12 overflow-hidden text-center transition-colors duration-500 flex flex-col justify-center items-center px-3 sm:px-6 md:px-8"
       style={{
         backgroundColor: colors.bg,
         color: colors.primary
