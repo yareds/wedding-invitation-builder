@@ -23,7 +23,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
   return (
     <section
       id="hero-section"
-      className="relative w-full min-h-[450px] min-h-[65vh] py-8 sm:py-12 overflow-hidden text-center transition-colors duration-500 flex flex-col justify-center items-center px-3 sm:px-6 md:px-8"
+      className="relative w-full min-h-[450px] min-h-[65vh] sm:min-h-[70vh] md:min-h-[75vh] py-8 sm:py-12 overflow-hidden text-center transition-colors duration-500 flex flex-col justify-center items-center px-3 sm:px-6 md:px-8"
       style={{
         backgroundColor: colors.bg,
         color: colors.primary
@@ -49,8 +49,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
       )}
 
       {/* Corner Botanical SVG Frames */}
-      <BotanicalFrame position="top-left" themeId={config.themeId} frameStyle={config.frameStyle} className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10 scale-75 sm:scale-100 origin-top-left" colorMode="gold" />
-      <BotanicalFrame position="top-right" themeId={config.themeId} frameStyle={config.frameStyle} className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 scale-75 sm:scale-100 origin-top-right" colorMode="gold" />
+      <BotanicalFrame position="top-left" themeId={config.themeId} frameStyle={config.frameStyle} className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10" colorMode="gold" />
+      <BotanicalFrame position="top-right" themeId={config.themeId} frameStyle={config.frameStyle} className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10" colorMode="gold" />
 
       <div className={`max-w-3xl w-full mx-auto relative z-10 flex flex-col items-center justify-center my-auto ${config.heroImg ? 'text-white' : ''}`}>
         {/* Monogram Circle in Hero */}
