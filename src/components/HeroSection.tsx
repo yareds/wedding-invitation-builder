@@ -23,7 +23,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
   return (
     <section
       id="hero-section"
-      className="relative w-full aspect-[4/5] sm:aspect-[4/3] overflow-hidden text-center transition-colors duration-500 flex flex-col justify-center items-center px-4 sm:px-6 md:px-8"
+      className="relative w-full aspect-[3/4] sm:aspect-[4/3] overflow-hidden text-center transition-colors duration-500 flex flex-col justify-center items-center px-3 sm:px-6 md:px-8"
       style={{
         backgroundColor: colors.bg,
         color: colors.primary
@@ -58,10 +58,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
           initial={{ scale: 0.7, opacity: 0, rotate: -10 }}
           animate={{ scale: 1, opacity: 1, rotate: 0 }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32 mb-2 sm:mb-4 group cursor-pointer shrink-0"
+          className="relative w-16 h-16 sm:w-28 sm:h-28 md:w-32 md:h-32 mb-1.5 sm:mb-4 group cursor-pointer shrink-0"
         >
           <div
-            className="w-full h-full rounded-full border-2 p-1.5 sm:p-2 shadow-2xl transition-all duration-500 hover:scale-105 flex items-center justify-center hover:shadow-[0_0_25px_rgba(200,168,75,0.3)]"
+            className="w-full h-full rounded-full border-2 p-1 sm:p-2 shadow-2xl transition-all duration-500 hover:scale-105 flex items-center justify-center hover:shadow-[0_0_25px_rgba(200,168,75,0.3)]"
             style={{
               borderColor: colors.gold,
               backgroundColor: 'transparent'
@@ -77,11 +77,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
             >
               <div className="text-center">
                 <span
-                  className="font-serif-heading text-xl sm:text-3xl md:text-4xl font-light tracking-widest block"
+                  className="font-serif-heading text-base sm:text-3xl md:text-4xl font-light tracking-widest block"
                   style={{ color: colors.gold }}
                 >
                   {groomInit}{' '}
-                  <span className="font-serif-heading text-base sm:text-xl font-normal" style={{ color: colors.blushLt || '#E5A4B5' }}>
+                  <span className="font-serif-heading text-xs sm:text-xl font-normal" style={{ color: colors.blushLt || '#E5A4B5' }}>
                     &amp;
                   </span>{' '}
                   {brideInit}
@@ -92,13 +92,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
         </motion.div>
 
         {/* Couple Names (Amharic & English) */}
-        <div className="mb-2 sm:mb-4 max-w-2xl px-2 w-full">
+        <div className="mb-1.5 sm:mb-3 max-w-2xl px-2 w-full">
           {/* Amharic Heading with Word-by-Word Motion Reveal */}
           <motion.h1
             initial={{ opacity: 0, y: 30, filter: 'blur(10px)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="font-serif-heading text-xl sm:text-3xl md:text-5xl font-normal leading-tight tracking-tight mb-1 sm:mb-2 line-clamp-3"
+            className="font-serif-heading text-lg sm:text-3xl md:text-5xl font-normal leading-tight tracking-tight mb-1 sm:mb-2 line-clamp-3"
             style={{ color: '#FFFFFF' }}
           >
             <motion.span
@@ -114,7 +114,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="block font-quote italic text-base sm:text-2xl md:text-3xl my-0.5 sm:my-1 font-light text-gold-shimmer-light"
+              className="block font-quote italic text-sm sm:text-2xl md:text-3xl my-0.5 sm:my-1 font-light text-gold-shimmer-light"
             >
               እና
             </motion.span>
@@ -135,17 +135,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.95 }}
-          className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-[11px] sm:text-xs md:text-sm font-body tracking-wider uppercase font-medium"
+          className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-4 text-[10px] sm:text-xs md:text-sm font-body tracking-wider uppercase font-medium"
           style={{
             color: '#FFFFFF'
           }}
         >
-          <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-md px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-white/20 shadow-sm hover:border-[#C8A84B]/60 transition-colors">
+          <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-md px-2.5 py-1 sm:px-4 sm:py-2 rounded-full border border-white/20 shadow-sm hover:border-[#C8A84B]/60 transition-colors">
             <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gold-shimmer-light shrink-0" />
             <span className="font-semibold">{config.dateGC || 'Saturday, May 09, 2026'}</span>
           </div>
           <span className="hidden sm:inline" style={{ color: colors.gold }}>•</span>
-          <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-md px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-white/20 shadow-sm hover:border-[#C8A84B]/60 transition-colors">
+          <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-md px-2.5 py-1 sm:px-4 sm:py-2 rounded-full border border-white/20 shadow-sm hover:border-[#C8A84B]/60 transition-colors">
             <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gold-shimmer-light shrink-0" />
             <span>{config.dateEC || 'ግንቦት 01, 2018 ዓ.ም'}</span>
           </div>
