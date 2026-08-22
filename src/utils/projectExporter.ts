@@ -405,7 +405,7 @@ function generateStandaloneHtml(config: WeddingConfig, projectId: string): strin
   <div class="min-h-screen text-[#3B0B1F] font-body relative" style="background-color: ${colors.blushPale}">
 
     <!-- 1. Hero Section -->
-    <section id="hero-section" class="relative w-full aspect-[3/4] sm:aspect-[4/3] overflow-hidden text-center transition-colors duration-500 flex flex-col justify-center items-center px-3 sm:px-6 md:px-8" style="background-color: ${colors.bg}; color: ${colors.primary}">
+    <section id="hero-section" class="relative w-full min-h-[520px] sm:min-h-[500px] py-8 sm:py-12 overflow-hidden text-center transition-colors duration-500 flex flex-col justify-center items-center px-3 sm:px-6 md:px-8" style="background-color: ${colors.bg}; color: ${colors.primary}">
       ${config.heroImg ? `<div class="absolute inset-0 z-0 overflow-hidden"><img src="${config.heroImg}" alt="Hero Background" class="w-full h-full object-cover opacity-70 transition-opacity duration-700 pointer-events-none" style="object-position: center 30%;" /><div class="absolute inset-0" style="background-color: ${colors.heroOv || 'rgba(0,0,0,0.45)'}"></div></div>` : ''}
 
       ${getBotanicalFrameHtml('top-left', config.themeId, config.frameStyle, 'absolute top-2 left-2 sm:top-4 sm:left-4 z-10 scale-75 sm:scale-100 origin-top-left')}
