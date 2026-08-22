@@ -23,7 +23,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
   return (
     <section
       id="hero-section"
-      className="relative pt-20 pb-16 px-4 sm:px-6 md:px-8 overflow-hidden text-center transition-colors duration-500"
+      className="relative w-full aspect-[4/5] sm:aspect-[4/3] overflow-hidden text-center transition-colors duration-500 flex flex-col justify-center items-center px-4 sm:px-6 md:px-8"
       style={{
         backgroundColor: colors.bg,
         color: colors.primary
@@ -34,7 +34,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
 
       {/* Background Image Layer if custom hero image is uploaded */}
       {config.heroImg && (
-        <div className="absolute inset-0 z-0 overflow-hidden aspect-[4/5] sm:aspect-[4/3]">
+        <div className="absolute inset-0 z-0 overflow-hidden">
           <img
             src={config.heroImg}
             alt="Hero Background"
@@ -49,19 +49,19 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
       )}
 
       {/* Corner Botanical SVG Frames */}
-      <BotanicalFrame position="top-left" themeId={config.themeId} frameStyle={config.frameStyle} className="absolute top-2 left-2 sm:top-6 sm:left-6 z-10" colorMode="gold" />
-      <BotanicalFrame position="top-right" themeId={config.themeId} frameStyle={config.frameStyle} className="absolute top-2 right-2 sm:top-6 sm:right-6 z-10" colorMode="gold" />
+      <BotanicalFrame position="top-left" themeId={config.themeId} frameStyle={config.frameStyle} className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10 scale-75 sm:scale-100 origin-top-left" colorMode="gold" />
+      <BotanicalFrame position="top-right" themeId={config.themeId} frameStyle={config.frameStyle} className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 scale-75 sm:scale-100 origin-top-right" colorMode="gold" />
 
-      <div className={`max-w-4xl mx-auto relative z-10 flex flex-col items-center ${config.heroImg ? 'text-white' : ''}`}>
+      <div className={`max-w-3xl w-full mx-auto relative z-10 flex flex-col items-center justify-center my-auto ${config.heroImg ? 'text-white' : ''}`}>
         {/* Monogram Circle in Hero */}
         <motion.div
           initial={{ scale: 0.7, opacity: 0, rotate: -10 }}
           animate={{ scale: 1, opacity: 1, rotate: 0 }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-28 h-28 sm:w-36 sm:h-36 mb-6 group cursor-pointer"
+          className="relative w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32 mb-2 sm:mb-4 group cursor-pointer shrink-0"
         >
           <div
-            className="w-full h-full rounded-full border-2 p-2 shadow-2xl transition-all duration-500 hover:scale-105 flex items-center justify-center hover:shadow-[0_0_25px_rgba(200,168,75,0.3)]"
+            className="w-full h-full rounded-full border-2 p-1.5 sm:p-2 shadow-2xl transition-all duration-500 hover:scale-105 flex items-center justify-center hover:shadow-[0_0_25px_rgba(200,168,75,0.3)]"
             style={{
               borderColor: colors.gold,
               backgroundColor: 'transparent'
@@ -77,11 +77,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
             >
               <div className="text-center">
                 <span
-                  className="font-serif-heading text-3xl sm:text-4xl font-light tracking-widest block"
+                  className="font-serif-heading text-xl sm:text-3xl md:text-4xl font-light tracking-widest block"
                   style={{ color: colors.gold }}
                 >
                   {groomInit}{' '}
-                  <span className="font-serif-heading text-xl sm:text-2xl font-normal" style={{ color: colors.blushLt || '#E5A4B5' }}>
+                  <span className="font-serif-heading text-base sm:text-xl font-normal" style={{ color: colors.blushLt || '#E5A4B5' }}>
                     &amp;
                   </span>{' '}
                   {brideInit}
@@ -92,20 +92,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
         </motion.div>
 
         {/* Couple Names (Amharic & English) */}
-        <div className="mb-4 max-w-3xl">
+        <div className="mb-2 sm:mb-4 max-w-2xl px-2 w-full">
           {/* Amharic Heading with Word-by-Word Motion Reveal */}
           <motion.h1
             initial={{ opacity: 0, y: 30, filter: 'blur(10px)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="font-serif-heading text-3xl sm:text-5xl md:text-6xl font-normal leading-tight tracking-tight mb-2"
+            className="font-serif-heading text-xl sm:text-3xl md:text-5xl font-normal leading-tight tracking-tight mb-1 sm:mb-2 line-clamp-3"
             style={{ color: '#FFFFFF' }}
           >
             <motion.span
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="inline-block"
+              className="inline-block truncate max-w-full"
             >
               {groomName}
             </motion.span>
@@ -114,7 +114,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="block font-quote italic text-2xl sm:text-4xl my-2 font-light text-gold-shimmer-light"
+              className="block font-quote italic text-base sm:text-2xl md:text-3xl my-0.5 sm:my-1 font-light text-gold-shimmer-light"
             >
               እና
             </motion.span>
@@ -123,7 +123,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="inline-block"
+              className="inline-block truncate max-w-full"
             >
               {brideName}
             </motion.span>
@@ -135,25 +135,25 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.95 }}
-          className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm font-body tracking-wider uppercase font-medium"
+          className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-[11px] sm:text-xs md:text-sm font-body tracking-wider uppercase font-medium"
           style={{
             color: '#FFFFFF'
           }}
         >
-          <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 shadow-sm hover:border-[#C8A84B]/60 transition-colors">
-            <Calendar className="w-4 h-4 text-gold-shimmer-light" />
+          <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-md px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-white/20 shadow-sm hover:border-[#C8A84B]/60 transition-colors">
+            <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gold-shimmer-light shrink-0" />
             <span className="font-semibold">{config.dateGC || 'Saturday, May 09, 2026'}</span>
           </div>
           <span className="hidden sm:inline" style={{ color: colors.gold }}>•</span>
-          <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 shadow-sm hover:border-[#C8A84B]/60 transition-colors">
-            <MapPin className="w-4 h-4 text-gold-shimmer-light" />
+          <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-md px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-white/20 shadow-sm hover:border-[#C8A84B]/60 transition-colors">
+            <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gold-shimmer-light shrink-0" />
             <span>{config.dateEC || 'ግንቦት 01, 2018 ዓ.ም'}</span>
           </div>
         </motion.div>
       </div>
 
       {/* Banner Bottom Botanical Divider */}
-      <BotanicalFrame position="banner-bottom" className="mt-12 z-10" colorMode="gold" />
+      <BotanicalFrame position="banner-bottom" className="absolute bottom-1 sm:bottom-3 left-0 right-0 z-10 pointer-events-none scale-75 sm:scale-100" colorMode="gold" />
     </section>
   );
 };
